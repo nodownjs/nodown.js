@@ -12,6 +12,112 @@ function noDown(text) {
     children: [],
   };
 
+  const italicRegExp = /(?<!\*)\*{1}([^*]+)\*{1}(?!\*)/g;
+  const strikethroughRegExp = /(?<!~)~{2}([^~]+)~{2}(?!~)/g;
+  const boldAndItalicRegExp = /(?<!\*)\*{3}([^*]+)\*{3}(?!\*)/g;
+  const boldRegExp = /(?<!\*)\*{2}([^*]+)\*{2}(?!\*)/g;
+  const underlineRegExp = /(?<!_)_{2}([^_]+)_{2}(?!_)/g;
+
+  const regExps = [
+    { name: "italic", regexp: italicRegExp },
+    { name: "bold", regexp: boldRegExp },
+    { name: "strikethrough", regexp: strikethroughRegExp },
+    { name: "boldAndItalic", regexp: boldAndItalicRegExp },
+    { name: "underline", regexp: underlineRegExp },
+  ];
+
+  const globalRegExp = new RegExp(
+    "(" + regExps.map((e) => e.regexp.source).join(")|(") + ")"
+  );
+
+  function convertToObject(text) {
+    const matches = text.match(globalRegExp);
+    if (!matches) {
+      return [
+        {
+          type: "text",
+          children: text,
+        },
+      ];
+    }
+    const index = matches.index;
+
+    const matchesArray = matches.slice(1, regExps.length * 2 + 1);
+    const typeIndex = matchesArray.findIndex((m) => m !== undefined);
+    const type = regExps[typeIndex / 2].name;
+
+    const textBefore = text.substring(0, index);
+    const m = matchesArray[typeIndex + 1];
+    const textAfter = text.substring(index + matchesArray[typeIndex].length);
+
+    return [
+      {
+        type: "text",
+        children: textBefore,
+      },
+      {
+        type: type,
+        children: convertToObject(m),
+      },
+      ...convertToObject(textAfter),
+    ];
+  }
+
+  /*
+
+  
+const italicRegExp = /(?<!\*)\*{1}([^*]+)\*{1}(?!\*)/g;
+const strikethroughRegExp = /(?<!~)~{2}([^~]+)~{2}(?!~)/g;
+const boldRegExp = /(?<!\*)\*{2}([^*]+)\*{2}(?!\*)/g;
+
+const regExps = [
+  { name: "italic", regexp: italicRegExp },
+  { name: "bold", regexp: boldRegExp },
+  { name: "strikethrough", regexp: strikethroughRegExp },
+];
+
+const globalRegExp = new RegExp(
+  "(" + regExps.map((e) => e.regexp.source).join(")|(") + ")"
+);
+
+function convertToObject(text) {
+  const matches = text.match(globalRegExp);
+  if (!matches) {
+    console.log("NO DETECTED");
+    console.log(text);
+    return [{
+      type: "text",
+      children: text
+    }]
+  }
+  const index = matches.index;
+
+  const matchesArray = matches.slice(1, 7);
+  const typeIndex = matchesArray.findIndex((m) => m !== undefined);
+  const type = regExps[typeIndex / 2].name;
+  console.log("🚀 ~ type:", type);
+
+  const textBefore = text.substring(0, index);
+  console.log("🚀 ~ textBefore:", textBefore);
+
+  const m = matchesArray[typeIndex + 1];
+  console.log("🚀 ~ m:", m);
+
+  const textAfter = text.substring(index + matchesArray[typeIndex].length);
+  console.log("🚀 ~ textAfter:", textAfter);
+
+  return [{
+    type: "text",
+    children: textBefore
+  },{
+    type: type,
+    children: convertToObject(m)
+  }, ...convertToObject(textAfter)]
+}
+
+
+  */
+
   // const italicRegex = /^\*{1}(.+)\*{1}/;
   // const createItalic = (line) => {
   //   const match = line.match(italicRegex);
@@ -57,7 +163,7 @@ function noDown(text) {
     const title = {
       type: "title",
       level: level,
-      children: [content],
+      children: convertToObject(content),
     };
     syntaxTree.children.push(title);
   };
@@ -132,7 +238,7 @@ function noDown(text) {
     // Création de l'élément
     let listItem = {
       type: "list-element",
-      children: [{ type: "text", children: content }],
+      children: convertToObject(content),
     };
 
     // Ajout de l'élément
@@ -177,6 +283,7 @@ function objectToHTML(obj) {
   }
 
   let html = "";
+  console.log(obj.type);
 
   if (obj.type === "root" && obj.children) {
     html += obj.children.map((child) => objectToHTML(child)).join("");
@@ -200,6 +307,26 @@ function objectToHTML(obj) {
     html += "<h" + obj.level + ">";
     html += obj.children.map((child) => objectToHTML(child)).join("");
     html += "</h" + obj.level + ">";
+  } else if (obj.type === "boldAndItalic" && obj.children) {
+    html += "<strong><em>";
+    html += obj.children.map((child) => objectToHTML(child)).join("");
+    html += "</em></strong>";
+  } else if (obj.type === "strikethrough" && obj.children) {
+    html += "<del>";
+    html += obj.children.map((child) => objectToHTML(child)).join("");
+    html += "</del>";
+  } else if (obj.type === "italic" && obj.children) {
+    html += "<em>";
+    html += obj.children.map((child) => objectToHTML(child)).join("");
+    html += "</em>";
+  } else if (obj.type === "bold" && obj.children) {
+    html += "<strong>";
+    html += obj.children.map((child) => objectToHTML(child)).join("");
+    html += "</strong>";
+  } else if (obj.type === "underline" && obj.children) {
+    html += "<u>";
+    html += obj.children.map((child) => objectToHTML(child)).join("");
+    html += "</u>";
   } else if (obj.type === "text" && obj.children) {
     html += obj.children;
   }
