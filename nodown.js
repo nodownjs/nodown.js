@@ -14,10 +14,13 @@ function noDown(text) {
 
   const boldRegExp = /(?<!\*|\\)\*{2}((?:[^*]|\\\*)+)(?<!\\)\*{2}(?!\*)/g;
   const italicRegExp = /(?<!\*|\\)\*{1}((?:[^*]|\\\*)+)(?<!\\)\*{1}(?!\*)/g;
-  const boldAndItalicRegExp = /(?<!\*|\\)\*{3}((?:[^*]|\\\*)+)(?<!\\)\*{3}(?!\*)/g;
+  const boldAndItalicRegExp =
+    /(?<!\*|\\)\*{3}((?:[^*]|\\\*)+)(?<!\\)\*{3}(?!\*)/g;
   const strikethroughRegExp = /(?<!~|\\)~{2}((?:[^~]|\\~)+)(?<!\\)~{2}(?!~)/g;
   const underlineRegExp = /(?<!_|\\)_{2}((?:[^_]|\\_)+)(?<!\\)_{2}(?!_)/g;
   const codeRegExp = /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g;
+
+  const imageRegExp = /(?<!\\)!\[([^\]\\]+)\]\(([^)\\]+)\)/g;
 
   const regExps = [
     { name: "italic", regexp: italicRegExp },
@@ -33,7 +36,6 @@ function noDown(text) {
   );
 
   function convertToObject(text) {
-
     function removeBackslash(text) {
       const regexp = /\\(\*|_|~)+/g;
       return text.replace(regexp, "$1");
@@ -194,63 +196,74 @@ function noDown(text) {
 }
 
 function objectToHTML(obj) {
-  console.log(obj);
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
 
-  let html = "";
-  console.log(obj.type);
+  const container = document.createElement("div");
 
   if (obj.type === "root" && obj.children) {
-    html += obj.children.map((child) => objectToHTML(child)).join("");
+    const div = document.createElement("div");
+    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(div);
   } else if (obj.type === "unordered-list" && obj.children) {
-    html += "<ul>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</ul>";
+    const ul = document.createElement("ul");
+    ul.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(ul);
   } else if (obj.type === "ordered-list" && obj.children) {
-    html += "<ol>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</ol>";
+    const ol = document.createElement("ol");
+    ol.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(ol);
   } else if (obj.type === "block-code" && obj.children) {
-    html += '<pre class="' + obj.language + '"><code>';
-    html += obj.children.map((child) => objectToHTML(child)).join("\n");
-    html += "</code></pre>";
+    const pre = document.createElement("pre");
+    pre.className = obj.language;
+    const code = document.createElement("code");
+    code.textContent = obj.children
+      .map((child) => objectToHTML(child))
+      .join("\n");
+    pre.appendChild(code);
+    container.appendChild(pre);
   } else if (obj.type === "list-element" && obj.children) {
-    html += "<li>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</li>";
+    const li = document.createElement("li");
+    li.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(li);
   } else if (obj.type === "title" && obj.children) {
-    html += "<h" + obj.level + ">";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</h" + obj.level + ">";
+    const heading = document.createElement("h" + obj.level);
+    heading.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(heading);
   } else if (obj.type === "code" && obj.children) {
-    html += "<code>";
-    html += obj.children;
-    html += "</code>";
+    const code = document.createElement("code");
+    code.textContent = obj.children;
+    container.appendChild(code);
   } else if (obj.type === "boldAndItalic" && obj.children) {
-    html += "<strong><em>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</em></strong>";
+    const strong = document.createElement("strong");
+    const em = document.createElement("em");
+    em.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    strong.appendChild(em);
+    container.appendChild(strong);
   } else if (obj.type === "strikethrough" && obj.children) {
-    html += "<del>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</del>";
+    const del = document.createElement("del");
+    del.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(del);
   } else if (obj.type === "italic" && obj.children) {
-    html += "<em>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</em>";
+    const em = document.createElement("em");
+    em.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(em);
   } else if (obj.type === "bold" && obj.children) {
-    html += "<strong>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</strong>";
+    const strong = document.createElement("strong");
+    strong.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(strong);
   } else if (obj.type === "underline" && obj.children) {
-    html += "<u>";
-    html += obj.children.map((child) => objectToHTML(child)).join("");
-    html += "</u>";
+    const u = document.createElement("u");
+    u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(u);
   } else if (obj.type === "text" && obj.children) {
-    html += obj.children;
+    container.textContent = obj.children;
   }
 
-  return html;
+  return container.innerHTML;
 }
