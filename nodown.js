@@ -12,11 +12,12 @@ function noDown(text) {
     children: [],
   };
 
-  const italicRegExp = /(?<!\*)\*{1}([^*]+)\*{1}(?!\*)/g;
-  const strikethroughRegExp = /(?<!~)~{2}([^~]+)~{2}(?!~)/g;
-  const boldAndItalicRegExp = /(?<!\*)\*{3}([^*]+)\*{3}(?!\*)/g;
-  const boldRegExp = /(?<!\*)\*{2}([^*]+)\*{2}(?!\*)/g;
-  const underlineRegExp = /(?<!_)_{2}([^_]+)_{2}(?!_)/g;
+  const boldRegExp = /(?<!\*|\\)\*{2}((?:[^*]|\\\*)+)(?<!\\)\*{2}(?!\*)/g;
+  const italicRegExp = /(?<!\*|\\)\*{1}((?:[^*]|\\\*)+)(?<!\\)\*{1}(?!\*)/g;
+  const boldAndItalicRegExp = /(?<!\*|\\)\*{3}((?:[^*]|\\\*)+)(?<!\\)\*{3}(?!\*)/g;
+  const strikethroughRegExp = /(?<!~|\\)~{2}((?:[^~]|\\~)+)(?<!\\)~{2}(?!~)/g;
+  const underlineRegExp = /(?<!_|\\)_{2}((?:[^_]|\\_)+)(?<!\\)_{2}(?!_)/g;
+  const codeRegExp = /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g;
 
   const regExps = [
     { name: "italic", regexp: italicRegExp },
@@ -24,6 +25,7 @@ function noDown(text) {
     { name: "strikethrough", regexp: strikethroughRegExp },
     { name: "boldAndItalic", regexp: boldAndItalicRegExp },
     { name: "underline", regexp: underlineRegExp },
+    { name: "code", regexp: codeRegExp },
   ];
 
   const globalRegExp = new RegExp(
@@ -31,12 +33,18 @@ function noDown(text) {
   );
 
   function convertToObject(text) {
+
+    function removeBackslash(text) {
+      const regexp = /\\(\*|_|~)+/g;
+      return text.replace(regexp, "$1");
+    }
+
     const matches = text.match(globalRegExp);
     if (!matches) {
       return [
         {
           type: "text",
-          children: text,
+          children: removeBackslash(text),
         },
       ];
     }
@@ -53,107 +61,15 @@ function noDown(text) {
     return [
       {
         type: "text",
-        children: textBefore,
+        children: removeBackslash(textBefore),
       },
       {
         type: type,
-        children: convertToObject(m),
+        children: type === "code" ? m : convertToObject(m),
       },
       ...convertToObject(textAfter),
     ];
   }
-
-  /*
-
-  
-const italicRegExp = /(?<!\*)\*{1}([^*]+)\*{1}(?!\*)/g;
-const strikethroughRegExp = /(?<!~)~{2}([^~]+)~{2}(?!~)/g;
-const boldRegExp = /(?<!\*)\*{2}([^*]+)\*{2}(?!\*)/g;
-
-const regExps = [
-  { name: "italic", regexp: italicRegExp },
-  { name: "bold", regexp: boldRegExp },
-  { name: "strikethrough", regexp: strikethroughRegExp },
-];
-
-const globalRegExp = new RegExp(
-  "(" + regExps.map((e) => e.regexp.source).join(")|(") + ")"
-);
-
-function convertToObject(text) {
-  const matches = text.match(globalRegExp);
-  if (!matches) {
-    console.log("NO DETECTED");
-    console.log(text);
-    return [{
-      type: "text",
-      children: text
-    }]
-  }
-  const index = matches.index;
-
-  const matchesArray = matches.slice(1, 7);
-  const typeIndex = matchesArray.findIndex((m) => m !== undefined);
-  const type = regExps[typeIndex / 2].name;
-  console.log("🚀 ~ type:", type);
-
-  const textBefore = text.substring(0, index);
-  console.log("🚀 ~ textBefore:", textBefore);
-
-  const m = matchesArray[typeIndex + 1];
-  console.log("🚀 ~ m:", m);
-
-  const textAfter = text.substring(index + matchesArray[typeIndex].length);
-  console.log("🚀 ~ textAfter:", textAfter);
-
-  return [{
-    type: "text",
-    children: textBefore
-  },{
-    type: type,
-    children: convertToObject(m)
-  }, ...convertToObject(textAfter)]
-}
-
-
-  */
-
-  // const italicRegex = /^\*{1}(.+)\*{1}/;
-  // const createItalic = (line) => {
-  //   const match = line.match(italicRegex);
-  //   const content = match[1];
-  //   const italic = {
-  //     type: "italic",
-  //     children: content,
-  //   };
-  //   return italic;
-  // };
-
-  // const boldRegex = /^\*{2}(.*)\*{2}/;
-  // const createBold = (line) => {
-  //   const match = line.match(boldRegex);
-  //   const content = match[1];
-  //   const bold = {
-  //     type: "bold",
-  //     children: content,
-  //   };
-  //   return bold;
-  // };
-
-  // const createText = (text) => {
-  //   const words = text.split(" ");
-
-  //   for (let i = 0; i < words.length; i++) {
-  //     const word = words[i];
-  //   }
-
-  //   return [
-  //     {
-  //       type: "text",
-  //       children: text,
-  //     },
-  //   ];
-  // };
 
   const titleRegex = /^(#{1,6})\s(.+)/;
   const createTitle = (line) => {
@@ -278,6 +194,7 @@ function convertToObject(text) {
 }
 
 function objectToHTML(obj) {
+  console.log(obj);
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
@@ -307,6 +224,10 @@ function objectToHTML(obj) {
     html += "<h" + obj.level + ">";
     html += obj.children.map((child) => objectToHTML(child)).join("");
     html += "</h" + obj.level + ">";
+  } else if (obj.type === "code" && obj.children) {
+    html += "<code>";
+    html += obj.children;
+    html += "</code>";
   } else if (obj.type === "boldAndItalic" && obj.children) {
     html += "<strong><em>";
     html += obj.children.map((child) => objectToHTML(child)).join("");
