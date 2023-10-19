@@ -6,7 +6,8 @@ function update() {
 }
 
 function noDown(text) {
-  const lines = text.split("\n");
+  const ndRegExpA = /\\(\*|_|~|\\)/g;
+  const lines = text.replace(ndRegExpA, "{ █\\$1█ }").split("\n");
   const syntaxTree = {
     type: "root",
     children: [],
@@ -20,7 +21,7 @@ function noDown(text) {
     },
     {
       name: "link",
-      regexp: /(?<![\\!])\[(.+)\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)\)/g,
+      regexp: /(?<![\\!])\[(.*)\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)\)/g,
     },
     {
       name: "italic",
@@ -40,14 +41,17 @@ function noDown(text) {
     },
     {
       name: "underline",
-      regexp: /(?<!_|\\)_{2}((?:[^_]|\\_)+)(?<!\\)_{2}(?!_)/g,
+      regexp: /(?<!=|\\)={2}((?:[^=]|\\=)+)(?<!\\)={2}(?!=)/g,
     },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
   ];
 
   function removeBackslash(text) {
-    const regexp = /\\(\*|_|~)+/g;
-    return text.replace(regexp, "$1");
+    // const regexp = /\\(\*|_|~|\\)/g;
+    // return text.replace(regexp, "$1");
+    // return text;
+    const ndRegExpB = /{ █\\(\*|_|~|\\)█ }/g;
+    return text.replace(ndRegExpB, "$1");
   }
 
   function convertToObject(text) {
@@ -56,7 +60,7 @@ function noDown(text) {
     allMatches = allMatches
       .map((config) => {
         const match = [...text.matchAll(config.regexp)][0];
-        if (match) {
+        if (match && match[1].trim() !== "") {
           config.index = match.index;
           config.raw = match[0];
           config.group = [...match].filter(
@@ -97,18 +101,23 @@ function noDown(text) {
     ];
 
     if (match.name === "image") {
+      const [title, width, height, render] = match.group[0].split(";");
       obj.type = "image";
-      obj.title = match.group[0];
+      obj.title = title;
+      if (width) obj.width = width;
+      if (height) obj.height = height;
+      if (render) obj.render = render;
       obj.source = match.group[1];
     } else if (match.name === "link") {
       obj.type = "link";
-      obj.children =
-        match.name === "code" ? match.text : convertToObject(match.group[0]);
-      obj.url = match.group[1];
+      obj.href = match.group[1];
+      obj.children = convertToObject(match.group[0].trim());
     } else {
       obj.type = match.name;
       obj.children =
-        match.name === "code" ? match.text : convertToObject(match.group[0]);
+        match.name === "code"
+          ? match.group[0]
+          : convertToObject(match.group[0]);
     }
 
     return result;
@@ -162,7 +171,7 @@ function noDown(text) {
     blockCodeContent.push(line);
   };
 
-  const listRegex = /^(\s*)(-|\d+\.) (.+)/;
+  const listRegex = /^(\s*)(-|(?:\d+\.?)+) (.+)/;
   let listRoot = {
     type: "idk",
     children: [],
@@ -319,12 +328,30 @@ function objectToHTML(obj) {
   } else if (obj.type === "image" && obj.source) {
     const img = document.createElement("img");
     img.src = obj.source;
-    if (obj.title) img.title = obj.title;
+    const { title, width, height, render } = obj;
+    if (title) img.title = title;
+    if (width) {
+      if (width.endsWith("%")) {
+        img.style.width = width;
+      } else {
+        img.width = width;
+      }
+    }
+    if (height) {
+      if (height.endsWith("%")) {
+        img.style.height = height;
+      } else {
+        img.height = height;
+      }
+    }
+    if (render) img.style.imageRendering = render;
     container.appendChild(img);
   } else if (obj.type === "link" && obj.children) {
     const a = document.createElement("a");
     a.href = obj.href;
-    a.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    let text = obj.children.map((child) => objectToHTML(child)).join("");
+    if (text.trim() === "") text = obj.href;
+    a.innerHTML = text;
     container.appendChild(a);
   } else if (obj.type === "text" && obj.children) {
     container.textContent = obj.children;
