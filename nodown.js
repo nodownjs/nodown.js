@@ -6,8 +6,8 @@ function update() {
 }
 
 function noDown(text) {
-  const ndRegExpA = /\\(\*|_|~|\\)/g;
-  const lines = text.replace(ndRegExpA, "{ █\\$1█ }").split("\n");
+  const ndRegExpA = /\\(\*|_|~|`|\\)/g;
+  const lines = text.replace(ndRegExpA, "{_█\\$1█_}").split("\n");
   const syntaxTree = {
     type: "root",
     children: [],
@@ -17,7 +17,7 @@ function noDown(text) {
     {
       name: "image",
       regexp:
-        /(?<!\\)!\[([^\]]*)(?:;([\d%]*))?(?:;([\d%]*))?\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)\)/g,
+        /(?<!\\)!\[([^\]]*)(?:;([\d%]*))?(?:;([\d%]*))?\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)(?:;([^\(\)]*))?\)/g,
     },
     {
       name: "link",
@@ -50,8 +50,12 @@ function noDown(text) {
     // const regexp = /\\(\*|_|~|\\)/g;
     // return text.replace(regexp, "$1");
     // return text;
-    const ndRegExpB = /{ █\\(\*|_|~|\\)█ }/g;
+    const ndRegExpB = /{_█\\(\*|_|~|`|\\)█_}/g;
     return text.replace(ndRegExpB, "$1");
+  }
+  function removeCodeBackslash(text) {
+    const ndRegExpC = /{_█(\\\\)█_}/g;
+    return text.replace(ndRegExpC, "$1");
   }
 
   function convertToObject(text) {
@@ -101,13 +105,16 @@ function noDown(text) {
     ];
 
     if (match.name === "image") {
-      const [title, width, height, render] = match.group[0].split(";");
-      obj.type = "image";
-      obj.title = title;
+      const [alt, width, height, render] = match.group[0].split(";");
+      const source = match.group[1];
+      const title = match.group[2];
       if (width) obj.width = width;
       if (height) obj.height = height;
       if (render) obj.render = render;
-      obj.source = match.group[1];
+      obj.type = "image";
+      obj.title = title;
+      obj.alt = alt;
+      obj.source = source;
     } else if (match.name === "link") {
       obj.type = "link";
       obj.href = match.group[1];
@@ -116,7 +123,7 @@ function noDown(text) {
       obj.type = match.name;
       obj.children =
         match.name === "code"
-          ? match.group[0]
+          ? removeCodeBackslash(match.group[0])
           : convertToObject(match.group[0]);
     }
 
@@ -133,14 +140,23 @@ function noDown(text) {
 
   const titleRegex = /^(#{1,6})\s(.+)/;
   const createTitle = (line) => {
+    console.log();
     const match = line.match(titleRegex);
     const level = match[1].length;
-    const content = match[2].trim();
+    let content = match[2].trim();
+    let id = null;
+    const idRegExp = /(.*)(?:{#(.+)})$/g;
+    const idMatch = idRegExp.exec(content) || null;
+    if (idMatch) {
+      content = idMatch[1];
+      id = idMatch[2];
+    }
     const title = {
       type: "title",
       level: level,
       children: convertToObject(content),
     };
+    if (id) title.id = id;
     syntaxTree.children.push(title);
   };
 
@@ -292,6 +308,7 @@ function objectToHTML(obj) {
     heading.innerHTML = obj.children
       .map((child) => objectToHTML(child))
       .join("");
+    if (obj.id) heading.id = obj.id;
     container.appendChild(heading);
   } else if (obj.type === "code" && obj.children) {
     const code = document.createElement("code");
@@ -328,8 +345,12 @@ function objectToHTML(obj) {
   } else if (obj.type === "image" && obj.source) {
     const img = document.createElement("img");
     img.src = obj.source;
-    const { title, width, height, render } = obj;
-    if (title) img.title = title;
+    const { title, width, height, render, alt } = obj;
+    if (title) {
+      img.title = title;
+      img.alt = "title : " + title;
+    }
+    if (alt) img.alt = alt;
     if (width) {
       if (width.endsWith("%")) {
         img.style.width = width;
@@ -344,7 +365,10 @@ function objectToHTML(obj) {
         img.height = height;
       }
     }
-    if (render) img.style.imageRendering = render;
+    if (render) {
+      img.style.imageRendering = render;
+      if (render === "smooth") img.style.imageRendering = "auto";
+    }
     container.appendChild(img);
   } else if (obj.type === "link" && obj.children) {
     const a = document.createElement("a");
