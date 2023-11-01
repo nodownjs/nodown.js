@@ -75,6 +75,11 @@ function noDown(text) {
       regexp:
         /(?:\s|^)`#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})`(?:\s|$)/g,
     },
+    {
+      name: "french-quotation-mark",
+      regexp:
+        /(?:\s|^)"([\p{L}\p{M}\s]+)"(?:\s|$|,|\.)/gu,
+    },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
   ];
 
@@ -754,6 +759,14 @@ function objectToHTML(obj) {
       .map((child) => objectToHTML(child))
       .join("");
     container.appendChild(strong);
+  } else if (obj.type === "french-quotation-mark" && obj.children) {
+    const text = document.createElement("span");
+    var open = document.createTextNode(" « ");
+    var close = document.createTextNode(" » ");
+    text.appendChild(open);
+    text.innerHTML = text.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
+    text.appendChild(close);
+    container.appendChild(text);
   } else if (obj.type === "underline" && obj.children) {
     const u = document.createElement("u");
     u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
