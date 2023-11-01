@@ -387,6 +387,9 @@ function noDown(text) {
     const match = line.match(listRegex);
     const listType =
       match[2] === "-" || match[2] === "*" ? "unordered" : "ordered";
+    const checkRegExp = /^(?:\s*)(?:-|\*|(?:\d+\.?)+) (\[ \]|\[x\])(.+)/;
+    const isTask = checkRegExp.exec(line);
+    const listItemType = isTask ? "task-list-element" : "list-element";
     const content = match[3];
 
     // Mis a jour du niveau
@@ -421,9 +424,14 @@ function noDown(text) {
 
     // Création de l'élément
     let listItem = {
-      type: "list-element",
+      type: listItemType,
       children: convertToObject(content),
     };
+
+    if (isTask) {
+      listItem.checked = isTask[1] === "[x]" ? true : false;
+      listItem.children = convertToObject(isTask[2]);
+    }
 
     // Ajout de l'élément
     const parent = stack[stack.length - 1];
@@ -701,6 +709,20 @@ function objectToHTML(obj) {
     const li = document.createElement("li");
     li.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(li);
+  } else if (obj.type === "task-list-element" && obj.children) {
+    const li = document.createElement("li");
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    if (obj.checked) check.setAttribute("checked", true);
+    console.log("🚀 ~ obj.checked:", obj.checked);
+    check.style.margin = "0 .2em .25em -1.4em";
+    check.style.verticalAlign = "middle";
+    console.log(obj);
+    li.appendChild(check);
+    li.innerHTML =
+      li.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
+    li.style.listStyle = "none";
+    container.appendChild(li);
   } else if (obj.type === "title" && obj.children) {
     const heading = document.createElement("h" + obj.level);
     heading.innerHTML = obj.children
@@ -743,7 +765,10 @@ function objectToHTML(obj) {
     code.style.alignItems = "center";
     code.style.gap = "0.33em";
     const size = "0.75em";
-    color.setAttribute('style', "background-color:#" + obj.color + " !important");
+    color.setAttribute(
+      "style",
+      "background-color:#" + obj.color + " !important"
+    );
     color.style.height = size;
     color.style.width = size;
     color.style.borderRadius = "50%";
