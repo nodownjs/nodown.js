@@ -6,22 +6,49 @@ function update() {
 }
 
 function noDown(text) {
-  const ndRegExpA = /\\(\*|_|~|`|\\)/g;
+  const ndRegExpA = /\\(\*|_|~|`|\\|\|)/g;
   const lines = text.replace(ndRegExpA, "{_█\\$1█_}").split("\n");
+  // .filter((line) => line !== "");
   const syntaxTree = {
     type: "root",
-    children: [],
+    children: [
+      {
+        type: "section",
+        children: [
+          {
+            type: "div",
+            children: [
+              {
+                type: "div",
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   };
+
+  let lastSection;
+  let lastDiv;
+
+  function getLastDiv() {
+    const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+    const lastDiv = lastSection.children[lastSection.children.length - 1];
+    const lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
+    return lastLastDiv;
+  }
 
   const regexConfig = [
     {
       name: "image",
       regexp:
-        /(?<!\\)!\[([^\]]*)(?:;([\d%]*))?(?:;([\d%]*))?\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)(?:;([^\(\)]*))?\)/g,
+        /(?<!\\)!\[((?:[^\];]*)(?:;(?:[\d%]*))?(?:;(?:[\d%]*))?(?:;(?:\w+))?)?\]\(([-a-zA-Z0-9@\/:%._\+~#=?&]+)(?:(?:;|\s")([^\(\)"]*)(?:")?)?\)/g,
     },
     {
       name: "link",
-      regexp: /(?<![\\!])\[(.*)\]\(([-a-zA-Z0-9@\/:%._\+~#=]+)\)/g,
+      regexp:
+        /(?<![\\!])\[([^\[]*(?<!\\)!\[(?:[^\];]*)(?:;(?:[\d%]*))?(?:;(?:[\d%]*))?(?:;(?:\w+))?\]\((?:[-a-zA-Z0-9@\/:%._\+~#=?&]+)(?:(?:;|\s")(?:[^\(\)"]*)(?:")?)?\)[^\[]*|[^\[]+)\]\(([-a-zA-Z0-9@\/:%._\+~#=?&]+)(?:(?:;|\s")([^\(\)"]*)(?:")?)?\)/g,
     },
     {
       name: "italic",
@@ -50,7 +77,7 @@ function noDown(text) {
     // const regexp = /\\(\*|_|~|\\)/g;
     // return text.replace(regexp, "$1");
     // return text;
-    const ndRegExpB = /{_█\\(\*|_|~|`|\\)█_}/g;
+    const ndRegExpB = /{_█\\(\*|_|~|`|\\|\|)█_}/g;
     return text.replace(ndRegExpB, "$1");
   }
   function removeCodeBackslash(text) {
@@ -64,12 +91,11 @@ function noDown(text) {
     allMatches = allMatches
       .map((config) => {
         const match = [...text.matchAll(config.regexp)][0];
-        if (match && match[1].trim() !== "") {
+        // if (match && match[1].trim() !== "") {
+        if (match) {
           config.index = match.index;
           config.raw = match[0];
-          config.group = [...match].filter(
-            (match, index) => index > 0 && match
-          );
+          config.group = [...match].filter((match, index) => index > 0);
         }
         return config;
       })
@@ -105,7 +131,9 @@ function noDown(text) {
     ];
 
     if (match.name === "image") {
-      const [alt, width, height, render] = match.group[0].split(";");
+      const [alt, width, height, render] = match.group[0]
+        ? match.group[0].split(";")
+        : "";
       const source = match.group[1];
       const title = match.group[2];
       if (width) obj.width = width;
@@ -118,12 +146,13 @@ function noDown(text) {
     } else if (match.name === "link") {
       obj.type = "link";
       obj.href = match.group[1];
+      obj.title = match.group[2];
       obj.children = convertToObject(match.group[0].trim());
     } else {
       obj.type = match.name;
       obj.children =
         match.name === "code"
-          ? removeCodeBackslash(match.group[0])
+          ? removeBackslash(removeCodeBackslash(match.group[0]))
           : convertToObject(match.group[0]);
     }
 
@@ -135,12 +164,14 @@ function noDown(text) {
       type: "paragraph",
       children: convertToObject(line),
     };
-    syntaxTree.children.push(paragraph);
+    // const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+    // const lastDiv = lastSection.children[lastSection.children.length - 1];
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(paragraph);
   };
 
   const titleRegex = /^(#{1,6})\s(.+)/;
-  const createTitle = (line) => {
-    console.log();
+  function createTitle(line) {
     const match = line.match(titleRegex);
     const level = match[1].length;
     let content = match[2].trim();
@@ -157,14 +188,16 @@ function noDown(text) {
       children: convertToObject(content),
     };
     if (id) title.id = id;
-    syntaxTree.children.push(title);
-  };
+    if (level == 2) addNewSection(":======");
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(title);
+  }
 
-  const BlockCodeRegex = /^`{3}(\w*)/;
+  const BlockCodeRegex = /^\s*`{3}(\w*)/;
   let isBlockCode = false;
   let blockCodeLanguage = "";
   let blockCodeContent = [];
-  const createBlockCode = (line) => {
+  function createBlockCode(line) {
     const match = line.match(BlockCodeRegex);
     if (match[1]) blockCodeLanguage = match[1];
     // Si fin du block code
@@ -175,19 +208,166 @@ function noDown(text) {
         language: blockCodeLanguage,
         children: blockCodeContent,
       };
-      syntaxTree.children.push(blockCode);
+      const lastDiv = getLastDiv();
+      lastDiv.children.push(blockCode);
       blockCodeContent = [];
       blockCodeLanguage = "";
     } else {
       // Si début du block code
       isBlockCode = true;
     }
-  };
-  const addBlockCodeContent = (line) => {
+  }
+  function addBlockCodeContent(line) {
     blockCodeContent.push(line);
-  };
+  }
 
-  const listRegex = /^(\s*)(-|(?:\d+\.?)+) (.+)/;
+  const tableRegExp = /^\s*\|(?:(?:[^\|]*|\\|)\|)*/;
+  const globalTableRegExp = /((?:[^\|]|\\\|)*)(?<!\\)\|/g;
+  const tableHeaderRegExp = /^\s*\|(?:\s*(?::)?-+(?::)?\s*\|)+\s*$/;
+  let tableStatus = 0;
+  let tableHeader = [];
+  let tableAlign = [];
+  let tableRows = [];
+  function createTable(line, afterLine) {
+    const matchs = [...line.matchAll(globalTableRegExp)].filter(
+      (_, i) => i !== 0
+    );
+    if (tableStatus === 0) {
+      tableHeader = matchs.map((arr) => {
+        return {
+          type: "table-header",
+          children: convertToObject(arr[1].trim()),
+        };
+      });
+      tableStatus = 1;
+    } else if (tableStatus === 1) {
+      tableAlign = matchs.map((arr) => arr[1].trim());
+      const leftRegExp = /^-+:$/;
+      const rightRegExp = /^:-+$/;
+      const centerRegExp = /^:-+:$/;
+      tableAlign = tableAlign.map((text) => {
+        if (leftRegExp.test(text)) {
+          return "left";
+        } else if (rightRegExp.test(text)) {
+          return "right";
+        } else if (centerRegExp.test(text)) {
+          return "center";
+        } else {
+          return "default";
+        }
+      });
+      tableStatus++;
+    } else {
+      console.log(line);
+      console.log(matchs);
+      tableRows.push({
+        type: "table-row",
+        children: matchs.map((arr, i) => {
+          return {
+            type: "table-data",
+            align: tableAlign[i],
+            children: convertToObject(arr[1].trim()),
+          };
+        }),
+      });
+      if (!tableRegExp.test(afterLine)) {
+        const table = {
+          type: "table",
+          align: tableAlign,
+          headers: tableHeader,
+          rows: tableRows,
+        };
+        const lastDiv = getLastDiv();
+        lastDiv.children.push(table);
+        tableStatus = 0;
+        tableHeader = [];
+        tableRows = [];
+        tableAlign = [];
+      }
+    }
+  }
+
+  const citationRegExp =
+    /^>([+\-i?!]|\s\[!(?:IMPORTANT|WARNING|NOTE)\])?\s+(.+)$/;
+  moreAlertType = /\[!(?:IMPORTANT|WARNING|NOTE)\]/;
+  let citation = {
+    type: "idk",
+    children: [],
+  };
+  function createCitation(line, afterLine) {
+    const match = line.match(citationRegExp);
+    let [_, type, content] = match;
+
+    if (!type && moreAlertType.test(content)) {
+      type = content;
+      content = "";
+    } else if (!type) {
+      type = "citation";
+    }
+
+    const children = { type: "paragraph", children: convertToObject(content) };
+
+    if (type) type = type.trim();
+
+    if (citation.type === "idk") {
+      citation = {
+        type: "idk",
+        children: [],
+      };
+
+      switch (type) {
+        case "[!WARNING]":
+        case "[!IMPORTANT]":
+        case "!":
+          citation.type = "alert";
+          citation.variant = "warning";
+          break;
+        case "[!NOTE]":
+        case "i":
+          citation.type = "alert";
+          citation.variant = "info";
+          break;
+        case "?":
+          citation.type = "alert";
+          citation.variant = "question";
+          break;
+        case "i":
+          citation.type = "alert";
+          citation.variant = "info";
+          break;
+        case "+":
+          citation.type = "alert";
+          citation.variant = "success";
+          break;
+        case "-":
+          citation.type = "alert";
+          citation.variant = "error";
+          break;
+        case "citation":
+          citation.type = "citation";
+          break;
+      }
+
+      if (citation.type !== "citation") {
+        citation.title = convertToObject(content);
+      } else {
+        citation.children.push(children);
+      }
+    } else {
+      citation.children.push(children);
+    }
+
+    if (!citationRegExp.test(afterLine)) {
+      const lastDiv = getLastDiv();
+      lastDiv.children.push(citation);
+      citation = {
+        type: "idk",
+        children: [],
+      };
+    }
+  }
+
+  const listRegex = /^(\s*)(-|\*|(?:\d+\.?)+) (.+)/;
   let listRoot = {
     type: "idk",
     children: [],
@@ -196,7 +376,8 @@ function noDown(text) {
   let stack = [];
   function createList(line, afterLine) {
     const match = line.match(listRegex);
-    const listType = match[2] === "-" ? "unordered" : "ordered";
+    const listType =
+      match[2] === "-" || match[2] === "*" ? "unordered" : "ordered";
     const content = match[3];
 
     // Mis a jour du niveau
@@ -216,15 +397,17 @@ function noDown(text) {
     }
 
     // Si nouvelle liste
-    if (stack.length < level + 1) {
+    if (stack.length < level + 1 && stack.length > 0) {
       const list = {
         type: listType + "-list",
         children: [],
       };
       const parentList = stack[stack.length - 1];
       const parentElement = parentList.children[parentList.children.length - 1];
-      parentElement.children.push(list);
-      stack.push(list);
+      if (parentElement) {
+        parentElement.children.push(list);
+        stack.push(list);
+      }
     }
 
     // Création de l'élément
@@ -239,7 +422,10 @@ function noDown(text) {
 
     // Si dernier élément
     if (!listRegex.test(afterLine)) {
-      syntaxTree.children.push({ ...listRoot });
+      const lastDiv = getLastDiv();
+      lastDiv.children.push({
+        ...listRoot,
+      });
       stack = [];
       listRoot = {
         type: "idk",
@@ -249,17 +435,144 @@ function noDown(text) {
     }
   }
 
+  const SectionRegExp = /^##$/g;
+  function addNewSection() {
+    const section = {
+      type: "section",
+      children: [
+        {
+          type: "div",
+          children: [
+            {
+              type: "div",
+              children: [],
+            },
+          ],
+        },
+      ],
+    };
+    syntaxTree.children.push(section);
+  }
+
+  const divRegExp =
+    /^(------|------|------:|---:---|======|===:===|:======|======:|:======:|:===:===:|::===:===::)\s?$/;
+  function addNewDiv(line) {
+    const div = {
+      type: "div",
+      children: [
+        {
+          type: "div",
+          children: [],
+        },
+      ],
+    };
+    switch (line) {
+      case "------":
+        div.display = "block";
+        div.align = "left";
+        break;
+      case ":------":
+        div.display = "block";
+        div.align = "left";
+        break;
+      case "------:":
+        div.display = "block";
+        div.align = "right";
+        break;
+      case "---:---":
+        div.display = "block";
+        div.align = "center";
+        break;
+      case "======":
+        div.display = "inline";
+        div.align = "left";
+        break;
+      case ":======":
+        div.display = "inline";
+        div.align = "left";
+        break;
+      case "======:":
+        div.display = "inline";
+        div.align = "right";
+        break;
+        break;
+      case "===:===":
+        div.display = "inline";
+        div.align = "center";
+        break;
+      case ":======:":
+        div.display = "inline";
+        div.align = "space-between";
+        break;
+      case ":===:===:":
+        div.display = "inline";
+        div.align = "space-around";
+        break;
+      case "::===:===::":
+        div.display = "inline";
+        div.align = "space-evenly";
+        break;
+    }
+
+    const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+    let lastDiv = lastSection.children[lastSection.children.length - 1];
+    if (lastDiv && lastDiv.children.length === 0) {
+      lastSection.children[lastDiv.children.length - 1] = div;
+    } else {
+      lastSection.children.push(div);
+    }
+  }
+
+  const subDivRegExp = /^===(\|)?(\d)?$/;
+  function addNewSubDiv(line) {
+    const [_, noGrow, grow] = subDivRegExp.exec(line);
+    const div = {
+      type: "div",
+      children: [],
+    };
+    if (noGrow) div.size = 0;
+    if (grow) div.size = grow;
+    const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+    let lastDiv = lastSection.children[lastSection.children.length - 1];
+    let lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
+    if (lastLastDiv && lastLastDiv.children.length === 0) {
+      lastDiv.children[lastDiv.children.length - 1] = div;
+    } else {
+      lastDiv.children.push(div);
+    }
+  }
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const afterLine = lines[i + 1];
+
+    const tableTest =
+      afterLine &&
+      [...line.matchAll(globalTableRegExp)].length ===
+        [...afterLine.matchAll(globalTableRegExp)].length &&
+      tableHeaderRegExp.test(afterLine);
 
     if (BlockCodeRegex.test(line)) {
       createBlockCode(line);
     } else if (isBlockCode) {
       addBlockCodeContent(line);
+    } else if (citationRegExp.test(line)) {
+      createCitation(line, afterLine);
     } else if (titleRegex.test(line)) {
       createTitle(line);
     } else if (listRegex.test(line)) {
-      createList(line, lines[i + 1]);
+      createList(line, afterLine);
+    } else if (SectionRegExp.test(line)) {
+      addNewSection(line);
+    } else if (subDivRegExp.test(line)) {
+      addNewSubDiv(line);
+    } else if (divRegExp.test(line)) {
+      addNewDiv(line);
+    } else if (
+      tableRegExp.test(line) &&
+      (tableStatus === 0 ? tableTest : true)
+    ) {
+      createTable(line, afterLine);
     } else if (line !== "") {
       createParagraph(line);
     }
@@ -282,6 +595,82 @@ function objectToHTML(obj) {
     const div = document.createElement("div");
     div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(div);
+  } else if (obj.type === "section" && obj.children) {
+    const section = document.createElement("section");
+    section.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+
+    container.appendChild(section);
+  } else if (obj.type === "div" && obj.children) {
+    const div = document.createElement("div");
+    div.style.flex = 1;
+    if (obj.size !== undefined) {
+      div.style.flex = obj.size;
+    }
+    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    const { display, align } = obj;
+    if (display === "inline") div.style.display = "flex";
+    if (align) div.style.justifyContent = align;
+    container.appendChild(div);
+  } else if (obj.type === "table" && obj.rows) {
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const tbody = document.createElement("tbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML = obj.headers.map((child) => objectToHTML(child)).join("");
+    tbody.innerHTML = obj.rows.map((child) => objectToHTML(child)).join("");
+    thead.appendChild(tr);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+  } else if (obj.type === "table-header" && obj.children) {
+    const th = document.createElement("th");
+    th.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(th);
+  } else if (obj.type === "table-row" && obj.children) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(tr);
+  } else if (obj.type === "table-data" && obj.children) {
+    const td = document.createElement("td");
+    td.align = obj.align === "default" ? "left" : obj.align;
+    td.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(td);
+  } else if (obj.type === "citation" && obj.children) {
+    const blockquote = document.createElement("blockquote");
+    blockquote.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(blockquote);
+  } else if (obj.type === "alert" && obj.children) {
+    const alert = document.createElement("div");
+    let color;
+    switch (obj.variant) {
+      case "note":
+        color = "blue";
+        break;
+      case "warning":
+        color = "orange";
+        break;
+      case "success":
+        color = "green";
+        break;
+      case "error":
+        color = "red";
+        break;
+      default:
+        color = "gray";
+        break;
+    }
+    alert.style.border = "1px solid " + color;
+    const title = document.createElement("h4");
+    title.innerHTML = obj.title.map((child) => objectToHTML(child)).join("");
+    alert.appendChild(title);
+    alert.innerHTML =
+      alert.innerHTML +
+      obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(alert);
   } else if (obj.type === "unordered-list" && obj.children) {
     const ul = document.createElement("ul");
     ul.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
@@ -373,6 +762,9 @@ function objectToHTML(obj) {
   } else if (obj.type === "link" && obj.children) {
     const a = document.createElement("a");
     a.href = obj.href;
+    if (obj.title) {
+      a.title = obj.title;
+    }
     let text = obj.children.map((child) => objectToHTML(child)).join("");
     if (text.trim() === "") text = obj.href;
     a.innerHTML = text;
