@@ -80,6 +80,16 @@ function noDown(text) {
       regexp:
         /(?:\s|^)"([\p{L}\p{M}\s]+)"(?:\s|$|,|\.)/gu,
     },
+    {
+      name: "subscript",
+      regexp:
+        /<_([^<>]+)>/g,
+    },
+    {
+      name: "superscript",
+      regexp:
+        /<\^([^<>]+)>/g,
+    },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
   ];
 
@@ -759,6 +769,18 @@ function objectToHTML(obj) {
       .map((child) => objectToHTML(child))
       .join("");
     container.appendChild(strong);
+  } else if (obj.type === "subscript" && obj.children) {
+    const sub = document.createElement("sub");
+    sub.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(sub);
+  } else if (obj.type === "superscript" && obj.children) {
+    const sup = document.createElement("sup");
+    sup.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(sup);
   } else if (obj.type === "french-quotation-mark" && obj.children) {
     const text = document.createElement("span");
     var open = document.createTextNode(" « ");
