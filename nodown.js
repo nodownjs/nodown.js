@@ -70,6 +70,11 @@ function noDown(text) {
       name: "underline",
       regexp: /(?<!=|\\)={2}((?:[^=]|\\=)+)(?<!\\)={2}(?!=)/g,
     },
+    {
+      name: "color",
+      regexp:
+        /(?:\s|^)`#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})`(?:\s|$)/g,
+    },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
   ];
 
@@ -148,6 +153,10 @@ function noDown(text) {
       obj.href = match.group[1];
       obj.title = match.group[2];
       obj.children = convertToObject(match.group[0].trim());
+    } else if (match.name === "color") {
+      obj.type = "color";
+      obj.color = match.group[0];
+      obj.children = convertToObject("#" + match.group[0].trim());
     } else {
       obj.type = match.name;
       obj.children =
@@ -727,6 +736,22 @@ function objectToHTML(obj) {
     const u = document.createElement("u");
     u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(u);
+  } else if (obj.type === "color" && obj.children) {
+    const color = document.createElement("span");
+    const code = document.createElement("code");
+    code.style.display = "inline-flex";
+    code.style.alignItems = "center";
+    code.style.gap = "0.33em";
+    const size = "0.75em";
+    color.setAttribute('style', "background-color:#" + obj.color + " !important");
+    color.style.height = size;
+    color.style.width = size;
+    color.style.borderRadius = "50%";
+    code.appendChild(color);
+    code.innerHTML =
+      code.innerHTML +
+      obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(code);
   } else if (obj.type === "paragraph" && obj.children) {
     const p = document.createElement("p");
     p.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
