@@ -77,18 +77,15 @@ function noDown(text) {
     },
     {
       name: "french-quotation-mark",
-      regexp:
-        /(?:\s|^)"([\p{L}\p{M}\s\p{P}]+)"(?:\s|$|,|\.)/gu,
+      regexp: /(?:\s|^)"([\p{L}\p{M}\s\p{P}]+)"(?:\s|$|,|\.)/gu,
     },
     {
       name: "subscript",
-      regexp:
-        /<_([^<>]+)>/g,
+      regexp: /<_([^<>]+)>/g,
     },
     {
       name: "superscript",
-      regexp:
-        /<\^([^<>]+)>/g,
+      regexp: /<\^([^<>]+)>/g,
     },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
   ];
@@ -562,7 +559,7 @@ function noDown(text) {
       type: "div",
       children: [],
     };
-    if (noGrow) div.size = 0;
+    if (noGrow) div.size = "0";
     if (grow) div.size = grow;
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
@@ -771,22 +768,20 @@ function objectToHTML(obj) {
     container.appendChild(strong);
   } else if (obj.type === "subscript" && obj.children) {
     const sub = document.createElement("sub");
-    sub.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
-      .join("");
+    sub.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(sub);
   } else if (obj.type === "superscript" && obj.children) {
     const sup = document.createElement("sup");
-    sup.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
-      .join("");
+    sup.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(sup);
   } else if (obj.type === "french-quotation-mark" && obj.children) {
     const text = document.createElement("span");
     var open = document.createTextNode(" « ");
     var close = document.createTextNode(" » ");
     text.appendChild(open);
-    text.innerHTML = text.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
+    text.innerHTML =
+      text.innerHTML +
+      obj.children.map((child) => objectToHTML(child)).join("");
     text.appendChild(close);
     container.appendChild(text);
   } else if (obj.type === "underline" && obj.children) {
@@ -828,15 +823,19 @@ function objectToHTML(obj) {
     if (width) {
       if (width.endsWith("%")) {
         img.style.width = width;
+        img.style.minWidth = width;
       } else {
-        img.width = width;
+        img.style.width = width + "px";
+        img.style.minWidth = width + "px";
       }
     }
     if (height) {
       if (height.endsWith("%")) {
         img.style.height = height;
+        img.style.minHeight = height;
       } else {
-        img.height = height;
+        img.style.height = height + "px";
+        img.style.minHeight = height;
       }
     }
     if (render) {
