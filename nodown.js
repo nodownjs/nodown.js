@@ -6,7 +6,7 @@ function update() {
 }
 
 function noDown(text) {
-  const ndRegExpA = /\\(\*|_|~|`|\\|\|)/g;
+  const ndRegExpA = /\\(\*|_|~|`|\\|\||\[|\d|#)/g;
   const lines = text.replace(ndRegExpA, "{_█\\$1█_}").split("\n");
   // .filter((line) => line !== "");
   const syntaxTree = {
@@ -94,7 +94,7 @@ function noDown(text) {
     // const regexp = /\\(\*|_|~|\\)/g;
     // return text.replace(regexp, "$1");
     // return text;
-    const ndRegExpB = /{_█\\(\*|_|~|`|\\|\|)█_}/g;
+    const ndRegExpB = /{_█\\(\*|_|~|`|\\|\||\[|\d|#)█_}/g;
     return text.replace(ndRegExpB, "$1");
   }
   function removeCodeBackslash(text) {
