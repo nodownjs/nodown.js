@@ -78,7 +78,7 @@ function noDown(text) {
     {
       name: "french-quotation-mark",
       regexp:
-        /(?:\s|^)"([\p{L}\p{M}\s]+)"(?:\s|$|,|\.)/gu,
+        /(?:\s|^)"([\p{L}\p{M}\s\p{P}]+)"(?:\s|$|,|\.)/gu,
     },
     {
       name: "subscript",
