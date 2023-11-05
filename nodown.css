@@ -28,7 +28,7 @@
 #nodown-render h1,
 #nodown-render h2 {
   padding-bottom: 0.25em;
-  border-bottom: 0.1em solid rgba(255, 255, 255, 0.05);
+  border-bottom: 0.075em solid rgba(255, 255, 255, 0.05);
   margin-bottom: 0.5em;
 }
 
@@ -43,7 +43,7 @@
   background-color: #23262c;
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
-  font-size: 0.75em;
+  font-size: 0.8em;
   font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
 }
 
@@ -80,7 +80,7 @@
 #nodown-render td,
 #nodown-render th {
   border: 0.05em solid rgba(255, 255, 255, 0.1);
-  padding: 0.25em 0.5em;
+  padding: 0.5em 0.75em;
 }
 
 #nodown-render th {

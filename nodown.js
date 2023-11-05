@@ -7,6 +7,22 @@ function update() {
 
 function noDown(text) {
   const ndRegExpA = /\\(\*|_|~|`|\\|\||\[|\d|#)/g;
+
+  // const varRegExp = /^<\-([\w\-_]+)>: (.*)/gm;
+  // const mVar = Array.from(text.matchAll(varRegExp));
+  // mVar.forEach((mv) => {
+  //   const [raw, vName, vContent] = mv;
+  //   const vNameRegExp = new RegExp("(<\-" + vName + ">)");
+  //   text = text.replace(raw, "");
+  //   text = text.replace(vNameRegExp, vContent);
+  // });
+
+  const varRegExp = /^<([\w\-_]+)>: (.*)/gm;
+  const mVar = Array.from(text.matchAll(varRegExp)).map((m) => {
+    text = text.replace(m[0], "");
+    return { name: m[1], content: m[2] };
+  });
+
   const lines = text.replace(ndRegExpA, "{_█\\$1█_}").split("\n");
   // .filter((line) => line !== "");
   const syntaxTree = {
@@ -88,12 +104,15 @@ function noDown(text) {
       regexp: /<\^([^<>]+)>/g,
     },
     { name: "code", regexp: /(?<!`|\\)`{1}((?:[^`]|\\`)+)(?<!\\)`{1}(?!`)/g },
+    { name: "code-with-var", regexp: /(?<!`|\\)<`{1}((?:[^`]|\\`)+)(?<!\\)`{1}>(?!`)/g },
   ];
 
-  function removeBackslash(text) {
-    // const regexp = /\\(\*|_|~|\\)/g;
-    // return text.replace(regexp, "$1");
-    // return text;
+  function removeBackslash(text, variable) {
+    if (text.includes(mVar.map((m) => "<" + m.name + ">")) && !variable) {
+      mVar.forEach((m) => {
+        text = text.replace("<" + m.name + ">", m.content);
+      });
+    }
     const ndRegExpB = /{_█\\(\*|_|~|`|\\|\||\[|\d|#)█_}/g;
     return text.replace(ndRegExpB, "$1");
   }
@@ -169,12 +188,19 @@ function noDown(text) {
       obj.type = "color";
       obj.color = match.group[0];
       obj.children = convertToObject("#" + match.group[0].trim());
+    } else if (match.name === "code") {
+      obj.type = "code";
+      obj.children = removeBackslash(removeCodeBackslash(match.group[0]), true);
+    } else if (match.name === "code-with-var") {
+      obj.type = "code";
+      obj.children = removeBackslash(removeCodeBackslash(match.group[0]), false);
     } else {
       obj.type = match.name;
-      obj.children =
-        match.name === "code"
-          ? removeBackslash(removeCodeBackslash(match.group[0]))
-          : convertToObject(match.group[0]);
+      // obj.children =
+      //   match.name === "code"
+      //     ? removeBackslash(removeCodeBackslash(match.group[0]))
+      //     : convertToObject(match.group[0]);
+      obj.children = convertToObject(match.group[0]);
     }
 
     return result;
@@ -279,8 +305,6 @@ function noDown(text) {
       });
       tableStatus++;
     } else {
-      console.log(line);
-      console.log(matchs);
       tableRows.push({
         type: "table-row",
         children: matchs.map((arr, i) => {
@@ -664,9 +688,6 @@ function objectToHTML(obj) {
       div.style.flex = obj.size + " 0 0%";
       if (obj.size == 0) {
         div.style.flex = " 0 1 auto";
-        console.log(
-          "calc(" + (1 / obj.total) * 100 + "% - " + (obj.total - 1) + "em)"
-        );
         div.style.maxWidth =
           "calc(" +
           (1 / obj.total) * 100 +
@@ -764,10 +785,8 @@ function objectToHTML(obj) {
     const check = document.createElement("input");
     check.type = "checkbox";
     if (obj.checked) check.setAttribute("checked", true);
-    console.log("🚀 ~ obj.checked:", obj.checked);
     check.style.margin = "0 .2em .25em -1.4em";
     check.style.verticalAlign = "middle";
-    console.log(obj);
     li.appendChild(check);
     li.innerHTML =
       li.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
