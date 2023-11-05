@@ -4,12 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NoDown</title>
+    <link rel="stylesheet" href="./nodown.css"/>
   </head>
   <body onload="update()">
     <style>
-      * {
-        /* margin: 0; */
-      }
       body {
         margin: 0;
         padding: 0;
@@ -29,74 +27,15 @@
         flex: 1;
         flex-shrink: 0;
         overflow-x: auto;
-        background-color: #101319;
         color: white;
+        font-size: 22px;
+      }
+      #nodown-render {
+        flex: 1.25;
       }
       #nodown-input {
         border: none;
         background-color: #1a1d23;
-      }
-      #nodown-render,
-      #nodown-input {
-        font-size: 18px;
-        padding: 32px;
-      }
-      #nodown-render {
-        font-size: 22px;
-      }
-      #nodown-render img {
-        max-width: 100%;
-      }
-      #nodown-render code {
-        background-color: #23262c;
-        border-radius: 4px;
-        padding: 4px 8px;
-      }
-      #nodown-render pre {
-        display: inline-block;
-        background-color: #23262c;
-        padding: 16px;
-        border-radius: 8px;
-        overflow-x: scroll;
-        width: calc(100% - 32px);
-      }
-      #nodown-render pre code {
-        background-color: transparent;
-      }
-
-      #nodown-render section {
-        background-color: rgba(255, 255, 255, 0.01);
-        margin: 32px 0;
-        padding: 16px;
-      }
-      #nodown-render section > div {
-        /* background-color: rgba(255, 255, 255, 0.01); */
-        border-radius: 8px;
-        gap: 16px;
-        /* margin: 32px 0; */
-      }
-      #nodown-render section > div > div {
-        /* background-color: rgba(255, 255, 255, 0.01); */
-        border-radius: 8px;
-      }
-
-      #nodown-render table {
-        border-spacing: 0;
-        border-collapse: collapse;
-      }
-      #nodown-render td,
-      #nodown-render th {
-        border: 1px solid rgba(255, 255, 255, 1);
-        padding: 6px 13px;
-      }
-      #nodown-render blockquote {
-        border-left: 4px solid rgba(255, 255, 255, 0.25);
-        padding-left: 16px;
-        color: rgba(255, 255, 255, 0.5);
-        margin: 0;
-      }
-      #nodown-render blockquote p {
-        margin: 0;
       }
     </style>
     <main>

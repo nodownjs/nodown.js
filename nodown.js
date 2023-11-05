@@ -73,7 +73,7 @@ function noDown(text) {
     {
       name: "color",
       regexp:
-        /(?:\s|^)`#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})`(?:\s|$)/g,
+        /`#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})`(?:\s|$)/g,
     },
     {
       name: "french-quotation-mark",
@@ -490,7 +490,7 @@ function noDown(text) {
       type: "div",
       children: [
         {
-          type: "div",
+          type: "sub-div",
           children: [],
         },
       ],
@@ -552,15 +552,29 @@ function noDown(text) {
     }
   }
 
-  const subDivRegExp = /^===(\|)?(\d)?$/;
+  const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
   function addNewSubDiv(line) {
-    const [_, noGrow, grow] = subDivRegExp.exec(line);
+    const [_, m, noGrow, grow] = subDivRegExp.exec(line);
     const div = {
-      type: "div",
+      type: "sub-div",
       children: [],
     };
     if (noGrow) div.size = "0";
     if (grow) div.size = grow;
+    switch (m) {
+      case "===":
+        div.align = "left";
+        break;
+      case ":===":
+        div.align = "left";
+        break;
+      case "===:":
+        div.align = "right";
+        break;
+      case ":===:":
+        div.align = "center";
+        break;
+    }
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
     let lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
@@ -629,18 +643,41 @@ function objectToHTML(obj) {
     section.innerHTML = obj.children
       .map((child) => objectToHTML(child))
       .join("");
-
     container.appendChild(section);
   } else if (obj.type === "div" && obj.children) {
     const div = document.createElement("div");
-    div.style.flex = 1;
-    if (obj.size !== undefined) {
-      div.style.flex = obj.size;
-    }
-    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    div.innerHTML = obj.children
+      .map((child) => objectToHTML({ ...child, total: obj.children.length }))
+      .join("");
     const { display, align } = obj;
-    if (display === "inline") div.style.display = "flex";
-    if (align) div.style.justifyContent = align;
+    if (display === "inline") {
+      div.style.display = "flex";
+      if (align) div.style.justifyContent = align;
+    } else {
+      if (align) div.style.textAlign = align;
+    }
+    container.appendChild(div);
+  } else if (obj.type === "sub-div" && obj.children) {
+    const div = document.createElement("div");
+    div.style.flex = "1 0 0%";
+    if (obj.size !== undefined) {
+      div.style.flex = obj.size + " 0 0%";
+      if (obj.size == 0) {
+        div.style.flex = " 0 1 auto";
+        console.log(
+          "calc(" + (1 / obj.total) * 100 + "% - " + (obj.total - 1) + "em)"
+        );
+        div.style.maxWidth =
+          "calc(" +
+          (1 / obj.total) * 100 +
+          "% - " +
+          (obj.total - 1) / obj.total +
+          "em)";
+      }
+    }
+    if (obj.align) div.style.textAlign = obj.align;
+    div.style.overflowY = "hidden";
+    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(div);
   } else if (obj.type === "table" && obj.rows) {
     const table = document.createElement("table");
@@ -674,6 +711,8 @@ function objectToHTML(obj) {
     container.appendChild(blockquote);
   } else if (obj.type === "alert" && obj.children) {
     const alert = document.createElement("div");
+    alert.classList.add("alert");
+    alert.classList.add(obj.variant);
     let color;
     switch (obj.variant) {
       case "note":
@@ -692,7 +731,6 @@ function objectToHTML(obj) {
         color = "gray";
         break;
     }
-    alert.style.border = "1px solid " + color;
     const title = document.createElement("h4");
     title.innerHTML = obj.title.map((child) => objectToHTML(child)).join("");
     alert.appendChild(title);

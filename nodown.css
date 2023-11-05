@@ -1,0 +1,124 @@
+#nodown-render * {
+  margin: 0;
+}
+
+#nodown-render {
+  padding: 32px;
+}
+
+#nodown-render section {
+  margin: 1.5em 0;
+}
+
+#nodown-render section > div {
+  /* margin-bottom: 1em; */
+  gap: 1em;
+  width: 100%;
+  /* overflow-x: auto; */
+}
+
+#nodown-render section > div > div > * {
+  margin-bottom: 0.75em;
+}
+
+#nodown-render img {
+  max-width: 100%;
+}
+
+#nodown-render h1,
+#nodown-render h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 0.1em solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.5em;
+}
+
+#nodown-render blockquote {
+  border-left: 0.2em solid rgba(255, 255, 255, 0.25);
+  padding-left: 1em;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+#nodown-render code {
+  background-color: #23262c;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 0.75em;
+  font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+#nodown-render pre {
+  border-radius: 0.25em;
+  overflow-x: scroll;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1em;
+}
+#nodown-render pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+#nodown-render a {
+  color: #00a8fc;
+  text-decoration: none;
+}
+
+#nodown-render a:hover {
+  color: #00a8fcd9;
+}
+
+#nodown-render table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  border-radius: 0.25em 0.25em 0 0;
+}
+
+#nodown-render td,
+#nodown-render th {
+  border: 0.05em solid rgba(255, 255, 255, 0.1);
+  padding: 0.25em 0.5em;
+}
+
+#nodown-render th {
+  border: 0.05em solid #1c1f25;
+  border-right: 0.05em solid rgba(255, 255, 255, 0.05);
+}
+#nodown-render th:last-child {
+  border-right: 0.05em solid transparent;
+}
+#nodown-render thead {
+  background-color: #1c1f25;
+}
+
+.alert {
+  border: 0.1em solid;
+  border-radius: 0.25em;
+  padding: 1em;
+}
+
+.warning {
+  border-color: #ffa50078;
+  background-color: #ffa5000a;
+}
+
+.success {
+  border-color: rgba(255, 200, 0, 0.2);
+  background-color: rgba(255, 200, 0, 0.05);
+}
+.error {
+  border-color: rgba(255, 150, 150, 0.2);
+  background-color: rgba(255, 150, 150, 0.05);
+}
+.info {
+  border-color: rgba(200, 200, 255, 0.2);
+  background-color: rgba(200, 200, 255, 0.05);
+}
+
+.question {
+  border-color: rgba(255, 150, 255, 0.2);
+  background-color: rgba(255, 150, 255, 0.05);
+}
