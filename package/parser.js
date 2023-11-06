@@ -122,9 +122,10 @@ export default function parser(textDocument) {
   ];
 
   function removeBackslash(text, variable) {
-    if (text.includes(varList.map((m) => "<" + m.name + ">")) && !variable) {
+    if (text.toLowerCase().includes(varList.map((m) => "<" + m.name.toLowerCase() + ">")) && !variable) {
       varList.forEach((m) => {
-        text = text.replace("<" + m.name + ">", m.content);
+        const varRegExp = new RegExp("<" + m.name + ">", "gi");
+        text = text.replace(varRegExp, m.content);
       });
     }
     const backSlashFixerRegExp = new RegExp(

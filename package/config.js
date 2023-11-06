@@ -70,33 +70,20 @@ export const codeWithVarRegExp = new RegExp(
 );
 
 export const frenchQuotationMarkRegExp =
-  /(?:\s|^)"([\p{L}\p{M}\s\p{P}]+)"(?:\s|$|,|\.)/giu;
+  /(?:\s|^)"([\p{L}\p{M}\s\p{P}]+)"(?:\s|$|,|\.)/gu;
 
 export const imageRegExp =
   /!\[((?:[^\];]*)(?:;\d*%?)?(?:;\d*%?)?(?:;\w+)?)?\]\(([^\;\(\)"]+)(?:(?:;|\s")([^\(\)"]*)(?:")?)?\)/gi;
 
-
-// export const linkRegExp = new RegExp(
-//   "(?<![\\\\!])\\[([^\\[]*(?:(?:" +
-//     imageNoCapturingRegExp +
-//     ")*[^\\[]*)*|[^\\[]*(?:(?:" +
-//     codeRegExp.source +
-//     ')*[^\\[]*)*|[^\\[]*)?\\]\\(([^\\;\\(\\)"]+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
-//   "gi"
-// );
-
-
 const imageNoCapturingRegExp = imageRegExp.source.replace(
-    /(?<!\\)\((?!\?)/g,
-    "(?:"
-  );
+  /(?<!\\)\((?!\?)/g,
+  "(?:"
+);
 
-  
 const codeNoCapturingRegExp = codeRegExp.source.replace(
-    /(?<!\\)\((?!\?)/g,
-    "(?:"
-  );
-  
+  /(?<!\\)\((?!\?)/g,
+  "(?:"
+);
 
 export const linkRegExp = new RegExp(
   "(?<![\\\\!])\\[((?:[^\\[]|(?:" +
@@ -106,4 +93,3 @@ export const linkRegExp = new RegExp(
     ')*)?\\]\\(([^\\;\\(\\)"]+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
   "gi"
 );
-console.log("🚀 ~ linkRegExp:", linkRegExp.source)
