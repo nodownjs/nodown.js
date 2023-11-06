@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="./nodown.css" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/logo/logo.svg">
+    <script type="module" src="./nodown.js"></script>
   </head>
-  <body onload="update()">
+  <body onload="updateDoc()">
     <style>
       body {
         margin: 0;
@@ -44,10 +45,11 @@
       <textarea
         name="nodown-input"
         id="nodown-input"
-        onkeyup="update()"
+        onkeyup="updateDoc()"
       ></textarea>
       <div id="nodown-render"></div>
     </main>
-    <script type="text/javascript" src="./nodown.js"></script>
+    <!-- <script type="text/javascript" src="./index.js"></script> -->
+    <script type="module" src="./index.js"></script>
   </body>
 </html>
