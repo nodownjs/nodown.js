@@ -21,8 +21,11 @@ import {
   globalTableRegExp,
   tableRegExp,
   tableHeaderRegExp,
-  citationAlertTypeRegExp,
   citationRegExp,
+  listRegExp,
+  sectionRegExp,
+  divRegExp,
+  subDivRegExp,
 } from "./config.js";
 import createBlockCode from "./elements/blockcode.js";
 import createTitle from "./elements/title.js";
@@ -36,6 +39,13 @@ import createCitation, {
   createCitationContent,
   createCitationType,
 } from "./elements/citation.js";
+import createList, {
+  createListConfig,
+  createListElement,
+} from "./elements/list.js";
+import createSection from "./elements/section.js";
+import createDiv from "./elements/div.js";
+import createSubDiv from "./elements/subDiv.js";
 
 function transformEscapedChar(match, g1) {
   return (
@@ -303,163 +313,15 @@ export default function parser(textDocument) {
     type: "",
   };
 
-  // ----------------------------------------------------------------
-
-  const listRegex = /^(\s*)(-|\*|(?:\d+\.?)+) (.+)/;
   let listRoot = {
-    type: "idk",
+    type: "",
     children: [],
     level: 0,
   };
   let stack = [];
-  function createList(line, afterLine) {
-    const match = line.match(listRegex);
-    const listType =
-      match[2] === "-" || match[2] === "*" ? "unordered" : "ordered";
-    const checkRegExp = /^(?:\s*)(?:-|\*|(?:\d+\.?)+) (\[ \]|\[x\])(.+)/;
-    const isTask = checkRegExp.exec(line);
-    const listItemType = isTask ? "task-list-element" : "list-element";
-    const content = match[3];
 
-    // Mis a jour du niveau
-    let level = match[1].length;
-    if (level % 2 == 1) level--; // Changement de niveau tout les deux espaces uniquement
-    level = level / 2;
-
-    // Initialisation & mise a jour de la première liste
-    if (stack.length === 0) {
-      listRoot.type = listType + "-list";
-      stack.push(listRoot);
-    }
-
-    // Mis a jour de la pile
-    while (stack.length > level + 1) {
-      stack.pop();
-    }
-
-    // Si nouvelle liste
-    if (stack.length < level + 1 && stack.length > 0) {
-      const list = {
-        type: listType + "-list",
-        children: [],
-      };
-      const parentList = stack[stack.length - 1];
-      const parentElement = parentList.children[parentList.children.length - 1];
-      if (parentElement) {
-        parentElement.children.push(list);
-        stack.push(list);
-      }
-    }
-
-    // Création de l'élément
-    let listItem = {
-      type: listItemType,
-      children: convertToObject(content),
-    };
-
-    if (isTask) {
-      listItem.checked = isTask[1] === "[x]" ? true : false;
-      listItem.children = convertToObject(isTask[2]);
-    }
-
-    // Ajout de l'élément
-    const parent = stack[stack.length - 1];
-    parent.children.push(listItem);
-
-    // Si dernier élément
-    if (!listRegex.test(afterLine)) {
-      const lastDiv = getLastDiv();
-      lastDiv.children.push({
-        ...listRoot,
-      });
-      stack = [];
-      listRoot = {
-        type: "idk",
-        children: [],
-        level: 0,
-      };
-    }
-  }
-
-  const SectionRegExp = /^##$/g;
-  function addNewSection() {
-    const section = {
-      type: "section",
-      children: [
-        {
-          type: "div",
-          children: [
-            {
-              type: "div",
-              children: [],
-            },
-          ],
-        },
-      ],
-    };
-    syntaxTree.children.push(section);
-  }
-
-  const divRegExp =
-    /^(------|------|------:|---:---|======|===:===|:======|======:|:======:|:===:===:|::===:===::)\s?$/;
-  function addNewDiv(line) {
-    const div = {
-      type: "div",
-      children: [
-        {
-          type: "sub-div",
-          children: [],
-        },
-      ],
-    };
-    switch (line) {
-      case "------":
-        div.display = "block";
-        div.align = "left";
-        break;
-      case ":------":
-        div.display = "block";
-        div.align = "left";
-        break;
-      case "------:":
-        div.display = "block";
-        div.align = "right";
-        break;
-      case "---:---":
-        div.display = "block";
-        div.align = "center";
-        break;
-      case "======":
-        div.display = "inline";
-        div.align = "left";
-        break;
-      case ":======":
-        div.display = "inline";
-        div.align = "left";
-        break;
-      case "======:":
-        div.display = "inline";
-        div.align = "right";
-        break;
-        break;
-      case "===:===":
-        div.display = "inline";
-        div.align = "center";
-        break;
-      case ":======:":
-        div.display = "inline";
-        div.align = "space-between";
-        break;
-      case ":===:===:":
-        div.display = "inline";
-        div.align = "space-around";
-        break;
-      case "::===:===::":
-        div.display = "inline";
-        div.align = "space-evenly";
-        break;
-    }
-
+  function makeDiv(line) {
+    const div = createDiv(line);
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
     if (lastDiv && lastDiv.children.length === 0) {
@@ -469,44 +331,66 @@ export default function parser(textDocument) {
     }
   }
 
-  const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
-  function addNewSubDiv(line) {
-    const [_, m, noGrow, grow] = subDivRegExp.exec(line);
-    const div = {
-      type: "sub-div",
-      children: [],
-    };
-    if (noGrow) div.size = "0";
-    if (grow) div.size = grow;
-    switch (m) {
-      case "===":
-        div.align = "left";
-        break;
-      case ":===":
-        div.align = "left";
-        break;
-      case "===:":
-        div.align = "right";
-        break;
-      case ":===:":
-        div.align = "center";
-        break;
-    }
+  function makeSubDiv(line) {
+    const subDiv = createSubDiv(line);
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
     let lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
     if (lastLastDiv && lastLastDiv.children.length === 0) {
-      lastDiv.children[lastDiv.children.length - 1] = div;
+      lastDiv.children[lastDiv.children.length - 1] = subDiv;
     } else {
-      lastDiv.children.push(div);
+      lastDiv.children.push(subDiv);
     }
   }
 
-  // #########################################
+  function makeSection() {
+    const section = createSection();
+    syntaxTree.children.push(section);
+  }
+
+  function makeList(line, afterLine) {
+    const [listType, listLevel] = createListConfig(line);
+    // Initialisation & mise a jour de la première liste
+    if (stack.length === 0) {
+      listRoot.type = listType + "-list";
+      stack.push(listRoot);
+    }
+    // Mis a jour de la pile
+    while (stack.length > listLevel + 1) {
+      stack.pop();
+    }
+    // Si nouvelle liste
+    if (stack.length < listLevel + 1 && stack.length > 0) {
+      const list = createList(listType);
+      const parentList = stack[stack.length - 1];
+      const parentElement = parentList.children[parentList.children.length - 1];
+      if (parentElement) {
+        parentElement.children.push(list);
+        stack.push(list);
+      }
+    }
+    // Création de l'élément
+    const listElement = createListElement(line);
+    // Ajout de l'élément
+    const parent = stack[stack.length - 1];
+    parent.children.push(listElement);
+    // Si dernier élément
+    if (!listRegExp.test(afterLine)) {
+      const lastDiv = getLastDiv();
+      lastDiv.children.push({
+        ...listRoot,
+      });
+      stack = [];
+      listRoot = {
+        type: "",
+        children: [],
+      };
+    }
+  }
 
   function makeTitle(line) {
     const title = createTitle(line);
-    if (title.level == 2) addNewSection(":======");
+    if (title.level == 2) makeSection();
     const lastDiv = getLastDiv();
     lastDiv.children.push(title);
   }
@@ -586,8 +470,6 @@ export default function parser(textDocument) {
         [...afterLine.matchAll(globalTableRegExp)].length &&
       tableHeaderRegExp.test(afterLine);
 
-    // ###################
-
     if (blockCodeRegExp.test(line)) {
       makeBlockCode(line);
     } else if (isBlockCode) {
@@ -597,14 +479,14 @@ export default function parser(textDocument) {
       makeCitation(line, afterLine);
     } else if (titleRegExp.test(line)) {
       makeTitle(line);
-    } else if (listRegex.test(line)) {
-      createList(line, afterLine);
-    } else if (SectionRegExp.test(line)) {
-      addNewSection(line);
+    } else if (listRegExp.test(line)) {
+      makeList(line, afterLine);
+    } else if (sectionRegExp.test(line)) {
+      makeSection(line);
     } else if (subDivRegExp.test(line)) {
-      addNewSubDiv(line);
+      makeSubDiv(line);
     } else if (divRegExp.test(line)) {
-      addNewDiv(line);
+      makeDiv(line);
     } else if (
       tableRegExp.test(line) &&
       (tableStatus === 0 ? tableTest : true)

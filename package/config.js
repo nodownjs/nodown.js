@@ -94,7 +94,6 @@ export const linkRegExp = new RegExp(
   "gi"
 );
 
-
 // BLOCK
 
 export const titleRegExp = /^(#{1,6})\s(.+)/;
@@ -105,6 +104,16 @@ export const tableRegExp = /^\s*\|(?:(?:[^\|]*|\\|)\|)*/;
 export const globalTableRegExp = /((?:[^\|]|\\\|)*)(?<!\\)\|/g;
 export const tableHeaderRegExp = /^\s*\|(?:\s*(?::)?-+(?::)?\s*\|)+\s*$/;
 
-export const citationRegExp = /^>([+\-i?!]|\s\[!(?:IMPORTANT|WARNING|NOTE)\])?\s+(.+)$/
+export const citationRegExp =
+  /^>([+\-i?!]|\s\[!(?:IMPORTANT|WARNING|NOTE)\])?\s+(.+)$/;
 
 export const citationAlertTypeRegExp = /\[!(?:IMPORTANT|WARNING|NOTE)\]/;
+
+export const listRegExp = /^(\s*)(-|\*|(?:\d+\.?)+) (.+)/;
+
+export const sectionRegExp = /^##$/g;
+
+export const divRegExp =
+  /^(------|------|------:|---:---|======|===:===|:======|======:|:======:|:===:===:|::===:===::)\s?$/;
+
+export const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
