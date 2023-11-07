@@ -7,7 +7,7 @@
 }
 
 #nodown-render section {
-  margin: 1.5em 0;
+  margin: 1.75em 0;
 }
 
 #nodown-render section > div {
@@ -18,7 +18,7 @@
 }
 
 #nodown-render section > div > div > * {
-  margin-bottom: 0.75em;
+  margin-bottom: 1em;
 }
 
 #nodown-render img {
@@ -80,7 +80,7 @@
 #nodown-render td,
 #nodown-render th {
   border: 0.05em solid rgba(255, 255, 255, 0.1);
-  padding: 0.5em 0.75em;
+  padding: 0.25em 0.5em;
 }
 
 #nodown-render th {

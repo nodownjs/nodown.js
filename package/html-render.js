@@ -60,6 +60,7 @@ export default function objectToHTML(obj) {
     container.appendChild(table);
   } else if (obj.type === "table-header" && obj.children) {
     const th = document.createElement("th");
+    th.align = obj.align === "default" ? "left" : obj.align;
     th.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(th);
   } else if (obj.type === "table-row" && obj.children) {

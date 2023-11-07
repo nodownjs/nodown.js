@@ -32,9 +32,9 @@ export const boldRegExp = /\*\*((?:(?!\*).)+)\*\*/g;
 
 export const italicBoldRegExp = /\*{3}((?:(?!\*).)+)\*{3}/g;
 
-export const strikethroughRegExp = /~~((?:(?!\*).)+)~~/g;
+export const strikethroughRegExp = /~~((?:(?!~).)+)~~/g;
 
-export const underlineRegExp = /==((?:(?!\*).)+)==/g;
+export const underlineRegExp = /==((?:(?!=).)+)==/g;
 
 export const subScriptRegExp = /<_([^<>]+)>/g;
 export const superScriptRegExp = /<\^([^<>]+)>/g;
@@ -42,7 +42,7 @@ export const superScriptRegExp = /<\^([^<>]+)>/g;
 const hexRegExp = /(?:#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4}))/;
 
 const rgbaRegExp =
-  /(?:rgba?\((?:\s*(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|100|[0-9]{1,2}\.?\d*%)\s*,?\s*){3}(?:(?:\s*[0-1]?\.?\d+\s*)|(?:\s*(?:100|[0-9]{1,2})?\.?\d+%\s*))?\))/;
+  /(?:rgba?\((?:\s*(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|(?:100|[0-9]{1,2}(?:\.?\d*)%))\s*,?\s*){3}(?:(?:\s*[0-1]?\.?\d+\s*)|(?:\s*(?:100|[0-9]{1,2})?\.?\d+%\s*))?\))/;
 
 const hslaRegExp =
   /(?:hsla?\((?:\s*(?:360|3[0-5]\d|[12]\d{2}|[1-9]\d|\d)\s*,\s(?:100|[1-9]\d?|0)%\s*,\s*(?:100|[1-9]\d?|0)%\s*)(?:(?:,\s*[0-1]?\.?\d+\s*)|(?:,\s*(?:100|[0-9]{1,2})?\.?\d+%\s*))?\))/;
@@ -93,3 +93,18 @@ export const linkRegExp = new RegExp(
     ')*)?\\]\\(([^\\;\\(\\)"]+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
   "gi"
 );
+
+
+// BLOCK
+
+export const titleRegExp = /^(#{1,6})\s(.+)/;
+
+export const blockCodeRegExp = /^\s*`{3}(\w*)/;
+
+export const tableRegExp = /^\s*\|(?:(?:[^\|]*|\\|)\|)*/;
+export const globalTableRegExp = /((?:[^\|]|\\\|)*)(?<!\\)\|/g;
+export const tableHeaderRegExp = /^\s*\|(?:\s*(?::)?-+(?::)?\s*\|)+\s*$/;
+
+export const citationRegExp = /^>([+\-i?!]|\s\[!(?:IMPORTANT|WARNING|NOTE)\])?\s+(.+)$/
+
+export const citationAlertTypeRegExp = /\[!(?:IMPORTANT|WARNING|NOTE)\]/;

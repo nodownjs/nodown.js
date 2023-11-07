@@ -16,7 +16,26 @@ import {
   frenchQuotationMarkRegExp,
   imageRegExp,
   linkRegExp,
+  titleRegExp,
+  blockCodeRegExp,
+  globalTableRegExp,
+  tableRegExp,
+  tableHeaderRegExp,
+  citationAlertTypeRegExp,
+  citationRegExp,
 } from "./config.js";
+import createBlockCode from "./elements/blockcode.js";
+import createTitle from "./elements/title.js";
+import createTable, {
+  createTableAlign,
+  createTableHeader,
+  createTableRow,
+  updateTableHeaderAlign,
+} from "./elements/table.js";
+import createCitation, {
+  createCitationContent,
+  createCitationType,
+} from "./elements/citation.js";
 
 function transformEscapedChar(match, g1) {
   return (
@@ -43,6 +62,7 @@ export default function parser(textDocument) {
     textDocument = textDocument.replace(match[0], "");
     return { name: match[1], content: match[2] };
   });
+  window.varList = varList;
 
   const linesList = textDocument.split("\n");
 
@@ -122,7 +142,12 @@ export default function parser(textDocument) {
   ];
 
   function removeBackslash(text, variable) {
-    if (text.toLowerCase().includes(varList.map((m) => "<" + m.name.toLowerCase() + ">")) && !variable) {
+    if (
+      text
+        .toLowerCase()
+        .includes(varList.map((m) => "<" + m.name.toLowerCase() + ">")) &&
+      !variable
+    ) {
       varList.forEach((m) => {
         const varRegExp = new RegExp("<" + m.name + ">", "gi");
         text = text.replace(varRegExp, m.content);
@@ -264,200 +289,21 @@ export default function parser(textDocument) {
     lastDiv.children.push(paragraph);
   };
 
-  const titleRegex = /^(#{1,6})\s(.+)/;
-  function createTitle(line) {
-    const match = line.match(titleRegex);
-    const level = match[1].length;
-    let content = match[2].trim();
-    let id = null;
-    const idRegExp = /(.*)(?:{#(.+)})$/g;
-    const idMatch = idRegExp.exec(content) || null;
-    if (idMatch) {
-      content = idMatch[1];
-      id = idMatch[2];
-    }
-    const title = {
-      type: "title",
-      level: level,
-      children: convertToObject(content),
-    };
-    if (id) title.id = id;
-    if (level == 2) addNewSection(":======");
-    const lastDiv = getLastDiv();
-    lastDiv.children.push(title);
-  }
-
-  const BlockCodeRegex = /^\s*`{3}(\w*)/;
   let isBlockCode = false;
   let blockCodeLanguage = "";
   let blockCodeContent = [];
-  function createBlockCode(line) {
-    const match = line.match(BlockCodeRegex);
-    if (match[1]) blockCodeLanguage = match[1];
-    // Si fin du block code
-    if (isBlockCode) {
-      isBlockCode = false;
-      const blockCode = {
-        type: "block-code",
-        language: blockCodeLanguage,
-        children: blockCodeContent,
-      };
-      const lastDiv = getLastDiv();
-      lastDiv.children.push(blockCode);
-      blockCodeContent = [];
-      blockCodeLanguage = "";
-    } else {
-      // Si début du block code
-      isBlockCode = true;
-    }
-  }
-  function addBlockCodeContent(line) {
-    blockCodeContent.push(removeBackslashInCode(line));
-  }
 
-  const tableRegExp = /^\s*\|(?:(?:[^\|]*|\\|)\|)*/;
-  const globalTableRegExp = /((?:[^\|]|\\\|)*)(?<!\\)\|/g;
-  const tableHeaderRegExp = /^\s*\|(?:\s*(?::)?-+(?::)?\s*\|)+\s*$/;
   let tableStatus = 0;
   let tableHeader = [];
   let tableAlign = [];
   let tableRows = [];
-  function createTable(line, afterLine) {
-    const matchs = [...line.matchAll(globalTableRegExp)].filter(
-      (_, i) => i !== 0
-    );
-    if (tableStatus === 0) {
-      tableHeader = matchs.map((arr) => {
-        return {
-          type: "table-header",
-          children: convertToObject(arr[1].trim()),
-        };
-      });
-      tableStatus = 1;
-    } else if (tableStatus === 1) {
-      tableAlign = matchs.map((arr) => arr[1].trim());
-      const leftRegExp = /^-+:$/;
-      const rightRegExp = /^:-+$/;
-      const centerRegExp = /^:-+:$/;
-      tableAlign = tableAlign.map((text) => {
-        if (leftRegExp.test(text)) {
-          return "left";
-        } else if (rightRegExp.test(text)) {
-          return "right";
-        } else if (centerRegExp.test(text)) {
-          return "center";
-        } else {
-          return "default";
-        }
-      });
-      tableStatus++;
-    } else {
-      tableRows.push({
-        type: "table-row",
-        children: matchs.map((arr, i) => {
-          return {
-            type: "table-data",
-            align: tableAlign[i],
-            children: convertToObject(arr[1].trim()),
-          };
-        }),
-      });
-      if (!tableRegExp.test(afterLine)) {
-        const table = {
-          type: "table",
-          align: tableAlign,
-          headers: tableHeader,
-          rows: tableRows,
-        };
-        const lastDiv = getLastDiv();
-        lastDiv.children.push(table);
-        tableStatus = 0;
-        tableHeader = [];
-        tableRows = [];
-        tableAlign = [];
-      }
-    }
-  }
 
-  const citationRegExp =
-    /^>([+\-i?!]|\s\[!(?:IMPORTANT|WARNING|NOTE)\])?\s+(.+)$/;
-  const moreAlertType = /\[!(?:IMPORTANT|WARNING|NOTE)\]/;
-  let citation = {
-    type: "idk",
-    children: [],
+  let citationContent = [];
+  let citationType = {
+    type: "",
   };
-  function createCitation(line, afterLine) {
-    const match = line.match(citationRegExp);
-    let [_, type, content] = match;
 
-    if (!type && moreAlertType.test(content)) {
-      type = content;
-      content = "";
-    } else if (!type) {
-      type = "citation";
-    }
-
-    const children = { type: "paragraph", children: convertToObject(content) };
-
-    if (type) type = type.trim();
-
-    if (citation.type === "idk") {
-      citation = {
-        type: "idk",
-        children: [],
-      };
-
-      switch (type) {
-        case "[!WARNING]":
-        case "[!IMPORTANT]":
-        case "!":
-          citation.type = "alert";
-          citation.variant = "warning";
-          break;
-        case "[!NOTE]":
-        case "i":
-          citation.type = "alert";
-          citation.variant = "info";
-          break;
-        case "?":
-          citation.type = "alert";
-          citation.variant = "question";
-          break;
-        case "i":
-          citation.type = "alert";
-          citation.variant = "info";
-          break;
-        case "+":
-          citation.type = "alert";
-          citation.variant = "success";
-          break;
-        case "-":
-          citation.type = "alert";
-          citation.variant = "error";
-          break;
-        case "citation":
-          citation.type = "citation";
-          break;
-      }
-
-      if (citation.type !== "citation") {
-        citation.title = convertToObject(content);
-      } else {
-        citation.children.push(children);
-      }
-    } else {
-      citation.children.push(children);
-    }
-
-    if (!citationRegExp.test(afterLine)) {
-      const lastDiv = getLastDiv();
-      lastDiv.children.push(citation);
-      citation = {
-        type: "idk",
-        children: [],
-      };
-    }
-  }
+  // ----------------------------------------------------------------
 
   const listRegex = /^(\s*)(-|\*|(?:\d+\.?)+) (.+)/;
   let listRoot = {
@@ -656,6 +502,80 @@ export default function parser(textDocument) {
     }
   }
 
+  // #########################################
+
+  function makeTitle(line) {
+    const title = createTitle(line);
+    if (title.level == 2) addNewSection(":======");
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(title);
+  }
+
+  function makeTable(line, afterLine) {
+    if (tableStatus === 0) {
+      tableHeader = createTableHeader(line);
+      tableStatus = 1;
+    } else if (tableStatus === 1) {
+      tableAlign = createTableAlign(line);
+      tableHeader = updateTableHeaderAlign(tableHeader, tableAlign);
+      tableStatus++;
+    } else {
+      const tableRow = createTableRow(line, tableAlign);
+      tableRows.push(tableRow);
+      if (!tableRegExp.test(afterLine)) {
+        const table = createTable(tableAlign, tableHeader, tableRows);
+        const lastDiv = getLastDiv();
+        lastDiv.children.push(table);
+        tableStatus = 0;
+        tableHeader = [];
+        tableRows = [];
+        tableAlign = [];
+      }
+    }
+  }
+
+  function makeCitation(line, afterLine) {
+    if (citationContent.length <= 0 && !citationType.title) {
+      citationType = createCitationType(line);
+      if (citationType.type === "citation") {
+        citationContent.push(...citationType.children);
+        delete citationType.children;
+      }
+    } else {
+      citationContent.push(createCitationContent(line));
+    }
+    if (!citationRegExp.test(afterLine)) {
+      const citation = createCitation(citationType, citationContent);
+      const lastDiv = getLastDiv();
+      lastDiv.children.push(citation);
+      citationContent = [];
+      citationType = {
+        type: "",
+      };
+    }
+  }
+
+  function makeBlockCode(line, push = false) {
+    if (push) {
+      blockCodeContent.push(removeBackslashInCode(line));
+    } else {
+      if (isBlockCode) {
+        isBlockCode = false;
+        const blockCode = createBlockCode(
+          line,
+          blockCodeContent,
+          blockCodeLanguage
+        );
+        const lastDiv = getLastDiv();
+        lastDiv.children.push(blockCode);
+        blockCodeContent = [];
+        blockCodeLanguage = "";
+      } else {
+        isBlockCode = true;
+      }
+    }
+  }
+
   for (let i = 0; i < linesList.length; i++) {
     const line = linesList[i];
     const afterLine = linesList[i + 1];
@@ -666,14 +586,17 @@ export default function parser(textDocument) {
         [...afterLine.matchAll(globalTableRegExp)].length &&
       tableHeaderRegExp.test(afterLine);
 
-    if (BlockCodeRegex.test(line)) {
-      createBlockCode(line);
+    // ###################
+
+    if (blockCodeRegExp.test(line)) {
+      makeBlockCode(line);
     } else if (isBlockCode) {
-      addBlockCodeContent(line);
+      makeBlockCode(line, true);
     } else if (citationRegExp.test(line)) {
-      createCitation(line, afterLine);
-    } else if (titleRegex.test(line)) {
-      createTitle(line);
+      // createCitation(line, afterLine);
+      makeCitation(line, afterLine);
+    } else if (titleRegExp.test(line)) {
+      makeTitle(line);
     } else if (listRegex.test(line)) {
       createList(line, afterLine);
     } else if (SectionRegExp.test(line)) {
@@ -686,7 +609,7 @@ export default function parser(textDocument) {
       tableRegExp.test(line) &&
       (tableStatus === 0 ? tableTest : true)
     ) {
-      createTable(line, afterLine);
+      makeTable(line, afterLine);
     } else if (line !== "") {
       createParagraph(line);
     }
@@ -695,6 +618,5 @@ export default function parser(textDocument) {
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");
   console.table(syntaxTree.children);
   console.log(syntaxTree);
-  // return objectToHTML(syntaxTree);
   return syntaxTree;
 }
