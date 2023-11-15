@@ -44,7 +44,8 @@
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
   font-size: 0.8em;
-  font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
 }
 
 #nodown-render pre {
@@ -56,6 +57,11 @@
 #nodown-render pre code {
   background-color: transparent;
   padding: 0;
+}
+
+#nodown-render pre[class]:not([class=""]) code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, SF Mono, Menlo,
+    Consolas, Liberation Mono, monospace;
 }
 
 #nodown-render a {
