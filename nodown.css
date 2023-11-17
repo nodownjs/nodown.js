@@ -128,3 +128,8 @@
   border-color: rgba(255, 150, 255, 0.2);
   background-color: rgba(255, 150, 255, 0.05);
 }
+
+.date {
+  border-bottom: 2px solid #23262c;
+  outline-bottom: 2px solid #23262c;
+}

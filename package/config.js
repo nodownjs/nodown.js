@@ -13,6 +13,7 @@ export const escapedCharConfig = [
   "#",
   "-",
   '"',
+  '<',
 ].map((char) => {
   return { char: char, code: `&#${char.charCodeAt(0)};` };
 });
@@ -38,6 +39,10 @@ export const underlineRegExp = /==((?:(?!=).)+)==/g;
 
 export const subScriptRegExp = /<_([^<>]+)>/g;
 export const superScriptRegExp = /<\^([^<>]+)>/g;
+
+export const dateRegExp = /<(t|eu|e|us|u|iso|i):([\d\s:\/\-\p{L}\p{M}\p{P}]+):(t|T|d|D|f|F|R|r)>/gu;
+
+export const digitalDateRegExp = /(?:(\d{2,4})(?:[-\/])(\d{2,4})(?:[-\/])(\d{2,4}))(?:\s*(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/;
 
 const hexRegExp = /(?:#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4}))/;
 

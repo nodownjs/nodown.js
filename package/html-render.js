@@ -157,6 +157,12 @@ export default function objectToHTML(obj) {
     em.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     strong.appendChild(em);
     container.appendChild(strong);
+  } else if (obj.type === "date") {
+    console.log(obj);
+    const time = document.createElement("span");
+    time.classList.add("date")
+    time.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(time);
   } else if (obj.type === "strikethrough" && obj.children) {
     const del = document.createElement("del");
     del.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");

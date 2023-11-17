@@ -47,14 +47,8 @@ import createSection from "./elements/section.js";
 import createDiv from "./elements/div.js";
 import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
+import { transformEscapedChar } from "./utils.js";
 
-function transformEscapedChar(match, g1) {
-  return (
-    escapedIdentifier[0] +
-    escapedCharConfig.find((c) => c.char === g1).code +
-    escapedIdentifier[1]
-  );
-}
 
 export default function parser(textDocument) {
   function getLastDiv() {

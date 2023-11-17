@@ -1,5 +1,4 @@
 import {
-  escapedCharConfig,
   escapedIdentifier,
   italicRegExp,
   boldRegExp,
@@ -14,7 +13,10 @@ import {
   frenchQuotationMarkRegExp,
   imageRegExp,
   linkRegExp,
+  dateRegExp,
 } from "../config.js";
+import { removeBackslash, removeBackslashInCode } from "../utils.js";
+import createDate from "./date.js";
 
 const inlineRegExpList = [
   {
@@ -62,6 +64,10 @@ const inlineRegExpList = [
     regexp: superScriptRegExp,
   },
   {
+    name: "date",
+    regexp: dateRegExp,
+  },
+  {
     name: "code",
     regexp: codeRegExp,
   },
@@ -70,49 +76,6 @@ const inlineRegExpList = [
     regexp: codeWithVarRegExp,
   },
 ];
-
-function removeBackslash(text, variable) {
-  if (
-    text
-      .toLowerCase()
-      .includes(window.varList.map((m) => "<" + m.name.toLowerCase() + ">")) &&
-    !variable
-  ) {
-    window.varList.forEach((m) => {
-      const varRegExp = new RegExp("<" + m.name + ">", "gi");
-      text = text.replace(varRegExp, m.content);
-    });
-  }
-  const backSlashFixerRegExp = new RegExp(
-    escapedIdentifier[0] +
-      "(" +
-      escapedCharConfig.map((c) => c.code).join("|") +
-      ")" +
-      escapedIdentifier[1],
-    "g"
-  );
-  // return text;
-  function fixEscapedChar(match, p1) {
-    return escapedCharConfig.find((c) => c.code === p1).char;
-  }
-  return text.replace(backSlashFixerRegExp, fixEscapedChar);
-}
-
-function removeBackslashInCode(text) {
-  // return text;
-  const backSlashFixerRegExp = new RegExp(
-    escapedIdentifier[0] +
-      "(" +
-      escapedCharConfig.map((c) => c.code).join("|") +
-      ")" +
-      escapedIdentifier[1],
-    "g"
-  );
-  function fixEscapedChar(match, p1) {
-    return "\\" + escapedCharConfig.find((c) => c.code === p1).char;
-  }
-  return text.replace(backSlashFixerRegExp, fixEscapedChar);
-}
 
 export function convertToObject(text) {
   let allMatches = inlineRegExpList.map((config) => ({ ...config }));
@@ -197,6 +160,13 @@ export function convertToObject(text) {
       removeBackslashInCode(match.group[0]),
       false
     );
+  } else if (match.name === "date") {
+    const {inFormat, outFormat, timestamp, children} = createDate(match.group);
+    obj.type = "date";
+    obj.inFormat = inFormat;
+    obj.outFormat = outFormat;
+    obj.timestamp = timestamp;
+    obj.children = children;
   } else {
     obj.type = match.name;
     obj.children = convertToObject(match.group[0]);
