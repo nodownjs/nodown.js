@@ -123,4 +123,6 @@ export const sectionRegExp = /^##$/g;
 export const divRegExp =
   /^(------|------|------:|---:---|======|===:===|:======|======:|:======:|:===:===:|::===:===::)\s?$/;
 
-export const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
+  export const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
+
+  export const dividerRegExp = /^---$/;

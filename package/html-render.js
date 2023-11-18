@@ -206,6 +206,9 @@ export default function objectToHTML(obj) {
     const u = document.createElement("u");
     u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(u);
+  } else if (obj.type === "divider") {
+    const divider = document.createElement("hr");
+    container.appendChild(divider);
   } else if (obj.type === "color" && obj.children) {
     console.log(obj);
     const color = document.createElement("span");

@@ -26,6 +26,7 @@ import {
   sectionRegExp,
   divRegExp,
   subDivRegExp,
+  dividerRegExp,
 } from "./config.js";
 import createBlockCode from "./elements/blockcode.js";
 import createTitle from "./elements/title.js";
@@ -48,6 +49,7 @@ import createDiv from "./elements/div.js";
 import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
 import { transformEscapedChar } from "./utils.js";
+import createDivider from "./elements/divider.js";
 
 
 export default function parser(textDocument) {
@@ -193,6 +195,12 @@ export default function parser(textDocument) {
     level: 0,
   };
   let stack = [];
+
+  function makeDivider() {
+    const divider = createDivider();
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(divider);
+  }
 
   function makeDiv(line) {
     const div = createDiv(line);
@@ -363,6 +371,9 @@ export default function parser(textDocument) {
       makeSubDiv(line);
     } else if (divRegExp.test(line)) {
       makeDiv(line);
+    } else if (dividerRegExp.test(line)) {
+      makeDivider(line);
+      makeSection("------");
     } else if (
       tableRegExp.test(line) &&
       (tableStatus === 0 ? tableTest : true)
