@@ -194,8 +194,8 @@ export default function objectToHTML(obj) {
     container.appendChild(sup);
   } else if (obj.type === "french-quotation-mark" && obj.children) {
     const text = document.createElement("span");
-    var open = document.createTextNode(" « ");
-    var close = document.createTextNode(" » ");
+    var open = document.createTextNode("« ");
+    var close = document.createTextNode(" »");
     text.appendChild(open);
     text.innerHTML =
       text.innerHTML +
