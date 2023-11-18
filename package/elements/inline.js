@@ -14,6 +14,7 @@ import {
   imageRegExp,
   linkRegExp,
   dateRegExp,
+  standardLinkRegExp,
 } from "../config.js";
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
@@ -66,6 +67,10 @@ const inlineRegExpList = [
   {
     name: "date",
     regexp: dateRegExp,
+  },
+  {
+    name: "standard-link",
+    regexp: standardLinkRegExp,
   },
   {
     name: "code",
@@ -144,6 +149,11 @@ export function convertToObject(text) {
     obj.type = "color";
     obj.color = match.group[0];
     obj.children = convertToObject(match.group[0].trim());
+  } else if (match.name === "standard-link") {
+    obj.type = "link";
+    obj.href = match.group[0];
+    obj.title = match.group[0];
+    obj.children = [{ type: "text", children: match.group[0] }];
   } else if (match.name === "code") {
     obj.type = "code";
     if (
@@ -161,7 +171,9 @@ export function convertToObject(text) {
       false
     );
   } else if (match.name === "date") {
-    const {inFormat, outFormat, timestamp, children} = createDate(match.group);
+    const { inFormat, outFormat, timestamp, children } = createDate(
+      match.group
+    );
     obj.type = "date";
     obj.inFormat = inFormat;
     obj.outFormat = outFormat;

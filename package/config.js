@@ -99,6 +99,8 @@ export const linkRegExp = new RegExp(
   "gi"
 );
 
+export const standardLinkRegExp = /\b((?:https?:\/\/|www\.)[^\s]+)\b/g;
+
 // BLOCK
 
 export const titleRegExp = /^(#{1,6})\s(.+)/;

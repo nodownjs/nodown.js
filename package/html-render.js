@@ -158,7 +158,6 @@ export default function objectToHTML(obj) {
     strong.appendChild(em);
     container.appendChild(strong);
   } else if (obj.type === "date") {
-    console.log(obj);
     const time = document.createElement("span");
     time.classList.add("date");
     time.title = new Date(obj.timestamp).toLocaleString(undefined, {
@@ -208,6 +207,7 @@ export default function objectToHTML(obj) {
     u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(u);
   } else if (obj.type === "color" && obj.children) {
+    console.log(obj);
     const color = document.createElement("span");
     const code = document.createElement("code");
     code.style.display = "inline-flex";
