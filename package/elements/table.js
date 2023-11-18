@@ -18,7 +18,7 @@ export function createTableHeader(line) {
   const tableHeader = matchs.map((arr) => {
     return {
       type: "table-header",
-      children: convertToObject(arr[1].trim()),
+      children: convertToObject(arr[1].trim(), "|"),
     };
   });
   return tableHeader;
@@ -62,7 +62,7 @@ export function createTableRow(line, tableAlign) {
       return {
         type: "table-data",
         align: tableAlign[i],
-        children: convertToObject(arr[1].trim()),
+        children: convertToObject(arr[1].trim(), "|"),
       };
     }),
   };

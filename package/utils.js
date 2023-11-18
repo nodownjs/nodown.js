@@ -35,7 +35,7 @@ export function removeBackslash(text, variable) {
   return text.replace(backSlashFixerRegExp, fixEscapedChar);
 }
 
-export function removeBackslashInCode(text) {
+export function removeBackslashInCode(text, exception) {
   // return text;
   const backSlashFixerRegExp = new RegExp(
     escapedIdentifier[0] +
@@ -46,7 +46,14 @@ export function removeBackslashInCode(text) {
     "g"
   );
   function fixEscapedChar(match, p1) {
-    return "\\" + escapedCharConfig.find((c) => c.code === p1).char;
+    console.log(exception);
+    console.log(p1);
+    console.log();
+    if (exception && p1 === `&#${exception.charCodeAt(0)};`) {
+      return escapedCharConfig.find((c) => c.code === p1).char;
+    } else {
+      return "\\" + escapedCharConfig.find((c) => c.code === p1).char;
+    }
   }
   return text.replace(backSlashFixerRegExp, fixEscapedChar);
 }

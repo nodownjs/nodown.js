@@ -82,7 +82,7 @@ const inlineRegExpList = [
   },
 ];
 
-export function convertToObject(text) {
+export function convertToObject(text, exception) {
   let allMatches = inlineRegExpList.map((config) => ({ ...config }));
 
   allMatches = allMatches
@@ -162,7 +162,10 @@ export function convertToObject(text) {
     ) {
       match.group[0] = match.group[0] + "\\";
     }
-    obj.children = removeBackslash(removeBackslashInCode(match.group[0]), true);
+    obj.children = removeBackslash(
+      removeBackslashInCode(match.group[0], exception),
+      true
+    );
   } else if (match.name === "code-with-var") {
     obj.type = "code";
     if (match.group[1] === "&#96;") match.group[0] = match.group[0] + "\\";
