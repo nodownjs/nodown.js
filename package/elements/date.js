@@ -1,13 +1,15 @@
 import { digitalDateRegExp } from "../config.js";
 import { languages } from "../languages/date.js";
 
-// const language = "fr-FR";
-let language = "en-US"; 
+let language;
 
-if (typeof window !== 'undefined' && window.navigator && window.navigator.languages && window.navigator.languages.length >= 2) {
-    language = window.navigator.languages[1];
+if (typeof window !== "undefined") {
+  language = window.navigator.languages[1];
+} else if (typeof process !== "undefined") {
+  language = process.env.LANG.split(".")[0].replace(/_/, "-");
+} else {
+  language = "en-US";
 }
-
 
 const timeFormatMap = {
   t: "short-time",

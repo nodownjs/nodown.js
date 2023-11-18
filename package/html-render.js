@@ -160,7 +160,15 @@ export default function objectToHTML(obj) {
   } else if (obj.type === "date") {
     console.log(obj);
     const time = document.createElement("span");
-    time.classList.add("date")
+    time.classList.add("date");
+    time.title = new Date(obj.timestamp).toLocaleString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
     time.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(time);
   } else if (obj.type === "strikethrough" && obj.children) {
