@@ -10,9 +10,9 @@ export function transformEscapedChar(match, g1) {
 
 export function removeBackslash(text, variable) {
   if (
-    text
-      .toLowerCase()
-      .includes(window.varList.map((m) => "<" + m.name.toLowerCase() + ">")) &&
+    window.varList
+      .map((m) => "<" + m.name.toLowerCase() + ">")
+      .includes(text.toLowerCase()) &&
     !variable
   ) {
     window.varList.forEach((m) => {
@@ -46,9 +46,6 @@ export function removeBackslashInCode(text, exception) {
     "g"
   );
   function fixEscapedChar(match, p1) {
-    console.log(exception);
-    console.log(p1);
-    console.log();
     if (exception && p1 === `&#${exception.charCodeAt(0)};`) {
       return escapedCharConfig.find((c) => c.code === p1).char;
     } else {

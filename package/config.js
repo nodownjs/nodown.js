@@ -116,7 +116,7 @@ export const citationRegExp =
 
 export const citationAlertTypeRegExp = /\[!(?:IMPORTANT|WARNING|NOTE)\]/;
 
-export const listRegExp = /^(\s*)(-|\*|(?:\d+\.?)+) (.+)/;
+export const listRegExp = /^(\s*)(-|\*|(?:\d+(?:\.|\)))+) (.+)/;
 
 export const sectionRegExp = /^##$/g;
 

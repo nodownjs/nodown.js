@@ -48,7 +48,7 @@ import createSection from "./elements/section.js";
 import createDiv from "./elements/div.js";
 import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
-import { transformEscapedChar } from "./utils.js";
+import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
 import createDivider from "./elements/divider.js";
 
 
@@ -69,6 +69,7 @@ export default function parser(textDocument) {
     textDocument = textDocument.replace(match[0], "");
     return { name: match[1], content: match[2] };
   });
+  console.log(varList);
   window.varList = varList;
 
   const linesList = textDocument.split("\n");
@@ -93,84 +94,11 @@ export default function parser(textDocument) {
     ],
   };
 
-  const inlineRegExpList = [
-    {
-      name: "image",
-      regexp: imageRegExp,
-    },
-    {
-      name: "link",
-      regexp: linkRegExp,
-    },
-    {
-      name: "italic",
-      regexp: italicRegExp,
-    },
-    {
-      name: "bold",
-      regexp: boldRegExp,
-    },
-    {
-      name: "strikethrough",
-      regexp: strikethroughRegExp,
-    },
-    {
-      name: "boldAndItalic",
-      regexp: italicBoldRegExp,
-    },
-    {
-      name: "underline",
-      regexp: underlineRegExp,
-    },
-    {
-      name: "color",
-      regexp: colorRegExp,
-    },
-    {
-      name: "french-quotation-mark",
-      regexp: frenchQuotationMarkRegExp,
-    },
-    {
-      name: "subscript",
-      regexp: subScriptRegExp,
-    },
-    {
-      name: "superscript",
-      regexp: superScriptRegExp,
-    },
-    {
-      name: "code",
-      regexp: codeRegExp,
-    },
-    {
-      name: "code-with-var",
-      regexp: codeWithVarRegExp,
-    },
-  ];
-
-  function removeBackslashInCode(text) {
-    // return text;
-    const backSlashFixerRegExp = new RegExp(
-      escapedIdentifier[0] +
-        "(" +
-        escapedCharConfig.map((c) => c.code).join("|") +
-        ")" +
-        escapedIdentifier[1],
-      "g"
-    );
-    function fixEscapedChar(match, p1) {
-      return "\\" + escapedCharConfig.find((c) => c.code === p1).char;
-    }
-    return text.replace(backSlashFixerRegExp, fixEscapedChar);
-  }
-
   const createParagraph = (line) => {
     const paragraph = {
       type: "paragraph",
       children: convertToObject(line),
     };
-    // const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
-    // const lastDiv = lastSection.children[lastSection.children.length - 1];
     const lastDiv = getLastDiv();
     lastDiv.children.push(paragraph);
   };
@@ -231,10 +159,11 @@ export default function parser(textDocument) {
   }
 
   function makeList(line, afterLine) {
-    const [listType, listLevel] = createListConfig(line);
+    const [listType, listLevel, start] = createListConfig(line);
     // Initialisation & mise a jour de la première liste
     if (stack.length === 0) {
       listRoot.type = listType + "-list";
+      if (start) listRoot.start = start;
       stack.push(listRoot);
     }
     // Mis a jour de la pile

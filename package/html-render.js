@@ -113,6 +113,7 @@ export default function objectToHTML(obj) {
     container.appendChild(ul);
   } else if (obj.type === "ordered-list" && obj.children) {
     const ol = document.createElement("ol");
+    if (!isNaN(obj.start) && obj.start > 1) ol.start = obj.start;
     ol.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(ol);
   } else if (obj.type === "block-code" && obj.children) {
