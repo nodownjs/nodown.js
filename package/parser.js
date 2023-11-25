@@ -51,7 +51,6 @@ import { convertToObject } from "./elements/inline.js";
 import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
 import createDivider from "./elements/divider.js";
 
-
 export default function parser(textDocument) {
   function getLastDiv() {
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
@@ -214,6 +213,15 @@ export default function parser(textDocument) {
       tableAlign = createTableAlign(line);
       tableHeader = updateTableHeaderAlign(tableHeader, tableAlign);
       tableStatus++;
+      if (!afterLine.match(tableRegExp)) {
+        const table = createTable(tableAlign, tableHeader, tableRows);
+        const lastDiv = getLastDiv();
+        lastDiv.children.push(table);
+        tableStatus = 0;
+        tableHeader = [];
+        tableRows = [];
+        tableAlign = [];
+      }
     } else {
       const tableRow = createTableRow(line, tableAlign);
       tableRows.push(tableRow);
@@ -288,7 +296,6 @@ export default function parser(textDocument) {
     } else if (isBlockCode) {
       makeBlockCode(line, true);
     } else if (citationRegExp.test(line)) {
-      // createCitation(line, afterLine);
       makeCitation(line, afterLine);
     } else if (titleRegExp.test(line)) {
       makeTitle(line);
@@ -310,6 +317,12 @@ export default function parser(textDocument) {
       makeTable(line, afterLine);
     } else if (line !== "") {
       createParagraph(line);
+    } else {
+      tableStatus = 0;
+    }
+
+    if (isBlockCode && afterLine === undefined) {
+      makeBlockCode(null);
     }
   }
 
