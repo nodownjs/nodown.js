@@ -9,17 +9,20 @@ export function transformEscapedChar(match, g1) {
 }
 
 export function removeBackslash(text, variable) {
+  const lowerCaseText = text.toLowerCase();
+
   if (
-    window.varList
-      .map((m) => "<" + m.name.toLowerCase() + ">")
-      .includes(text.toLowerCase()) &&
-    !variable
+    window.varList.some((m) =>
+      lowerCaseText.includes("<" + m.name.toLowerCase() + ">")
+    )
   ) {
-    window.varList.forEach((m) => {
-      const varRegExp = new RegExp("<" + m.name + ">", "gi");
-      text = text.replace(varRegExp, m.content);
-    });
+    for (let i = 0; i < window.varList.length; i++) {
+      const var_ = window.varList[i];
+      const varRegExp = new RegExp("<" + var_.name + ">", "gi");
+      text = text.replace(varRegExp, var_.content);
+    }
   }
+
   const backSlashFixerRegExp = new RegExp(
     escapedIdentifier[0] +
       "(" +
