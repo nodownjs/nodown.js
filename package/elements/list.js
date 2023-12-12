@@ -31,9 +31,10 @@ export function createListConfig(line) {
     start = Math.round(match[2].slice(0,-1));
   }
   // Mis a jour du niveau
+  const LEVEL_NEEDED = 2;
   let level = match[1].length;
-  if (level % 2 == 1) level--; // Changement de niveau tout les deux espaces uniquement
-  level = level / 2;
+  if (level % LEVEL_NEEDED == 1) level--; // Changement de niveau tout les deux espaces uniquement
+  level = level / LEVEL_NEEDED;
 
   return [type, level, start];
 }

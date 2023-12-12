@@ -139,10 +139,10 @@ export function convertToObject(text, exception) {
     obj.type = "image";
     obj.title = title;
     obj.alt = alt;
-    obj.source = source;
+    obj.source = removeBackslash(removeBackslashInCode(source));
   } else if (match.name === "link") {
     obj.type = "link";
-    obj.href = match.group[1];
+    obj.href = removeBackslash(removeBackslashInCode(match.group[1]));
     obj.title = match.group[2];
     obj.children = convertToObject(match.group[0].trim());
   } else if (match.name === "color") {
@@ -153,7 +153,12 @@ export function convertToObject(text, exception) {
     obj.type = "link";
     obj.href = match.group[0];
     obj.title = match.group[0];
-    obj.children = [{ type: "text", children: match.group[0] }];
+    obj.children = [
+      {
+        type: "text",
+        children: removeBackslash(removeBackslashInCode(match.group[0])),
+      },
+    ];
   } else if (match.name === "code") {
     obj.type = "code";
     if (

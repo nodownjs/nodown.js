@@ -13,7 +13,7 @@ export const escapedCharConfig = [
   "#",
   "-",
   '"',
-  '<',
+  "<",
 ].map((char) => {
   return { char: char, code: `&#${char.charCodeAt(0)};` };
 });
@@ -27,22 +27,24 @@ export const escapedIdentifier = ["{_█", "█_}"];
 
 export const varRegExp = /^<([\w\-_]+)>: (.*)/gm;
 
-export const italicRegExp = /\*((?:(?!\*).)+)\*/g;
+export const italicRegExp = /\*(?!\s)((?:(?!\*).)+)(?<!\s)\*/g;
 
-export const boldRegExp = /\*\*((?:(?!\*).)+)\*\*/g;
+export const boldRegExp = /\*\*(?!\s)((?:(?!\*).)+)(?<!\s)\*\*/g;
 
-export const italicBoldRegExp = /\*{3}((?:(?!\*).)+)\*{3}/g;
+export const italicBoldRegExp = /\*{3}(?!\s)((?:(?!\*).)+)(?<!\s)\*{3}/g;
 
-export const strikethroughRegExp = /~~((?:(?!~).)+)~~/g;
+export const strikethroughRegExp = /~~(?!\s)((?:(?!~).)+)(?<!\s)~~/g;
 
-export const underlineRegExp = /==((?:(?!=).)+)==/g;
+export const underlineRegExp = /==(?!\s)((?:(?!=).)+)(?<!\s)==/g;
 
 export const subScriptRegExp = /<_([^<>]+)>/g;
 export const superScriptRegExp = /<\^([^<>]+)>/g;
 
-export const dateRegExp = /<(t|eu|e|us|u|iso|i):([\d\s:\/\-\p{L}\p{M}\p{P}]+):(t|T|d|D|f|F|R|r)>/gu;
+export const dateRegExp =
+  /<(t|eu|e|us|u|iso|i):([\d\s:\/\-\p{L}\p{M}\p{P}]+):(t|T|d|D|f|F|R|r)>/gu;
 
-export const digitalDateRegExp = /(?:(\d{2,4})(?:[-\/])(\d{2,4})(?:[-\/])(\d{2,4}))(?:\s*(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/;
+export const digitalDateRegExp =
+  /(?:(\d{2,4})(?:[-\/])(\d{2,4})(?:[-\/])(\d{2,4}))(?:\s*(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/;
 
 const hexRegExp = /(?:#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4}))/;
 
@@ -74,11 +76,15 @@ export const codeWithVarRegExp = new RegExp(
   "g"
 );
 
-export const frenchQuotationMarkRegExp =
-  /(?<![^\s])"([^"]+)"(?![^.,\s])/gu;
+export const frenchQuotationMarkRegExp = /(?<![^\s])"([^"]+)"(?![^.,\s])/gu;
 
-export const imageRegExp =
-  /!\[((?:[^\];]*)(?:;\d*%?)?(?:;\d*%?)?(?:;\w+)?)?\]\(([^\;\(\)"]+)(?:(?:;|\s")([^\(\)"]*)(?:")?)?\)/gi;
+export const imageRegExp = new RegExp(
+  '!\\[((?:[^\\];]*)(?:;\\d*%?)?(?:;\\d*%?)?(?:;\\w+)?)?\\]\\(((?:[^\\;\\(\\)"]|' +
+  ";" +
+  escapedIdentifier[1] +
+  ')+)(?:(?:;|\s")([^\\(\\)"]*)(?:")?)?\\)',
+  "gi"
+);
 
 const imageNoCapturingRegExp = imageRegExp.source.replace(
   /(?<!\\)\((?!\?)/g,
@@ -95,11 +101,14 @@ export const linkRegExp = new RegExp(
     imageNoCapturingRegExp +
     ")|" +
     codeNoCapturingRegExp +
-    ')*)?\\]\\(([^\\;\\(\\)"]+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
+    ')*)?\\]\\(((?:[^\\;\\(\\)"]|' +
+    ";" +
+    escapedIdentifier[1] +
+    ')+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
   "gi"
 );
 
-export const standardLinkRegExp = /\b((?:https?:\/\/|www\.)[^\s]+)\b/g;
+export const standardLinkRegExp = /\b((?:https?:\/\/|www\.)[^\s]+)/g;
 
 // BLOCK
 
@@ -123,6 +132,6 @@ export const sectionRegExp = /^##$/g;
 export const divRegExp =
   /^(------|------|------:|---:---|======|===:===|:======|======:|:======:|:===:===:|::===:===::)\s?$/;
 
-  export const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
+export const subDivRegExp = /^(===|:===:|:===|===:)(\|)?(\d+)?$/;
 
-  export const dividerRegExp = /^---$/;
+export const dividerRegExp = /^---$/;
