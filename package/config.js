@@ -27,15 +27,15 @@ export const escapedIdentifier = ["{_█", "█_}"];
 
 export const varRegExp = /^<([\w\-_]+)>: (.*)/gm;
 
-export const italicRegExp = /\*(?!\s)((?:(?!\*).)+)(?<!\s)\*/g;
+export const italicRegExp = /\*(?!\s)(.+)(?<!\s)\*/g;
 
-export const boldRegExp = /\*\*(?!\s)((?:(?!\*).)+)(?<!\s)\*\*/g;
+export const boldRegExp = /\*\*(?!\s)(.+)(?<!\s)\*\*/g;
 
-export const italicBoldRegExp = /\*{3}(?!\s)((?:(?!\*).)+)(?<!\s)\*{3}/g;
+export const italicBoldRegExp = /\*{3}(?!\s)(.+)(?<!\s)\*{3}/g;
 
-export const strikethroughRegExp = /~~(?!\s)((?:(?!~).)+)(?<!\s)~~/g;
+export const strikethroughRegExp = /~~(?!\s)(.+)(?<!\s)~~/g;
 
-export const underlineRegExp = /==(?!\s)((?:(?!=).)+)(?<!\s)==/g;
+export const underlineRegExp = /==(?!\s)(.+)(?<!\s)==/g;
 
 export const subScriptRegExp = /<_([^<>]+)>/g;
 export const superScriptRegExp = /<\^([^<>]+)>/g;

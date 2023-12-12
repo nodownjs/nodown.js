@@ -29,12 +29,12 @@ const inlineRegExpList = [
     regexp: linkRegExp,
   },
   {
-    name: "italic",
-    regexp: italicRegExp,
-  },
-  {
     name: "bold",
     regexp: boldRegExp,
+  },
+  {
+    name: "italic",
+    regexp: italicRegExp,
   },
   {
     name: "strikethrough",
@@ -97,7 +97,8 @@ export function convertToObject(text, exception) {
       return config;
     })
     .filter((a) => a.index >= 0)
-    .sort((a, b) => a.index - b.index);
+    .sort((a, b) => a.index - b.index)
+    .sort((a, b) => b.raw.length - a.raw.length);
 
   if (allMatches.length === 0) {
     return [
