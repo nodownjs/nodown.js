@@ -1,1 +1,9 @@
 .vscode
+
+test-website-b
+test-website
+
+*.css
+*.css.map
+
+*.tgz

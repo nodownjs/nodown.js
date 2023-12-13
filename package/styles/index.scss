@@ -1,6 +1,12 @@
 #nodown-render {
-  @import "./margin.scss";
-  @import "./typography.scss";
+  @import "./elements/margin.scss";
+  @import "./elements/typography.scss";
+  @import "./elements/code.scss";
+  @import "./elements/blockquote.scss";
+  @import "./elements/list.scss";
+  @import "./elements/table.scss";
+  @import "./elements/date.scss";
+  @import "./elements/image.scss";
 
   font-size: 16px;
   padding: 2em;

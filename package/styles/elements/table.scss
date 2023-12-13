@@ -1,0 +1,32 @@
+table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  border-radius: 0.25em 0.25em 0 0;
+
+  td,
+  th {
+    border: 0.05em solid rgba(255, 255, 255, 0.1);
+    padding: 0.25em 0.5em;
+  }
+
+  th {
+    border: 0.05em solid #1c1f25;
+    border-right: 0.05em solid rgba(255, 255, 255, 0.05);
+
+    &:last-child {
+      border-right: 0.05em solid transparent;
+    }
+  }
+
+  thead {
+    background-color: #1c1f25;
+  }
+
+  hr {
+    color: rgba(255, 255, 255, 0.1);
+  }
+}
