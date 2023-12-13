@@ -1,0 +1,16 @@
+{
+  "name": "no-down",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "sass styles/index.scss styles/index.css",
+    "start": "nodemon -e scss -x \"npm run build-css\""
+  },
+  "author": "Pierre-LHOSTE",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "sass": "^1.69.5"
+  }
+}

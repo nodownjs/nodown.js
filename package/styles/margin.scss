@@ -1,0 +1,13 @@
+section {
+  margin: 1.75em 0;
+
+  > div {
+    gap: 1em;
+    width: 100%;
+
+    > div > * {
+    //   margin-bottom: 1em;
+    }
+  }
+}
+
