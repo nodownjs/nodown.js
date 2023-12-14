@@ -30,11 +30,11 @@ h6 {
 
 @mixin heading-style($a) {
   font-size: #{$a}em;
-  letter-spacing: #{((-2 / 2.5) * $a) + 0.7}px;
+  letter-spacing: #{calc(((-2 / 2.5) * $a) + 0.7)}px;
   line-height: calc((-0.01 * ($a * $base-size)) + 1.6);
 
   * {
-    letter-spacing: #{((-2 / 2.5) * $a) + 0.7}px;
+    letter-spacing: #{calc(((-2 / 2.5) * $a) + 0.7)}px;
     line-height: calc((-0.01 * ($a * $base-size)) + 1.6);
   }
 }
@@ -61,12 +61,16 @@ h5 {
 
 h6,
 p,
-code {
+code,
+blockquote,
+td,
+th {
   @include heading-style(1);
 }
 
 a {
   text-decoration: none;
+
   &:hover {
     text-decoration: underline;
   }
