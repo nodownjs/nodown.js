@@ -1,0 +1,47 @@
+blockquote {
+  border-left-color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 10.75);
+}
+
+div {
+  $border: 0.8;
+  $background: 0.2;
+
+  &.warning {
+    $red: 200;
+    $green: 150;
+    $blue: 0;
+    border-color: #{rgba($red, $green, $blue, $border)};
+    background-color: #{rgba($red, $green, $blue, $background)};
+  }
+
+  &.success {
+    $red: 100;
+    $green: 200;
+    $blue: 100;
+    border-color: #{rgba($red, $green, $blue, $border)};
+    background-color: #{rgba($red, $green, $blue, $background)};
+  }
+  &.error {
+    $red: 255;
+    $green: 150;
+    $blue: 150;
+    border-color: #{rgba($red, $green, $blue, $border)};
+    background-color: #{rgba($red, $green, $blue, $background)};
+  }
+  &.info {
+    $red: 150;
+    $green: 150;
+    $blue: 255;
+    border-color: #{rgba($red, $green, $blue, $border)};
+    background-color: #{rgba($red, $green, $blue, $background)};
+  }
+
+  &.question {
+    $red: 175;
+    $green: 150;
+    $blue: 255;
+    border-color: #{rgba($red, $green, $blue, $border)};
+    background-color: #{rgba($red, $green, $blue, $background)};
+  }
+}

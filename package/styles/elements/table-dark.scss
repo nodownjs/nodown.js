@@ -1,0 +1,15 @@
+table {
+  $header-color: rgba(255, 255, 255, 0.075);
+  $table-color: rgba(255, 255, 255, 0.02);
+  $border-color: rgba(255, 255, 255, 0.05);
+
+  td,
+  th {
+    background-color: $table-color;
+    border-color: $border-color;
+  }
+
+  thead {
+    background-color: $header-color;
+  }
+}

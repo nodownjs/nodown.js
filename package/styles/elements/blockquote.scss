@@ -1,7 +1,7 @@
 blockquote {
-  border-left: 0.2em solid rgba(255, 255, 255, 0.25);
+  border-left-style: solid;
+  border-left-width: 0.2em;
   padding-left: 1em;
-  color: rgba(255, 255, 255, 0.5);
   margin: 0;
 }
 
@@ -10,28 +10,5 @@ div {
     border: 0.1em solid;
     border-radius: 0.25em;
     padding: 1em;
-  }
-
-  &.warning {
-    border-color: #ffa50078;
-    background-color: #ffa5000a;
-  }
-
-  &.success {
-    border-color: rgba(255, 200, 0, 0.2);
-    background-color: rgba(255, 200, 0, 0.05);
-  }
-  &.error {
-    border-color: rgba(255, 150, 150, 0.2);
-    background-color: rgba(255, 150, 150, 0.05);
-  }
-  &.info {
-    border-color: rgba(200, 200, 255, 0.2);
-    background-color: rgba(200, 200, 255, 0.05);
-  }
-
-  &.question {
-    border-color: rgba(255, 150, 255, 0.2);
-    background-color: rgba(255, 150, 255, 0.05);
   }
 }

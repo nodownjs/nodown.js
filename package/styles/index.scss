@@ -7,6 +7,7 @@
   @import "./elements/table.scss";
   @import "./elements/date.scss";
   @import "./elements/image.scss";
+  @import "./elements/horizontal-rule.scss";
 
   font-size: 16px;
   padding: 2em;
@@ -14,5 +15,6 @@
 
   * {
     margin: 0;
+    padding: 0;
   }
 }

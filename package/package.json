@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-css": "sass styles/index.scss styles/index.css",
+    "build-css": "sass styles/index.scss styles/index.css && sass styles/themes/dark.scss styles/dark.css && sass styles/themes/light.scss styles/light.css",
     "start": "nodemon -e scss -x \"npm run build-css\""
   },
   "author": "Pierre-LHOSTE",
