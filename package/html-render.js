@@ -100,9 +100,11 @@ export default function objectToHTML(obj) {
         color = "gray";
         break;
     }
-    const title = document.createElement("h4");
-    title.innerHTML = obj.title.map((child) => objectToHTML(child)).join("");
-    alert.appendChild(title);
+    if (obj.title) {
+      const title = document.createElement("h4");
+      title.innerHTML = obj.title.map((child) => objectToHTML(child)).join("");
+      alert.appendChild(title);
+    }
     alert.innerHTML =
       alert.innerHTML +
       obj.children.map((child) => objectToHTML(child)).join("");

@@ -8,15 +8,15 @@ export function createListElement(line) {
   const listElementType = isTask ? "task-list-element" : "list-element";
   const content = match[3];
 
-  if (isTask) {
-    listItem.checked = isTask[1] === "[x]" ? true : false;
-    listItem.children = convertToObject(isTask[2]);
-  }
-
   const listElement = {
     type: listElementType,
     children: convertToObject(content),
   };
+
+  if (isTask) {
+    listElement.checked = isTask[1] === "[x]" ? true : false;
+    listElement.children = convertToObject(isTask[2]);
+  }
 
   return listElement;
 }
@@ -28,7 +28,7 @@ export function createListConfig(line) {
   let start = null;
   if (type === "ordered") {
     start = 1;
-    start = Math.round(match[2].slice(0,-1));
+    start = Math.round(match[2].slice(0, -1));
   }
   // Mis a jour du niveau
   const LEVEL_NEEDED = 2;
