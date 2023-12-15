@@ -65,6 +65,8 @@ export const colorRegExp = new RegExp(
   "gi"
 );
 
+export const unicodeRegExp = /`((?:U\+|\\u)(?:{?(?:(?:10[0-9A-Fa-f]{4})|(?:[0-9A-Fa-f]{4,5}))}?))`/g;
+
 const escapedCode = escapedIdentifier[0] + "&#96;" + escapedIdentifier[1];
 
 export const codeRegExp = new RegExp(
@@ -80,9 +82,9 @@ export const frenchQuotationMarkRegExp = /(?<![^\s])"([^"]+)"(?![^.,\s])/gu;
 
 export const imageRegExp = new RegExp(
   '!\\[((?:[^\\];]*)(?:;\\d*%?)?(?:;\\d*%?)?(?:;\\w+)?)?\\]\\(((?:[^\\;\\(\\)"]|' +
-  ";" +
-  escapedIdentifier[1] +
-  ')+)(?:(?:;|\s")([^\\(\\)"]*)(?:")?)?\\)',
+    ";" +
+    escapedIdentifier[1] +
+    ')+)(?:(?:;|\s")([^\\(\\)"]*)(?:")?)?\\)',
   "gi"
 );
 
@@ -109,6 +111,7 @@ export const linkRegExp = new RegExp(
 );
 
 export const standardLinkRegExp = /\b((?:https?:\/\/|www\.)[^\s]+)/g;
+
 
 // BLOCK
 

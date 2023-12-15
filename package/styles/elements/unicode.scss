@@ -1,0 +1,21 @@
+code.unicode {
+  padding-left: 0;
+  user-select: auto;
+
+  > * {
+    user-select: all;
+  }
+
+  .preview {
+    font-size: 1.2em;
+    display: inline-flex;
+    padding: 0 0.25em;
+    width: 1em;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.375em;
+    transform: translateY(0.1em);
+    border-radius: 0.25em;
+  }
+}

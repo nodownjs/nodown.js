@@ -15,6 +15,7 @@ import {
   linkRegExp,
   dateRegExp,
   standardLinkRegExp,
+  unicodeRegExp,
 } from "../config.js";
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
@@ -51,6 +52,10 @@ const inlineRegExpList = [
   {
     name: "color",
     regexp: colorRegExp,
+  },
+  {
+    name: "unicode",
+    regexp: unicodeRegExp,
   },
   {
     name: "french-quotation-mark",
@@ -149,6 +154,14 @@ export function convertToObject(text, exception) {
   } else if (match.name === "color") {
     obj.type = "color";
     obj.color = match.group[0];
+    obj.children = convertToObject(match.group[0].trim());
+  } else if (match.name === "unicode") {
+    obj.type = "unicode";
+    const rawChar = match.group[0].trim();
+    const hexValue = rawChar.replace(/(?:U\+|\\u|{|})/g, "");
+    const charCode = parseInt("0x" + hexValue, 16);
+    const char = String.fromCodePoint(charCode);
+    obj.char = char;
     obj.children = convertToObject(match.group[0].trim());
   } else if (match.name === "standard-link") {
     obj.type = "link";

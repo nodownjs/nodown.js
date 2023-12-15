@@ -120,6 +120,7 @@ export default function objectToHTML(obj) {
     container.appendChild(ol);
   } else if (obj.type === "block-code" && obj.children) {
     const pre = document.createElement("pre");
+    pre.style.overflowX = "scroll";
     pre.className = obj.language;
     const code = document.createElement("code");
     code.textContent = obj.children
@@ -213,24 +214,38 @@ export default function objectToHTML(obj) {
     const divider = document.createElement("hr");
     container.appendChild(divider);
   } else if (obj.type === "color" && obj.children) {
-    console.log(obj);
     const color = document.createElement("span");
     const code = document.createElement("code");
-    code.style.display = "inline-flex";
-    code.style.alignItems = "center";
-    code.style.gap = "0.33em";
-    const size = "0.75em";
+    code.classList.add("color");
     color.setAttribute(
       "style",
       "background-color: " + obj.color + " !important"
     );
+    color.style.display = "inline-block";
+    color.style.marginRight = "0.375em";
+    color.style.transform = "translateY(.1em)";
+    const size = "1em";
     color.style.height = size;
     color.style.width = size;
-    color.style.borderRadius = "50%";
+    color.classList.add("preview");
     code.appendChild(color);
     code.innerHTML =
       code.innerHTML +
       obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(code);
+  } else if (obj.type === "unicode" && obj.children) {
+    const char = document.createElement("span");
+    const content = document.createElement("span");
+    const code = document.createElement("code");
+    code.classList.add("unicode");
+    char.textContent = obj.char;
+    char.classList.add("preview");
+    content.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    code.appendChild(char);
+    code.appendChild(content);
+
     container.appendChild(code);
   } else if (obj.type === "paragraph" && obj.children) {
     const p = document.createElement("p");
