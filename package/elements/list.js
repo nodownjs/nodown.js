@@ -39,9 +39,10 @@ export function createListConfig(line) {
   return [type, level, start];
 }
 
-export default function createList(type) {
+export default function createList(type, start) {
   const list = {
     type: type + "-list",
+    start: start,
     children: [],
   };
   return list;

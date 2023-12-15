@@ -171,7 +171,7 @@ export default function parser(textDocument) {
     }
     // Si nouvelle liste
     if (stack.length < listLevel + 1 && stack.length > 0) {
-      const list = createList(listType);
+      const list = createList(listType, start);
       const parentList = stack[stack.length - 1];
       const parentElement = parentList.children[parentList.children.length - 1];
       if (parentElement) {
