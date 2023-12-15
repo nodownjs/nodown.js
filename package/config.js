@@ -25,7 +25,7 @@ export const backSlashFinderRegExp = new RegExp(
 
 export const escapedIdentifier = ["{_█", "█_}"];
 
-export const varRegExp = /^<([\w\-_]+)>: (.*)/gm;
+export const varRegExp = /^<([a-zA-Z0-9\-][\w\-]*)>:\s*(.+)/gm;
 
 export const italicRegExp = /\*(?!\s)((?:\*\*|[^\*])+)(?<!\s)\*/g;
 
