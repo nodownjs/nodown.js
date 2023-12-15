@@ -137,12 +137,12 @@ export default function objectToHTML(obj) {
     const check = document.createElement("input");
     check.type = "checkbox";
     if (obj.checked) check.setAttribute("checked", true);
-    check.style.margin = "0 .2em .25em -1.4em";
-    check.style.verticalAlign = "middle";
+    // check.style.margin = "0 .2em .25em -1.4em";
+    // check.style.verticalAlign = "middle";
     li.appendChild(check);
     li.innerHTML =
       li.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
-    li.style.listStyle = "none";
+    // li.style.listStyle = "none";
     container.appendChild(li);
   } else if (obj.type === "title" && obj.children) {
     const heading = document.createElement("h" + obj.level);

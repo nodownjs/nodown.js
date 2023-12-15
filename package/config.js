@@ -81,7 +81,7 @@ export const codeWithVarRegExp = new RegExp(
 export const frenchQuotationMarkRegExp = /(?<![^\s])"([^"]+)"(?![^.,\s])/gu;
 
 export const imageRegExp = new RegExp(
-  '!\\[((?:[^\\];]*)(?:;\\d*%?)?(?:;\\d*%?)?(?:;\\w+)?)?\\]\\(((?:[^\\;\\(\\)"]|' +
+  '!\\[((?:[^\\];]*)(?:;\\d*%?)?(?:;\\d*%?)?(?:;[\\w-]+)?)?\\]\\(((?:[^\\;\\(\\)"]|' +
     ";" +
     escapedIdentifier[1] +
     ')+)(?:(?:;|\s")([^\\(\\)"]*)(?:")?)?\\)',
