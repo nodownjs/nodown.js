@@ -4,6 +4,11 @@ blockquote {
   padding-left: 1em;
   margin: 0;
   font-weight: 400;
+  
+  * {
+    font-weight: inherit;
+    color: inherit;
+  }
 }
 
 div {
