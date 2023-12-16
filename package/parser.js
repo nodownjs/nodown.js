@@ -52,7 +52,6 @@ import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
 import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
 import createDivider from "./elements/divider.js";
-import createTableOfContents from "./elements/toc.js";
 
 export default function parser(textDocument) {
   function getLastDiv() {
