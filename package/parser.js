@@ -27,6 +27,8 @@ import {
   divRegExp,
   subDivRegExp,
   dividerRegExp,
+  tableOfContents,
+  titleIdRegExp,
 } from "./config.js";
 import createBlockCode from "./elements/blockcode.js";
 import createTitle from "./elements/title.js";
@@ -50,6 +52,7 @@ import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
 import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
 import createDivider from "./elements/divider.js";
+import createTableOfContents from "./elements/toc.js";
 
 export default function parser(textDocument) {
   function getLastDiv() {
@@ -123,6 +126,13 @@ export default function parser(textDocument) {
   };
   let stack = [];
 
+  let titles = [];
+  let titlesCount = 0;
+  let toc = {
+    type: "table-of-contents",
+    children: [],
+  };
+
   function makeDivider() {
     const divider = createDivider();
     const lastDiv = getLastDiv();
@@ -157,7 +167,7 @@ export default function parser(textDocument) {
     syntaxTree.children.push(section);
   }
 
-  function makeList(line, afterLine) {
+  function makeList(line, afterLine, isTitle) {
     const [listType, listLevel, start] = createListConfig(line);
     // Initialisation & mise a jour de la première liste
     if (stack.length === 0) {
@@ -186,6 +196,10 @@ export default function parser(textDocument) {
     parent.children.push(listElement);
     // Si dernier élément
     if (!listRegExp.test(afterLine)) {
+      if (isTitle) {
+        toc.children.push(listRoot);
+        return;
+      }
       const lastDiv = getLastDiv();
       lastDiv.children.push({
         ...listRoot,
@@ -200,6 +214,17 @@ export default function parser(textDocument) {
 
   function makeTitle(line) {
     const title = createTitle(line);
+    if (title.level > 1) {
+      if (!title.id) title.id = "title-" + (titlesCount + 1);
+      const level = title.level - 2;
+      titles.push(
+        `${" ".repeat(level * 2)}- [${line
+          .replace(/^#+\s/, "")
+          .replace(titleIdRegExp, "$1")}](#${title.id})`
+      );
+
+      titlesCount++;
+    }
     if (title.level == 2) makeSection();
     const lastDiv = getLastDiv();
     lastDiv.children.push(title);
@@ -281,6 +306,11 @@ export default function parser(textDocument) {
     }
   }
 
+  function makeTableOfContents() {
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(toc);
+  }
+
   for (let i = 0; i < linesList.length; i++) {
     const line = linesList[i];
     const afterLine = linesList[i + 1];
@@ -305,6 +335,8 @@ export default function parser(textDocument) {
       makeSection(line);
     } else if (subDivRegExp.test(line)) {
       makeSubDiv(line);
+    } else if (tableOfContents.test(line)) {
+      makeTableOfContents(line);
     } else if (divRegExp.test(line)) {
       makeDiv(line);
     } else if (dividerRegExp.test(line)) {
@@ -324,6 +356,11 @@ export default function parser(textDocument) {
     if (isBlockCode && afterLine === undefined) {
       makeBlockCode(null);
     }
+  }
+
+  for (let i = 0; i < titles.length; i++) {
+    const title = titles[i].replace(/\(#index\)/, `(#title-${i})`);
+    makeList(title, titles[i + 1], true);
   }
 
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");

@@ -23,6 +23,8 @@ export const backSlashFinderRegExp = new RegExp(
   "g"
 );
 
+export const tableOfContents = /^\[\[table-of-contents\]\]\s*$/;
+
 export const escapedIdentifier = ["{_█", "█_}"];
 
 export const varRegExp = /^<([a-zA-Z0-9\-][\w\-]*)>:\s*(.+)/gm;
@@ -65,7 +67,8 @@ export const colorRegExp = new RegExp(
   "gi"
 );
 
-export const unicodeRegExp = /`((?:U\+|\\u)(?:{?(?:(?:10[0-9A-Fa-f]{4})|(?:[0-9A-Fa-f]{4,5}))}?))`/g;
+export const unicodeRegExp =
+  /`((?:U\+|\\u)(?:{?(?:(?:10[0-9A-Fa-f]{4})|(?:[0-9A-Fa-f]{4,5}))}?))`/g;
 
 const escapedCode = escapedIdentifier[0] + "&#96;" + escapedIdentifier[1];
 
@@ -84,7 +87,7 @@ export const imageRegExp = new RegExp(
   '!\\[((?:[^\\];]*)(?:;\\d*%?)?(?:;\\d*%?)?(?:;[\\w-]+)?)?\\]\\(((?:[^\\;\\(\\)"]|' +
     ";" +
     escapedIdentifier[1] +
-    ')+)(?:(?:;|\s")([^\\(\\)"]*)(?:")?)?\\)',
+    ')+)(?:(?:;|\\s")([^\\(\\)"]*)(?:")?)?\\)',
   "gi"
 );
 
@@ -112,10 +115,11 @@ export const linkRegExp = new RegExp(
 
 export const standardLinkRegExp = /\b((?:https?:\/\/|www\.)[^\s]+)/g;
 
-
 // BLOCK
 
 export const titleRegExp = /^(#{1,6})\s(.+)/;
+
+export const titleIdRegExp = /(.*)(?:{#(.+)})$/g;
 
 export const blockCodeRegExp = /^\s*`{3}(\w*)/;
 

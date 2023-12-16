@@ -118,6 +118,11 @@ export default function objectToHTML(obj) {
     if (!isNaN(obj.start) && obj.start > 1) ol.start = obj.start;
     ol.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
     container.appendChild(ol);
+  } else if (obj.type === "table-of-contents") {
+    const div = document.createElement("div");
+    div.classList.add("table-of-contents");
+    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    container.appendChild(div);
   } else if (obj.type === "block-code" && obj.children) {
     const pre = document.createElement("pre");
     pre.style.overflowX = "scroll";
