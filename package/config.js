@@ -31,7 +31,7 @@ export const varRegExp = /^<([a-zA-Z0-9\-][\w\-]*)>:\s*(.+)/gm;
 
 export const italicRegExp = /\*(?!\s)((?:\*\*|[^\*])+)(?<!\s)\*/g;
 
-export const boldRegExp = /\*\*(?!\s)((?:(?!\*\*).)+)(?<!\s)\*\*/g;
+export const boldRegExp = /\*\*(?!\s)((?:(?!\*\*).\*?)+)(?<!\s)\*\*/g;
 
 export const italicBoldRegExp = /\*{3}(?!\s)(.+)(?<!\s)\*{3}/g;
 

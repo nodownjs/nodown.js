@@ -118,20 +118,7 @@ export function convertToObject(text, exception) {
 
   const textBefore = removeBackslash(text.substring(0, match.index));
 
-  const textAfter = removeBackslash(
-    text.substring(match.index + match.raw.length)
-  );
-
   const obj = {};
-
-  const result = [
-    {
-      type: "text",
-      children: textBefore,
-    },
-    obj,
-    ...convertToObject(textAfter),
-  ];
 
   if (match.name === "image") {
     const [alt, width, height, render] = match.group[0]
@@ -205,6 +192,19 @@ export function convertToObject(text, exception) {
     obj.type = match.name;
     obj.children = convertToObject(match.group[0]);
   }
+
+  const textAfter = removeBackslash(
+    text.substring(match.index + match.raw.length)
+  );
+
+  const result = [
+    {
+      type: "text",
+      children: textBefore,
+    },
+    obj,
+    ...convertToObject(textAfter),
+  ];
 
   return result;
 }

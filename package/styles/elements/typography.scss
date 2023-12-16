@@ -78,4 +78,8 @@ a {
 
 strong {
   font-weight: 700;
+
+  * {
+    font-weight: inherit;
+  }
 }
