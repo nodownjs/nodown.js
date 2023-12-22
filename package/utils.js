@@ -1,4 +1,5 @@
 import { escapedCharConfig, escapedIdentifier } from "./config.js";
+import { varList } from "./parser.js";
 
 export function transformEscapedChar(match, g1) {
   return (
@@ -12,12 +13,12 @@ export function removeBackslash(text, variable) {
   const lowerCaseText = text.toLowerCase();
 
   if (
-    window.varList.some((m) =>
+    varList.some((m) =>
       lowerCaseText.includes("<" + m.name.toLowerCase() + ">")
     )
   ) {
-    for (let i = 0; i < window.varList.length; i++) {
-      const var_ = window.varList[i];
+    for (let i = 0; i < varList.length; i++) {
+      const var_ = varList[i];
       const varRegExp = new RegExp("<" + var_.name + ">", "gi");
       text = text.replace(varRegExp, var_.content);
     }

@@ -1,20 +1,6 @@
 import {
-  escapedCharConfig,
   backSlashFinderRegExp,
   varRegExp,
-  escapedIdentifier,
-  italicRegExp,
-  boldRegExp,
-  italicBoldRegExp,
-  underlineRegExp,
-  strikethroughRegExp,
-  colorRegExp,
-  subScriptRegExp,
-  superScriptRegExp,
-  codeRegExp,
-  codeWithVarRegExp,
-  frenchQuotationMarkRegExp,
-  imageRegExp,
   linkRegExp,
   titleRegExp,
   blockCodeRegExp,
@@ -29,6 +15,8 @@ import {
   dividerRegExp,
   tableOfContents,
   titleIdRegExp,
+  footnoteRegExp,
+  footnoteRefRegExp,
 } from "./config.js";
 import createBlockCode from "./elements/blockcode.js";
 import createTitle from "./elements/title.js";
@@ -52,6 +40,17 @@ import createSubDiv from "./elements/subDiv.js";
 import { convertToObject } from "./elements/inline.js";
 import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
 import createDivider from "./elements/divider.js";
+import createFootnote from "./elements/footnote.js";
+
+export let footnoteList = [];
+export const setFootnoteList = (list) => {
+  footnoteList = list;
+};
+
+export let varList = [];
+export const setVarList = (list) => {
+  varList = list;
+};
 
 export default function parser(textDocument) {
   function getLastDiv() {
@@ -66,12 +65,31 @@ export default function parser(textDocument) {
     transformEscapedChar
   );
 
-  const varList = Array.from(textDocument.matchAll(varRegExp)).map((match) => {
-    textDocument = textDocument.replace(match[0], "");
-    return { name: match[1], content: match[2] };
-  });
-  console.log(varList);
-  window.varList = varList;
+  // const varList = Array.from(textDocument.matchAll(varRegExp)).map((match) => {
+  //   textDocument = textDocument.replace(match[0], "");
+  //   return { name: match[1], content: match[2] };
+  // });
+  // window.varList = varList;
+  setVarList(
+    Array.from(textDocument.matchAll(varRegExp)).map((match) => {
+      textDocument = textDocument.replace(match[0], "");
+      return { name: match[1], content: match[2] };
+    })
+  );
+
+  // let footnoteList = Array.from(
+  //   textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
+  // ).map((match) => {
+  //   return { name: match[1], value: match[2] };
+  // });
+  // window.footnoteList = footnoteList;
+  setFootnoteList(
+    Array.from(
+      textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
+    ).map((match) => {
+      return { name: match[1], value: match[2] };
+    })
+  );
 
   const linesList = textDocument.split("\n");
 
@@ -132,6 +150,8 @@ export default function parser(textDocument) {
     children: [],
   };
 
+  const footnotes = [];
+
   function makeDivider() {
     const divider = createDivider();
     const lastDiv = getLastDiv();
@@ -161,8 +181,8 @@ export default function parser(textDocument) {
     }
   }
 
-  function makeSection() {
-    const section = createSection();
+  function makeSection(custom) {
+    const section = createSection(custom);
     syntaxTree.children.push(section);
   }
 
@@ -219,7 +239,9 @@ export default function parser(textDocument) {
       titles.push(
         `${" ".repeat(level * 2)}- [${line
           .replace(/^#+\s/, "")
-          .replace(titleIdRegExp, "$1")}](#${title.id})`
+          .replace(titleIdRegExp, "$1")
+          .replace(footnoteRefRegExp, "")
+          .replace(linkRegExp, "$1")}](#${title.id})`
       );
 
       titlesCount++;
@@ -305,6 +327,11 @@ export default function parser(textDocument) {
     }
   }
 
+  function makeFootnote(line) {
+    const footnote = createFootnote(line);
+    footnotes.push(footnote);
+  }
+
   function makeTableOfContents() {
     const lastDiv = getLastDiv();
     lastDiv.children.push(toc);
@@ -330,6 +357,8 @@ export default function parser(textDocument) {
       makeTitle(line);
     } else if (listRegExp.test(line)) {
       makeList(line, afterLine);
+    } else if (footnoteRegExp.test(line)) {
+      makeFootnote(line);
     } else if (sectionRegExp.test(line)) {
       makeSection(line);
     } else if (subDivRegExp.test(line)) {
@@ -362,6 +391,14 @@ export default function parser(textDocument) {
     makeList(title, titles[i + 1], true);
   }
 
+  if (footnotes.length > 0) {
+    makeSection("footnote");
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(...footnotes);
+    // const section = createSection();
+    // section.children.push();
+    // syntaxTree.children.push(section);
+  }
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");
   console.table(syntaxTree.children);
   console.log(syntaxTree);

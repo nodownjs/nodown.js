@@ -1,6 +1,7 @@
-export default function createSection(line) {
+export default function createSection(custom) {
+  const type = custom ? "section-" + custom : "section";
   const section = {
-    type: "section",
+    type: type,
     children: [
       {
         type: "div",

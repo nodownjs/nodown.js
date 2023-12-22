@@ -1,4 +1,4 @@
-$base-size: 17;
+$base-size: 19;
 
 * {
   font-size: #{$base-size}px;
@@ -74,6 +74,10 @@ a {
   &:hover {
     text-decoration: underline;
   }
+
+  * {
+    color: inherit;
+  }
 }
 
 strong {
@@ -81,5 +85,15 @@ strong {
 
   * {
     font-weight: inherit;
+  }
+}
+
+sup,
+sub {
+  font-size: 0.6em;
+
+  * {
+    font-size: inherit;
+    color: inherit;
   }
 }

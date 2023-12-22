@@ -10,12 +10,13 @@ export function createListElement(line) {
 
   const listElement = {
     type: listElementType,
-    children: convertToObject(content),
   };
 
   if (isTask) {
     listElement.checked = isTask[1] === "[x]" ? true : false;
     listElement.children = convertToObject(isTask[2]);
+  } else {
+    listElement.children = convertToObject(content)
   }
 
   return listElement;

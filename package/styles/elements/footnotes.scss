@@ -1,0 +1,31 @@
+$padding: -0.25em;
+
+a.footnote-ref,
+li.footnote {
+  position: relative;
+
+  &:target {
+    &::before {
+      content: "";
+      position: absolute;
+      top: $padding;
+      right: $padding;
+      bottom: $padding;
+      left: calc($padding - 1.5em);
+      border-width: 0.1em;
+      border-style: solid;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+  }
+}
+
+a.footnote-ref {
+  &:target {
+    &::before {
+      left: $padding;
+      $size: calc(0.1em / 0.6);
+      border-width: $size;
+    }
+  }
+}

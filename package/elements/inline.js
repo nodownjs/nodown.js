@@ -16,7 +16,9 @@ import {
   dateRegExp,
   standardLinkRegExp,
   unicodeRegExp,
+  footnoteRefRegExp,
 } from "../config.js";
+import { footnoteList, setFootnoteList } from "../parser.js";
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
 
@@ -72,6 +74,10 @@ const inlineRegExpList = [
   {
     name: "date",
     regexp: dateRegExp,
+  },
+  {
+    name: "footnote-ref",
+    regexp: footnoteRefRegExp,
   },
   {
     name: "standard-link",
@@ -142,6 +148,30 @@ export function convertToObject(text, exception) {
     obj.type = "color";
     obj.color = match.group[0];
     obj.children = convertToObject(match.group[0].trim());
+  } else if (match.name === "footnote-ref") {
+    const name = match.group[0];
+    if (footnoteList.map((f) => f.name).includes(name)) {
+      const index = footnoteList.findIndex((f) => f.name === name);
+      obj.name = name;
+      obj.ref = name;
+      obj.index = index + 1;
+      setFootnoteList(
+        footnoteList.map((f, i) => {
+          if (i === index) {
+            return { ...f, count: f.count + 1 || 1 };
+          } else {
+            return f;
+          }
+        })
+      );
+      const count = footnoteList[index].count || 1;
+      if (count > 1) {
+        obj.name = obj.name + "-" + (count - 1);
+      }
+    } else {
+      obj.raw = match.raw;
+    }
+    obj.type = "footnote-ref";
   } else if (match.name === "unicode") {
     obj.type = "unicode";
     const rawChar = match.group[0].trim();

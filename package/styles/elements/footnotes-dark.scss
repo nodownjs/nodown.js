@@ -1,0 +1,12 @@
+section#footnotes {
+  li {
+    color: rgba($color: #fff, $alpha: 0.5);
+  }
+}
+
+a.footnote-ref,
+li.footnote {
+  &:target::before {
+    border-color: #00a8fc;
+  }
+}

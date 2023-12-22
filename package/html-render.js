@@ -288,6 +288,42 @@ export default function objectToHTML(obj) {
       if (render === "smooth") img.style.imageRendering = "auto";
     }
     container.appendChild(img);
+  } else if (obj.type === "footnote-ref") {
+    if (obj.name) {
+      const a = document.createElement("a");
+      a.classList.add("footnote-ref");
+      const sup = document.createElement("sup");
+      a.href = "#fn-" + obj.ref;
+      a.innerHTML = obj.index;
+      a.id = "fnref-" + obj.name;
+      sup.appendChild(a);
+      container.appendChild(sup);
+    } else {
+      container.textContent = obj.raw;
+    }
+  } else if (obj.type === "section-footnote") {
+    const section = document.createElement("section");
+    section.id = "footnotes";
+    const divA = document.createElement("div");
+    const divB = document.createElement("div");
+    const list = document.createElement("ol");
+    list.innerHTML = obj.children[0].children[0].children
+      .map((child) => objectToHTML(child))
+      .join("");
+    divB.appendChild(list);
+    divA.appendChild(divB);
+    section.appendChild(divA);
+    container.appendChild(section);
+  } else if (obj.type === "footnote" && obj.id) {
+    const footnote = document.createElement("li");
+    footnote.classList.add("footnote");
+    footnote.id = "fn-" + obj.id;
+    const p = document.createElement("p");
+    p.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    footnote.innerHTML = obj.children
+      .map((child) => objectToHTML(child))
+      .join("");
+    container.appendChild(footnote);
   } else if (obj.type === "link" && obj.children) {
     const a = document.createElement("a");
     a.href = obj.href;
