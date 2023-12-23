@@ -1,4 +1,4 @@
-export default function objectToHTML(obj) {
+export default function renderToHTML(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
@@ -7,18 +7,18 @@ export default function objectToHTML(obj) {
 
   if (obj.type === "root" && obj.children) {
     const div = document.createElement("div");
-    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    div.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(div);
   } else if (obj.type === "section" && obj.children) {
     const section = document.createElement("section");
     section.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     container.appendChild(section);
   } else if (obj.type === "div" && obj.children) {
     const div = document.createElement("div");
     div.innerHTML = obj.children
-      .map((child) => objectToHTML({ ...child, total: obj.children.length }))
+      .map((child) => renderToHTML({ ...child, total: obj.children.length }))
       .join("");
     const { display, align } = obj;
     if (display === "inline") {
@@ -45,15 +45,15 @@ export default function objectToHTML(obj) {
     }
     if (obj.align) div.style.textAlign = obj.align;
     div.style.overflowY = "hidden";
-    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    div.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(div);
   } else if (obj.type === "table" && obj.rows) {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const tbody = document.createElement("tbody");
     const tr = document.createElement("tr");
-    tr.innerHTML = obj.headers.map((child) => objectToHTML(child)).join("");
-    tbody.innerHTML = obj.rows.map((child) => objectToHTML(child)).join("");
+    tr.innerHTML = obj.headers.map((child) => renderToHTML(child)).join("");
+    tbody.innerHTML = obj.rows.map((child) => renderToHTML(child)).join("");
     thead.appendChild(tr);
     table.appendChild(thead);
     table.appendChild(tbody);
@@ -61,21 +61,21 @@ export default function objectToHTML(obj) {
   } else if (obj.type === "table-header" && obj.children) {
     const th = document.createElement("th");
     th.align = obj.align === "default" ? "left" : obj.align;
-    th.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    th.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(th);
   } else if (obj.type === "table-row" && obj.children) {
     const tr = document.createElement("tr");
-    tr.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    tr.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(tr);
   } else if (obj.type === "table-data" && obj.children) {
     const td = document.createElement("td");
     td.align = obj.align === "default" ? "left" : obj.align;
-    td.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    td.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(td);
   } else if (obj.type === "citation" && obj.children) {
     const blockquote = document.createElement("blockquote");
     blockquote.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     container.appendChild(blockquote);
   } else if (obj.type === "alert" && obj.children) {
@@ -102,26 +102,26 @@ export default function objectToHTML(obj) {
     }
     if (obj.title) {
       const title = document.createElement("h4");
-      title.innerHTML = obj.title.map((child) => objectToHTML(child)).join("");
+      title.innerHTML = obj.title.map((child) => renderToHTML(child)).join("");
       alert.appendChild(title);
     }
     alert.innerHTML =
       alert.innerHTML +
-      obj.children.map((child) => objectToHTML(child)).join("");
+      obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(alert);
   } else if (obj.type === "unordered-list" && obj.children) {
     const ul = document.createElement("ul");
-    ul.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    ul.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(ul);
   } else if (obj.type === "ordered-list" && obj.children) {
     const ol = document.createElement("ol");
     if (!isNaN(obj.start) && obj.start > 1) ol.start = obj.start;
-    ol.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    ol.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(ol);
   } else if (obj.type === "table-of-contents") {
     const div = document.createElement("div");
     div.classList.add("table-of-contents");
-    div.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    div.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(div);
   } else if (obj.type === "block-code" && obj.children) {
     const pre = document.createElement("pre");
@@ -129,13 +129,13 @@ export default function objectToHTML(obj) {
     pre.className = obj.language;
     const code = document.createElement("code");
     code.textContent = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("\n");
     pre.appendChild(code);
     container.appendChild(pre);
   } else if (obj.type === "list-element" && obj.children) {
     const li = document.createElement("li");
-    li.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    li.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(li);
   } else if (obj.type === "task-list-element" && obj.children) {
     const li = document.createElement("li");
@@ -146,13 +146,13 @@ export default function objectToHTML(obj) {
     // check.style.verticalAlign = "middle";
     li.appendChild(check);
     li.innerHTML =
-      li.innerHTML + obj.children.map((child) => objectToHTML(child)).join("");
+      li.innerHTML + obj.children.map((child) => renderToHTML(child)).join("");
     // li.style.listStyle = "none";
     container.appendChild(li);
   } else if (obj.type === "title" && obj.children) {
     const heading = document.createElement("h" + obj.level);
     heading.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     if (obj.id) heading.id = obj.id;
     container.appendChild(heading);
@@ -163,7 +163,7 @@ export default function objectToHTML(obj) {
   } else if (obj.type === "boldAndItalic" && obj.children) {
     const strong = document.createElement("strong");
     const em = document.createElement("em");
-    em.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    em.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     strong.appendChild(em);
     container.appendChild(strong);
   } else if (obj.type === "date") {
@@ -177,29 +177,29 @@ export default function objectToHTML(obj) {
       hour: "numeric",
       minute: "numeric",
     });
-    time.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    time.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(time);
   } else if (obj.type === "strikethrough" && obj.children) {
     const del = document.createElement("del");
-    del.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    del.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(del);
   } else if (obj.type === "italic" && obj.children) {
     const em = document.createElement("em");
-    em.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    em.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(em);
   } else if (obj.type === "bold" && obj.children) {
     const strong = document.createElement("strong");
     strong.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     container.appendChild(strong);
   } else if (obj.type === "subscript" && obj.children) {
     const sub = document.createElement("sub");
-    sub.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    sub.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(sub);
   } else if (obj.type === "superscript" && obj.children) {
     const sup = document.createElement("sup");
-    sup.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    sup.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(sup);
   } else if (obj.type === "french-quotation-mark" && obj.children) {
     const text = document.createElement("span");
@@ -208,12 +208,12 @@ export default function objectToHTML(obj) {
     text.appendChild(open);
     text.innerHTML =
       text.innerHTML +
-      obj.children.map((child) => objectToHTML(child)).join("");
+      obj.children.map((child) => renderToHTML(child)).join("");
     text.appendChild(close);
     container.appendChild(text);
   } else if (obj.type === "underline" && obj.children) {
     const u = document.createElement("u");
-    u.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    u.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(u);
   } else if (obj.type === "divider") {
     const divider = document.createElement("hr");
@@ -236,7 +236,7 @@ export default function objectToHTML(obj) {
     code.appendChild(color);
     code.innerHTML =
       code.innerHTML +
-      obj.children.map((child) => objectToHTML(child)).join("");
+      obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(code);
   } else if (obj.type === "unicode" && obj.children) {
     const char = document.createElement("span");
@@ -246,7 +246,7 @@ export default function objectToHTML(obj) {
     char.textContent = obj.char;
     char.classList.add("preview");
     content.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     code.appendChild(char);
     code.appendChild(content);
@@ -254,7 +254,7 @@ export default function objectToHTML(obj) {
     container.appendChild(code);
   } else if (obj.type === "paragraph" && obj.children) {
     const p = document.createElement("p");
-    p.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(p);
   } else if (obj.type === "image" && obj.source) {
     const img = document.createElement("img");
@@ -308,7 +308,7 @@ export default function objectToHTML(obj) {
     const divB = document.createElement("div");
     const list = document.createElement("ol");
     list.innerHTML = obj.children[0].children[0].children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     divB.appendChild(list);
     divA.appendChild(divB);
@@ -319,9 +319,9 @@ export default function objectToHTML(obj) {
     footnote.classList.add("footnote");
     footnote.id = "fn-" + obj.id;
     const p = document.createElement("p");
-    p.innerHTML = obj.children.map((child) => objectToHTML(child)).join("");
+    p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     footnote.innerHTML = obj.children
-      .map((child) => objectToHTML(child))
+      .map((child) => renderToHTML(child))
       .join("");
     container.appendChild(footnote);
   } else if (obj.type === "link" && obj.children) {
@@ -330,7 +330,7 @@ export default function objectToHTML(obj) {
     if (obj.title) {
       a.title = obj.title;
     }
-    let text = obj.children.map((child) => objectToHTML(child)).join("");
+    let text = obj.children.map((child) => renderToHTML(child)).join("");
     if (text.trim() === "") text = obj.href;
     a.innerHTML = text;
     container.appendChild(a);

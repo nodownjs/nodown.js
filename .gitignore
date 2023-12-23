@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-*.css
+styles/
 *.css.map
 *.tgz
+pack/
