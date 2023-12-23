@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "description": "",
   "main": "main.js",
+  "files": [
+    "styles"
+  ],
   "scripts": {
-    "build-css": "sass styles/index.scss styles/index.css && sass styles/themes/dark.scss styles/dark.css && sass styles/themes/light.scss styles/light.css",
+    "build-css": "sass src/styles/index.scss styles/index.css && sass src/styles/themes/dark.scss styles/dark.css && sass src/styles/themes/light.scss styles/light.css",
     "start": "nodemon -e scss -x \"npm run build-css && npm run build-js\"",
-    "build-js": "node esbuild.mjs"
+    "build-js": "node esbuild.mjs",
+    "build": "npm run build-css && npm run build-js && mkdir -p pack && npm pack --pack-destination='./pack'"
   },
   "author": "Pierre-LHOSTE",
   "license": "UNLICENSED",
