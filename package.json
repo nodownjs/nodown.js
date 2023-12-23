@@ -5,7 +5,8 @@
   "main": "dist/main.js",
   "type": "module",
   "files": [
-    "styles"
+    "styles",
+    "dist"
   ],
   "scripts": {
     "build-css": "mkdir -p styles && sass src/styles/index.scss styles/index.css && sass src/styles/themes/dark.scss styles/theme-dark.css && sass src/styles/themes/light.scss styles/theme-light.css",

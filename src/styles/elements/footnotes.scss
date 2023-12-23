@@ -21,6 +21,8 @@ li.footnote {
 }
 
 a.footnote-ref {
+  color: inherit;
+  
   &:target {
     &::before {
       left: $padding;
