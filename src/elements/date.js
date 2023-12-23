@@ -1,4 +1,4 @@
-import { digitalDateRegExp } from "../config.js";
+import { digitalDateRegExp } from "../config.js"
 import { languages } from "../languages/date.js";
 
 let language;

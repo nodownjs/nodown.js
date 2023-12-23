@@ -65,11 +65,6 @@ export default function parser(textDocument) {
     transformEscapedChar
   );
 
-  // const varList = Array.from(textDocument.matchAll(varRegExp)).map((match) => {
-  //   textDocument = textDocument.replace(match[0], "");
-  //   return { name: match[1], content: match[2] };
-  // });
-  // window.varList = varList;
   setVarList(
     Array.from(textDocument.matchAll(varRegExp)).map((match) => {
       textDocument = textDocument.replace(match[0], "");
@@ -77,12 +72,6 @@ export default function parser(textDocument) {
     })
   );
 
-  // let footnoteList = Array.from(
-  //   textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
-  // ).map((match) => {
-  //   return { name: match[1], value: match[2] };
-  // });
-  // window.footnoteList = footnoteList;
   setFootnoteList(
     Array.from(
       textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
