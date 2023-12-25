@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "watch": ["src/"],
+  "ext": "scss js",
+  "ignore": ["dist", "node_modules", "pack", "test-site"],
+  "exec": "npm run build-css && npm run build-js"
+}

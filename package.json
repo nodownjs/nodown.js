@@ -10,12 +10,12 @@
   ],
   "scripts": {
     "build-css": "mkdir -p styles && sass src/styles/index.scss styles/index.css && sass src/styles/themes/dark.scss styles/theme-dark.css && sass src/styles/themes/light.scss styles/theme-light.css",
-    "start": "nodemon -e scss -x \"npm run build-css && npm run build-js\"",
+    "start": "nodemon -x \"npm run build-css && npm run build-js\"",
     "build-js": "node esbuild.mjs",
     "build": "npm run build-css && npm run build-js && mkdir -p pack && npm pack --pack-destination='./pack'"
   },
   "author": "Pierre-LHOSTE",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "esbuild": "^0.19.10",
     "nodemon": "^3.0.2",
