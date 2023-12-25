@@ -82,24 +82,6 @@ export default function renderToHTML(obj) {
     const alert = document.createElement("div");
     alert.classList.add("alert");
     alert.classList.add(obj.variant);
-    let color;
-    switch (obj.variant) {
-      case "note":
-        color = "blue";
-        break;
-      case "warning":
-        color = "orange";
-        break;
-      case "success":
-        color = "green";
-        break;
-      case "error":
-        color = "red";
-        break;
-      default:
-        color = "gray";
-        break;
-    }
     if (obj.title) {
       const title = document.createElement("h4");
       title.innerHTML = obj.title.map((child) => renderToHTML(child)).join("");
