@@ -1,5 +1,5 @@
-import { parser, renderToHTML as objectToHTML } from "../dist/main.js";
-const packagePath = "../";
+import { parser, renderToHTML } from "../../../dist/main.js";
+const packagePath = "../../";
 
 let theme = localStorage.getItem("theme") || "dark";
 updateTheme(theme);
@@ -27,7 +27,7 @@ function createLinkElement(id) {
 const updateDoc = () => {
   const data = document.getElementById("nodown-input").value;
   const syntaxTree = parser(data);
-  const htmlResult = objectToHTML(syntaxTree);
+  const htmlResult = renderToHTML(syntaxTree);
   const render = document.getElementById("nodown-render");
   render.innerHTML = htmlResult;
 };

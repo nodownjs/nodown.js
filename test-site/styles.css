@@ -20,6 +20,12 @@ main > * {
   color: white;
   font-size: 18px;
 }
+
+/* #buttons {
+  position: fixed;
+  left: 50%;
+} */
+
 #nodown-render {
   flex: 1.25;
 }
@@ -32,7 +38,7 @@ main > * {
     flex-direction: column;
   }
 }
-#switch {
+#switch, #buttons {
   position: absolute;
   top: 16px;
   right: 32px;
@@ -49,6 +55,14 @@ main > * {
   padding: 0 5px;
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.125));
   pointer-events: all;
+}
+
+#buttons {
+  top: 64px;
+  right: 32px;
+  height: auto;
+  width: auto;
+  padding: 0;
 }
 #circle {
   position: absolute;
