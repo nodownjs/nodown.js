@@ -34,10 +34,6 @@ export function createCitationType(line) {
       citationType.type = "alert";
       citationType.variant = "question";
       break;
-    case "i":
-      citationType.type = "alert";
-      citationType.variant = "info";
-      break;
     case "+":
       citationType.type = "alert";
       citationType.variant = "success";

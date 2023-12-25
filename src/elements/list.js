@@ -1,7 +1,7 @@
 import { listRegExp } from "../config.js";
 import { convertToObject } from "./inline.js";
 
-export function createListElement(line) {
+export function createListElement(line, level) {
   const match = line.match(listRegExp);
   const checkRegExp = /^(?:\s*)(?:-|\*|(?:\d+\.?)+) (\[ \]|\[x\])(.+)/;
   const isTask = checkRegExp.exec(line);
@@ -10,13 +10,14 @@ export function createListElement(line) {
 
   const listElement = {
     type: listElementType,
+    level: level,
   };
 
   if (isTask) {
     listElement.checked = isTask[1] === "[x]" ? true : false;
     listElement.children = convertToObject(isTask[2]);
   } else {
-    listElement.children = convertToObject(content)
+    listElement.children = convertToObject(content);
   }
 
   return listElement;
@@ -40,11 +41,12 @@ export function createListConfig(line) {
   return [type, level, start];
 }
 
-export default function createList(type, start) {
+export default function createList(type, start, level) {
   const list = {
     type: type + "-list",
     start: start,
     children: [],
+    level: level,
   };
   return list;
 }
