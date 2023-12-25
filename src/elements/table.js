@@ -1,12 +1,22 @@
 import { globalTableRegExp, tableRegExp } from "../config.js";
 import { convertToObject } from "./inline.js";
 
-export default function createTable(tableAlign, tableHeader, tableRows) {
+export default function createTable(
+  tableAlign,
+  tableHeader,
+  tableRows,
+  rawHeader,
+  rawSeparator,
+  rawRows
+) {
   const table = {
     type: "table",
     align: tableAlign,
     headers: tableHeader,
     rows: tableRows,
+    rawHeader: rawHeader,
+    rawSeparator: rawSeparator,
+    rawRows: rawRows,
   };
   return table;
 }

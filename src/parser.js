@@ -119,6 +119,9 @@ export default function parser(textDocument) {
   let tableHeader = [];
   let tableAlign = [];
   let tableRows = [];
+  let tableRawHeader = "";
+  let tableRawSeparator = "";
+  let tableRawRows = [];
 
   let citationContent = [];
   let citationType = {
@@ -189,7 +192,7 @@ export default function parser(textDocument) {
     }
     // Si nouvelle liste
     if (stack.length < listLevel + 1 && stack.length > 0) {
-      const list = createList(listType, start);
+      const list = createList(listType, start, stack.length);
       const parentList = stack[stack.length - 1];
       const parentElement = parentList.children[parentList.children.length - 1];
       if (parentElement) {
@@ -198,7 +201,7 @@ export default function parser(textDocument) {
       }
     }
     // Création de l'élément
-    const listElement = createListElement(line);
+    const listElement = createListElement(line, stack.length - 1);
     // Ajout de l'élément
     const parent = stack[stack.length - 1];
     parent.children.push(listElement);
@@ -216,6 +219,7 @@ export default function parser(textDocument) {
       listRoot = {
         type: "",
         children: [],
+        level: 0,
       };
     }
   }
@@ -243,6 +247,7 @@ export default function parser(textDocument) {
   function makeTable(line, afterLine) {
     if (tableStatus === 0) {
       tableHeader = createTableHeader(line);
+      tableRawHeader = line;
       tableStatus = 1;
     } else if (tableStatus === 1) {
       tableAlign = createTableAlign(line);
@@ -257,11 +262,20 @@ export default function parser(textDocument) {
         tableRows = [];
         tableAlign = [];
       }
+      tableRawSeparator = line;
     } else {
       const tableRow = createTableRow(line, tableAlign);
       tableRows.push(tableRow);
+      tableRawRows.push(line);
       if (!tableRegExp.test(afterLine)) {
-        const table = createTable(tableAlign, tableHeader, tableRows);
+        const table = createTable(
+          tableAlign,
+          tableHeader,
+          tableRows,
+          tableRawHeader,
+          tableRawSeparator,
+          tableRawRows
+        );
         const lastDiv = getLastDiv();
         lastDiv.children.push(table);
         tableStatus = 0;
