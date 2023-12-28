@@ -140,7 +140,7 @@ export default function renderToHTML(obj) {
     container.appendChild(heading);
   } else if (obj.type === "code" && obj.children) {
     const code = document.createElement("code");
-    code.textContent = obj.children;
+    code.textContent = obj.children[0].children;
     container.appendChild(code);
   } else if (obj.type === "boldAndItalic" && obj.children) {
     const strong = document.createElement("strong");

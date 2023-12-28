@@ -198,17 +198,24 @@ export function convertToObject(text, exception) {
     ) {
       match.group[0] = match.group[0] + "\\";
     }
-    obj.children = removeBackslash(
-      removeBackslashInCode(match.group[0], exception),
-      true
-    );
+    obj.children = [
+      {
+        type: "text",
+        children: removeBackslash(
+          removeBackslashInCode(match.group[0], exception),
+          true
+        ),
+      },
+    ];
   } else if (match.name === "code-with-var") {
     obj.type = "code";
     if (match.group[1] === "&#96;") match.group[0] = match.group[0] + "\\";
-    obj.children = removeBackslash(
-      removeBackslashInCode(match.group[0]),
-      false
-    );
+    obj.children = [
+      {
+        type: "text",
+        children: removeBackslash(removeBackslashInCode(match.group[0]), false),
+      },
+    ];
   } else if (match.name === "date") {
     const { inFormat, outFormat, timestamp, children } = createDate(
       match.group
