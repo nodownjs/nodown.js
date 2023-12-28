@@ -1,11 +1,18 @@
 import { footnoteRegExp } from "../config.js";
-import { footnoteList } from "../parser.js";
+import { footnoteRefList } from "../parser.js";
 import { convertToObject } from "./inline.js";
 
 export default function createFootnote(line) {
   const match = line.match(footnoteRegExp);
   const [_, id, content] = match;
-  const f = footnoteList.find((f) => f.name === id);
+  const f = footnoteRefList.find((f) => f.refID === id);
+  if (!f) {
+    const text = {
+      type: "text",
+      children: line
+    }
+    return text;
+  }
   let back = ``;
   for (let i = 0; i < f.count; i++) {
     if (f.count === 1) {
@@ -22,6 +29,8 @@ export default function createFootnote(line) {
     type: "footnote",
     id: id,
     children: convertToObject(content + back),
+    index: f.index,
+    count: f.count
   };
   return footnote;
 }

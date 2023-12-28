@@ -18,7 +18,12 @@ import {
   unicodeRegExp,
   footnoteRefRegExp,
 } from "../config.js";
-import { footnoteList, setFootnoteList } from "../parser.js";
+import {
+  footnoteList,
+  footnoteRefList,
+  setFootnoteList,
+  setFootnoteRefList,
+} from "../parser.js";
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
 
@@ -149,29 +154,36 @@ export function convertToObject(text, exception) {
     obj.color = match.group[0];
     obj.children = convertToObject(match.group[0].trim());
   } else if (match.name === "footnote-ref") {
-    const name = match.group[0];
-    if (footnoteList.map((f) => f.name).includes(name)) {
-      const index = footnoteList.findIndex((f) => f.name === name);
-      obj.name = name;
-      obj.ref = name;
-      obj.index = index + 1;
-      setFootnoteList(
-        footnoteList.map((f, i) => {
-          if (i === index) {
-            return { ...f, count: f.count + 1 || 1 };
-          } else {
-            return f;
-          }
-        })
-      );
-      const count = footnoteList[index].count || 1;
-      if (count > 1) {
-        obj.name = obj.name + "-" + (count - 1);
-      }
+    const refID = match.group[0];
+    obj.type = "footnote-ref";
+
+    let existingFootnoteRef =
+      footnoteRefList.length > 0
+        ? footnoteRefList.find((f) => f.refID === refID)
+        : null;
+
+    if (!existingFootnoteRef) {
+      let newFootnoteRef = {
+        index: footnoteRefList.length + 1 || 1,
+        refID: refID,
+        count: 1,
+      };
+      setFootnoteRefList([...footnoteRefList, newFootnoteRef]);
+      existingFootnoteRef = newFootnoteRef;
+      obj.id = refID;
     } else {
+      existingFootnoteRef.count = existingFootnoteRef.count + 1;
+      obj.id = refID + "-" + (existingFootnoteRef.count - 1);
+    }
+
+    obj.ref = refID;
+    obj.index = existingFootnoteRef.index;
+
+    const isLinked = footnoteList.find((f) => f.id === refID) ? true : false;
+    if (!isLinked) {
       obj.raw = match.raw;
     }
-    obj.type = "footnote-ref";
+    
   } else if (match.name === "unicode") {
     obj.type = "unicode";
     const rawChar = match.group[0].trim();

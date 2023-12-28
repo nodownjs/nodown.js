@@ -47,12 +47,22 @@ export const setFootnoteList = (list) => {
   footnoteList = list;
 };
 
+export let footnoteRefList = [];
+export const setFootnoteRefList = (list) => {
+  footnoteRefList = list;
+};
+
 export let varList = [];
 export const setVarList = (list) => {
   varList = list;
 };
 
 export default function parser(textDocument) {
+
+  setFootnoteRefList([])
+  setFootnoteList([])
+  setVarList([])
+
   function getLastDiv() {
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     const lastDiv = lastSection.children[lastSection.children.length - 1];
@@ -76,7 +86,8 @@ export default function parser(textDocument) {
     Array.from(
       textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
     ).map((match) => {
-      return { name: match[1], value: match[2] };
+      // textDocument = textDocument.replace(match[0], "");
+      return { id: match[1], value: match[2] };
     })
   );
 
@@ -332,7 +343,7 @@ export default function parser(textDocument) {
 
   function makeFootnote(line) {
     const footnote = createFootnote(line);
-    footnotes.push(footnote);
+    if (footnote.type === "footnote") footnotes.push(footnote);
   }
 
   function makeTableOfContents() {
@@ -372,7 +383,7 @@ export default function parser(textDocument) {
       makeDiv(line);
     } else if (dividerRegExp.test(line)) {
       makeDivider(line);
-      makeSection("------");
+      makeSection();
     } else if (
       tableRegExp.test(line) &&
       (tableStatus === 0 ? tableTest : true)
@@ -397,7 +408,7 @@ export default function parser(textDocument) {
   if (footnotes.length > 0) {
     makeSection("footnote");
     const lastDiv = getLastDiv();
-    lastDiv.children.push(...footnotes);
+    lastDiv.children.push(...footnotes.sort((a, b) => a.index - b.index));
     // const section = createSection();
     // section.children.push();
     // syntaxTree.children.push(section);

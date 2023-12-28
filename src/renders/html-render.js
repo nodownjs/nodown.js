@@ -271,13 +271,13 @@ export default function renderToHTML(obj) {
     }
     container.appendChild(img);
   } else if (obj.type === "footnote-ref") {
-    if (obj.name) {
+    if (!obj.raw) {
       const a = document.createElement("a");
       a.classList.add("footnote-ref");
       const sup = document.createElement("sup");
       a.href = "#fn-" + obj.ref;
       a.innerHTML = obj.index;
-      a.id = "fnref-" + obj.name;
+      a.id = "fnref-" + obj.id;
       sup.appendChild(a);
       container.appendChild(sup);
     } else {
