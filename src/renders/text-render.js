@@ -392,7 +392,6 @@ export default function renderToText(obj) {
             case "us":
               return `${m}-${d}-${y} ${h}:${mn}:${s}`;
             case "t":
-              return (timestamp/1000).toString();
               return (timestamp / 1000).toString();
           }
         }
