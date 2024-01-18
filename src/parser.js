@@ -58,10 +58,9 @@ export const setVarList = (list) => {
 };
 
 export default function parser(textDocument) {
-
-  setFootnoteRefList([])
-  setFootnoteList([])
-  setVarList([])
+  setFootnoteRefList([]);
+  setFootnoteList([]);
+  setVarList([]);
 
   function getLastDiv() {
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
@@ -293,6 +292,9 @@ export default function parser(textDocument) {
         tableHeader = [];
         tableRows = [];
         tableAlign = [];
+        tableRawRows = [];
+        tableRawHeader = [];
+        tableRawSeparator = [];
       }
     }
   }
@@ -346,6 +348,14 @@ export default function parser(textDocument) {
     if (footnote.type === "footnote") footnotes.push(footnote);
   }
 
+  function makeEmptyLine() {
+    const br = {
+      type: "empty-line"
+    }
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(br);
+  }
+
   function makeTableOfContents() {
     const lastDiv = getLastDiv();
     lastDiv.children.push(toc);
@@ -381,6 +391,8 @@ export default function parser(textDocument) {
       makeTableOfContents(line);
     } else if (divRegExp.test(line)) {
       makeDiv(line);
+    // } else if (/^$/g.test(line)) {
+    //   makeEmptyLine();
     } else if (dividerRegExp.test(line)) {
       makeDivider(line);
       makeSection();
@@ -405,13 +417,35 @@ export default function parser(textDocument) {
     makeList(title, titles[i + 1], true);
   }
 
+
   if (footnotes.length > 0) {
+  //   let uniqueFootnotesSet = new Set();
+  //   let uniqueFootnotes = footnotes.filter(obj => {
+  //     if (!uniqueFootnotesSet.has(obj.id)) {
+  //       uniqueFootnotesSet.add(obj.id);
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+    
     makeSection("footnote");
     const lastDiv = getLastDiv();
     lastDiv.children.push(...footnotes.sort((a, b) => a.index - b.index));
-    // const section = createSection();
-    // section.children.push();
-    // syntaxTree.children.push(section);
+  }
+  if (varList.length > 0) {
+    // makeSection("footnote");
+    // const lastDiv = getLastDiv();
+    makeSection("var");
+    const lastDiv = getLastDiv();
+    lastDiv.children.push(
+      ...varList.map((p) => {
+        return {
+          type: "var-content",
+          id: p.name,
+          children: [{ type: "text", children: p.content }],
+        };
+      })
+    );
   }
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");
   console.table(syntaxTree.children);

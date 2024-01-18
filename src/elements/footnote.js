@@ -5,32 +5,31 @@ import { convertToObject } from "./inline.js";
 export default function createFootnote(line) {
   const match = line.match(footnoteRegExp);
   const [_, id, content] = match;
-  const f = footnoteRefList.find((f) => f.refID === id);
-  if (!f) {
-    const text = {
-      type: "text",
-      children: line
-    }
-    return text;
-  }
   let back = ``;
-  for (let i = 0; i < f.count; i++) {
-    if (f.count === 1) {
-      back = ` [↩](#fnref-${id})`;
-    } else {
-      if (i == 0) {
-        back = back + ` [↩<^${i + 1}>](#fnref-${id})`;
-      } else {
-        back = back + ` [↩<^${i + 1}>](#fnref-${id}-${i})`;
-      }
-    }
-  }
   const footnote = {
     type: "footnote",
     id: id,
-    children: convertToObject(content + back),
-    index: f.index,
-    count: f.count
   };
+  const f = footnoteRefList.find((f) => f.refID === id);
+  if (!f) {
+    footnote.inactive = true;
+    footnote.children = convertToObject(content);
+    return footnote;
+  }
+  const arrow = "↩"
+  for (let i = 0; i < f.count; i++) {
+    if (f.count === 1) {
+      back = `[${arrow}](#fnref-${id})`;
+    } else {
+      if (i == 0) {
+        back = back + `[${arrow}<^${i + 1}>](#fnref-${id})`;
+      } else {
+        back = back + `[${arrow}<^${i + 1}>](#fnref-${id}-${i})`;
+      }
+    }
+  }
+  footnote.children = convertToObject(content + back);
+  footnote.index = f.index;
+  footnote.count = f.count;
   return footnote;
 }

@@ -2,6 +2,11 @@ export default function renderToHTML(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
+  
+  let footnoteIds = [];
+  const addFootnoteId = (id) => {
+    footnoteIds.push(id);
+  };
 
   const container = document.createElement("div");
 
@@ -107,7 +112,6 @@ export default function renderToHTML(obj) {
     container.appendChild(div);
   } else if (obj.type === "block-code" && obj.children) {
     const pre = document.createElement("pre");
-    pre.style.overflowX = "scroll";
     pre.className = obj.language;
     const code = document.createElement("code");
     code.textContent = obj.children
@@ -140,7 +144,7 @@ export default function renderToHTML(obj) {
     container.appendChild(heading);
   } else if (obj.type === "code" && obj.children) {
     const code = document.createElement("code");
-    code.textContent = obj.children[0].children;
+    code.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(code);
   } else if (obj.type === "boldAndItalic" && obj.children) {
     const strong = document.createElement("strong");
@@ -238,6 +242,10 @@ export default function renderToHTML(obj) {
     const p = document.createElement("p");
     p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(p);
+  } else if (obj.type === "var" && obj.children) {
+    const p = document.createElement("span");
+    p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+    container.appendChild(p);
   } else if (obj.type === "image" && obj.source) {
     const img = document.createElement("img");
     img.src = obj.source;
@@ -297,9 +305,11 @@ export default function renderToHTML(obj) {
     section.appendChild(divA);
     container.appendChild(section);
   } else if (obj.type === "footnote" && obj.id) {
+    if (obj.inactive || footnoteIds.includes(obj.id)) return;
     const footnote = document.createElement("li");
     footnote.classList.add("footnote");
     footnote.id = "fn-" + obj.id;
+    addFootnoteId(obj.id);
     const p = document.createElement("p");
     p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     footnote.innerHTML = obj.children
@@ -313,6 +323,7 @@ export default function renderToHTML(obj) {
       a.title = obj.title;
     }
     let text = obj.children.map((child) => renderToHTML(child)).join("");
+    if (obj.href.startsWith("#fnref-")) text = " " + text;
     if (text.trim() === "") text = obj.href;
     a.innerHTML = text;
     container.appendChild(a);
