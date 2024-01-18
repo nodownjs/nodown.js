@@ -154,22 +154,27 @@ export default function renderToText(obj) {
           .filter((_, i) => i !== 0)
           .map((d) => d[1].trim());
 
-        const headerLength = headerArr.map((d) => d.length);
+        const headerLength = headerArr.map(
+          (d) => d.replace(/ +/g, " ").trim().length
+        );
 
         let alignArr = [];
 
         alignArr = [...obj.rawSeparator.matchAll(globalTableRegExp)]
           .filter((_, i) => i !== 0)
-          .map((d) => d[1].trim());
+          .map((d) => d[1].replace(/ +/g, " ").trim());
+        console.log("🚀 ~ alignArr:", alignArr);
 
-        const alignLength = alignArr.map((d) => d.length);
+        const alignLength = alignArr.map(
+          (d) => d.replace(/ +/g, " ").trim().length
+        );
 
         let rowsArr = [];
 
         rowsArr = obj.rawRows.map((row) => {
           return [...row.matchAll(globalTableRegExp)]
             .filter((_, i) => i !== 0)
-            .map((d) => d[1].replace(/\s+/g, " "));
+            .map((d) => d[1].replace(/ +/g, " ").trim());
         });
 
         const rowsLength = rowsArr.map((row) =>
@@ -223,20 +228,6 @@ export default function renderToText(obj) {
           });
           addLine();
         });
-
-        // arr.push("|");
-        // obj.headers.forEach((_, i) => {
-        //   arr.push(" ");
-        //   arr.push("-");
-        //   arr.push("_".repeat(lengthArr[i] - child.length));
-        //   arr.push(" |");
-        // });
-
-        // addLine();
-
-        // obj.rows.forEach((child) => {
-        //   convert(child);
-        // });
 
         break;
       case "table-header":
@@ -410,7 +401,7 @@ export default function renderToText(obj) {
 
   convert(obj);
 
-  const result = arr.join("").replace(/ +/g, " ");
-  
+  const result = arr.join("").replace(/ +/g, " ").trim();
+
   return result;
 }
