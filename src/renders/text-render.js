@@ -28,9 +28,6 @@ export default function renderToText(obj) {
       addLine();
     }
 
-    // console.log(obj.type);
-    // console.log("----");
-
     switch (obj.type) {
       case "root":
       case "section":
@@ -160,22 +157,24 @@ export default function renderToText(obj) {
         const headerLength = headerArr.map((d) => d.length);
 
         let alignArr = [];
-        
+
         alignArr = [...obj.rawSeparator.matchAll(globalTableRegExp)]
-        .filter((_, i) => i !== 0)
-        .map((d) => d[1].trim());
-        
-        const alignLength = alignArr.map((d) => d.length);
-        
-        let rowsArr = [];
-        
-        rowsArr = obj.rawRows.map((row) => {
-          return [...row.matchAll(globalTableRegExp)]
           .filter((_, i) => i !== 0)
           .map((d) => d[1].trim());
+
+        const alignLength = alignArr.map((d) => d.length);
+
+        let rowsArr = [];
+
+        rowsArr = obj.rawRows.map((row) => {
+          return [...row.matchAll(globalTableRegExp)]
+            .filter((_, i) => i !== 0)
+            .map((d) => d[1].replace(/\s+/g, " "));
         });
-        
-        const rowsLength = rowsArr.map((row) => row.map((d) => d.length));
+
+        const rowsLength = rowsArr.map((row) =>
+          row.map((d) => d.trim().length)
+        );
 
         function getMaxForEachElement(tableau) {
           return tableau[0].map((_, i) => {
@@ -394,6 +393,7 @@ export default function renderToText(obj) {
               return `${m}-${d}-${y} ${h}:${mn}:${s}`;
             case "t":
               return (timestamp/1000).toString();
+              return (timestamp / 1000).toString();
           }
         }
         const date = formaterDate(obj.timestamp, inFormat);
@@ -411,7 +411,7 @@ export default function renderToText(obj) {
 
   convert(obj);
 
-  const result = arr.join("").trim();
-  // console.log(result);
+  const result = arr.join("").replace(/ +/g, " ");
+  
   return result;
 }
