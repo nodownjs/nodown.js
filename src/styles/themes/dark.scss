@@ -1,10 +1,14 @@
+:root {
+  color-scheme: dark;
+}
 #nodown-render {
-    @import "../elements/table-dark.scss";
-    @import "../elements/typography-dark.scss";
-    @import "../elements/code-dark.scss";
-    @import "../elements/blockquote-dark.scss";
-    @import "../elements/horizontal-rule-dark.scss";
-    @import "../elements/unicode-dark.scss";
-    @import "../elements/date-dark.scss";
-    @import "../elements/footnotes-dark.scss";
+  @import "../elements/table-dark.scss";
+  @import "../elements/typography-dark.scss";
+  @import "../elements/code-dark.scss";
+  @import "../elements/blockquote-dark.scss";
+  @import "../elements/horizontal-rule-dark.scss";
+  @import "../elements/unicode-dark.scss";
+  @import "../elements/date-dark.scss";
+  @import "../elements/footnotes-dark.scss";
+  @import "../elements/scrollbar-dark.scss";
 }

@@ -1,10 +1,15 @@
+:root {
+  color-scheme: light;
+}
+
 #nodown-render {
-    @import "../elements/table-light.scss";
-    @import "../elements/typography-light.scss";
-    @import "../elements/code-light.scss";
-    @import "../elements/blockquote-light.scss";
-    @import "../elements/horizontal-rule-light.scss";
-    @import "../elements/unicode-light.scss";
-    @import "../elements/date-light.scss";
-    @import "../elements/footnotes-light.scss";
+  @import "../elements/table-light.scss";
+  @import "../elements/typography-light.scss";
+  @import "../elements/code-light.scss";
+  @import "../elements/blockquote-light.scss";
+  @import "../elements/horizontal-rule-light.scss";
+  @import "../elements/unicode-light.scss";
+  @import "../elements/date-light.scss";
+  @import "../elements/footnotes-light.scss";
+  @import "../elements/scrollbar-light.scss";
 }
