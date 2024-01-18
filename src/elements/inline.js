@@ -21,8 +21,8 @@ import {
 import {
   footnoteList,
   footnoteRefList,
-  setFootnoteList,
   setFootnoteRefList,
+  varList,
 } from "../parser.js";
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
@@ -98,7 +98,42 @@ const inlineRegExpList = [
   },
 ];
 
+// varList.forEach((var_) => {
+//   const regexp = new RegExp("<" + var_.name + ">", "gi");
+//   inlineRegExpList.push({
+//     name: "var",
+//     regexp: regexp,
+//   });
+// });
+
+// if (
+//   varList.some((m) =>
+//     lowerCaseText.includes("<" + m.name.toLowerCase() + ">")
+//   )
+// ) {
+//   for (let i = 0; i < varList.length; i++) {
+//     const var_ = varList[i];
+//     const varRegExp = new RegExp("<" + var_.name + ">", "gi");
+//     text = text.replace(varRegExp, var_.content);
+//   }
+// }
+
 export function convertToObject(text, exception) {
+  const isVar = inlineRegExpList.find((m) => m.name === "var");
+
+  if (!isVar) {
+    varList.forEach((var_) => {
+      const regexp = new RegExp(
+        "<(" + var_.name.replace(/-/g, "\\-") + ")>",
+        "gi"
+      );
+      inlineRegExpList.push({
+        name: "var",
+        regexp: regexp,
+      });
+    });
+  }
+
   let allMatches = inlineRegExpList.map((config) => ({ ...config }));
 
   allMatches = allMatches
@@ -156,12 +191,10 @@ export function convertToObject(text, exception) {
   } else if (match.name === "footnote-ref") {
     const refID = match.group[0];
     obj.type = "footnote-ref";
-
     let existingFootnoteRef =
       footnoteRefList.length > 0
         ? footnoteRefList.find((f) => f.refID === refID)
         : null;
-
     if (!existingFootnoteRef) {
       let newFootnoteRef = {
         index: footnoteRefList.length + 1 || 1,
@@ -175,15 +208,12 @@ export function convertToObject(text, exception) {
       existingFootnoteRef.count = existingFootnoteRef.count + 1;
       obj.id = refID + "-" + (existingFootnoteRef.count - 1);
     }
-
     obj.ref = refID;
     obj.index = existingFootnoteRef.index;
-
     const isLinked = footnoteList.find((f) => f.id === refID) ? true : false;
     if (!isLinked) {
       obj.raw = match.raw;
     }
-    
   } else if (match.name === "unicode") {
     obj.type = "unicode";
     const rawChar = match.group[0].trim();
@@ -192,6 +222,17 @@ export function convertToObject(text, exception) {
     const char = String.fromCodePoint(charCode);
     obj.char = char;
     obj.children = convertToObject(match.group[0].trim());
+  } else if (match.name === "var") {
+    obj.type = "var";
+    const id = match.group[0];
+    const var_ = varList.find((v) => v.name === id);
+    obj.id = id;
+    obj.children = [
+      {
+        type: "text",
+        children: var_.content,
+      },
+    ];
   } else if (match.name === "standard-link") {
     obj.type = "link";
     obj.href = match.group[0];
@@ -221,13 +262,9 @@ export function convertToObject(text, exception) {
     ];
   } else if (match.name === "code-with-var") {
     obj.type = "code";
+    obj.formatted = true;
     if (match.group[1] === "&#96;") match.group[0] = match.group[0] + "\\";
-    obj.children = [
-      {
-        type: "text",
-        children: removeBackslash(removeBackslashInCode(match.group[0]), false),
-      },
-    ];
+    obj.children = convertToObject(match.group[0].trim());
   } else if (match.name === "date") {
     const { inFormat, outFormat, timestamp, children } = createDate(
       match.group
