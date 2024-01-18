@@ -1,10 +1,10 @@
-import { digitalDateRegExp } from "../config.js"
+import { digitalDateRegExp } from "../config.js";
 import { languages } from "../languages/date.js";
 
 let language;
 
 if (typeof window !== "undefined") {
-  language = window.navigator.languages[1];
+  language = window.navigator.languages[1] || window.navigator.languages[0];
 } else if (typeof process !== "undefined") {
   language = process.env.LANG.split(".")[0].replace(/_/, "-");
 } else {
