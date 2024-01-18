@@ -1,9 +1,15 @@
-import { globalTableRegExp, tableHeaderRegExp, tableRegExp } from "../config";
+import { globalTableRegExp } from "../config";
 
 export default function renderToText(obj) {
   const arr = [];
-  const blockElements = ["paragraph", "title", "citation", "alert", "table"];
-  const extraBlockElement = ["section"];
+  const blockElements = ["title", "citation", "alert", "table", "block-code"];
+  const extraBlockElement = ["section", "section-var", "paragraph"];
+
+  let listType = "";
+  var orderedNumber = [];
+
+  let divType = "";
+  let divFirst = 0;
 
   function addLine(count = 1) {
     for (let i = 0; i < count; i++) {
@@ -22,18 +28,44 @@ export default function renderToText(obj) {
       addLine();
     }
 
-    console.log(obj.type);
+    // console.log(obj.type);
+    // console.log("----");
 
     switch (obj.type) {
       case "root":
       case "section":
       case "div":
+        if (obj.display === "inline") {
+          addLine(2);
+          arr.push("======");
+          divType = "inline";
+        } else if (divType === "inline") {
+          addLine(2);
+          arr.push("------");
+          divType = "block";
+        }
+        obj.children.forEach((child) => convert(child));
+        divFirst = 0;
+        break;
       case "sub-div":
+        addLine();
+        if (divFirst > 0) {
+          addLine();
+          arr.push("===");
+          addLine();
+        }
+        divFirst++;
         obj.children.forEach((child) => convert(child));
         break;
       case "title":
         arr.push("#".repeat(obj.level) + " ");
         obj.children.forEach((child) => convert(child));
+        if (obj.id && !obj.id.match(/^title-\d+$/)) arr.push(`{#${obj.id}}`);
+        addLine();
+        break;
+      case "divider":
+        addLine();
+        arr.push("---");
         break;
       case "citation":
         arr.push("> ");
@@ -67,13 +99,25 @@ export default function renderToText(obj) {
         });
         break;
       case "unordered-list":
+        listType = "unordered";
+        // orderedNumber = 1;
+        if (obj.level === 0) addLine();
+        obj.children.forEach((child) => convert(child));
+        break;
       case "ordered-list":
+        listType = "ordered";
+        orderedNumber[obj.level] = obj.start;
         if (obj.level === 0) addLine();
         obj.children.forEach((child) => convert(child));
         break;
       case "list-element":
         addLine();
-        arr.push("  ".repeat(obj.level) + "- ");
+        if (listType == "ordered") {
+          arr.push("  ".repeat(obj.level) + orderedNumber[obj.level] + ". ");
+          orderedNumber[obj.level]++;
+        } else {
+          arr.push("  ".repeat(obj.level) + "- ");
+        }
         obj.children.forEach((child) => convert(child));
         break;
       case "task-list-element":
@@ -82,12 +126,16 @@ export default function renderToText(obj) {
         arr.push("  ".repeat(obj.level) + "- " + check);
         obj.children.forEach((child) => convert(child));
         break;
+      case "table-of-contents":
+        addLine();
+        arr.push("[[table-of-contents]]");
+        break;
       case "section-footnote":
+      case "section-var":
         addLine();
         obj.children.forEach((child) => convert(child));
         break;
       case "footnote":
-        console.log(obj.children);
         addLine();
         arr.push(`[^${obj.id}]: `);
         const filteredLinks = obj.children.filter((obj) => obj.type === "link");
@@ -102,30 +150,31 @@ export default function renderToText(obj) {
             return child;
           }
         });
-        console.log(footnoteChildren);
         footnoteChildren.forEach((child) => convert(child));
         break;
       case "table":
-        console.log(obj);
-
         const headerArr = [...obj.rawHeader.matchAll(globalTableRegExp)]
           .filter((_, i) => i !== 0)
           .map((d) => d[1].trim());
 
         const headerLength = headerArr.map((d) => d.length);
 
-        const alignArr = [...obj.rawSeparator.matchAll(globalTableRegExp)]
+        let alignArr = [];
+        
+        alignArr = [...obj.rawSeparator.matchAll(globalTableRegExp)]
+        .filter((_, i) => i !== 0)
+        .map((d) => d[1].trim());
+        
+        const alignLength = alignArr.map((d) => d.length);
+        
+        let rowsArr = [];
+        
+        rowsArr = obj.rawRows.map((row) => {
+          return [...row.matchAll(globalTableRegExp)]
           .filter((_, i) => i !== 0)
           .map((d) => d[1].trim());
-
-        const alignLength = alignArr.map((d) => d.length);
-
-        const rowsArr = obj.rawRows.map((row) => {
-          return [...row.matchAll(globalTableRegExp)]
-            .filter((_, i) => i !== 0)
-            .map((d) => d[1].trim());
         });
-
+        
         const rowsLength = rowsArr.map((row) => row.map((d) => d.length));
 
         function getMaxForEachElement(tableau) {
@@ -136,13 +185,6 @@ export default function renderToText(obj) {
             );
           });
         }
-
-        console.log(headerArr);
-        console.log(headerLength);
-        console.log(alignArr);
-        console.log(alignLength);
-        console.log(rowsArr);
-        console.log(rowsLength);
 
         rowsLength.push(headerLength);
         rowsLength.push(alignLength);
@@ -211,6 +253,26 @@ export default function renderToText(obj) {
         });
         addLine();
         break;
+      case "var-content":
+        arr.push("<");
+        arr.push(obj.id);
+        arr.push(">: ");
+        obj.children.forEach((child, i) => {
+          convert(child);
+        });
+        addLine();
+        break;
+      case "block-code":
+        arr.push("```");
+        arr.push(obj.language);
+        addLine();
+        obj.children.forEach((child, i) => {
+          if (i > 0) addLine();
+          return convert(child);
+        });
+        addLine();
+        arr.push("```");
+        break;
       // --------------------
       case "subscript":
         arr.push("<_");
@@ -241,14 +303,14 @@ export default function renderToText(obj) {
         arr.push(`[^${obj.ref}]`);
         break;
       case "image":
-        let { imageTitle, width, height, alt, source, render } = obj;
+        let { title, width, height, alt, source, render } = obj;
         arr.push("![");
         if (alt) arr.push(alt);
         if (width || height || render) arr.push(";" + (width || ""));
         if (height || render) arr.push(";" + (height || ""));
         if (render) arr.push(";" + render || "");
         arr.push("](" + source);
-        if (imageTitle) arr.push(";" + imageTitle);
+        if (title) arr.push(";" + title);
         arr.push(")");
         break;
       case "link":
@@ -258,7 +320,6 @@ export default function renderToText(obj) {
         arr.push("](" + href);
         if (linkTitle) arr.push(";" + linkTitle);
         arr.push(")");
-        console.log(obj);
         break;
       case "color":
         arr.push("`");
@@ -286,9 +347,16 @@ export default function renderToText(obj) {
         arr.push("***");
         break;
       case "code":
+        if (obj.formatted) arr.push("<");
         arr.push("`");
-        arr.push(obj.children);
+        obj.children.forEach((child) => convert(child));
         arr.push("`");
+        if (obj.formatted) arr.push(">");
+        break;
+      case "var":
+        arr.push("<");
+        arr.push(obj.id);
+        arr.push(">");
         break;
       case "date":
         const timeFormatMap = {
@@ -324,6 +392,8 @@ export default function renderToText(obj) {
               return `${d}-${m}-${y} ${h}:${mn}:${s}`;
             case "us":
               return `${m}-${d}-${y} ${h}:${mn}:${s}`;
+            case "t":
+              return (timestamp/1000).toString();
           }
         }
         const date = formaterDate(obj.timestamp, inFormat);
@@ -342,6 +412,6 @@ export default function renderToText(obj) {
   convert(obj);
 
   const result = arr.join("").trim();
-  console.log(result);
+  // console.log(result);
   return result;
 }

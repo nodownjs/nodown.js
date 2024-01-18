@@ -4,7 +4,6 @@ const packagePath = "../../";
 let theme = localStorage.getItem("theme") || "dark";
 updateTheme(theme);
 
-
 const linkElement = createLinkElement("base");
 linkElement.href = packagePath + "styles/index.css";
 
@@ -31,7 +30,24 @@ const updateDoc = () => {
   // const htmlResult = objectToHTML(syntaxTree);
   const render = document.getElementById("nodown-render");
   // render.innerHTML = htmlResult;
-  render.innerHTML = "<p style=\"font-family: 'JetBrains Mono' !important\">" + textResult.split("\n").join("<br/>") + "</p>";
+
+  const p = document.createElement("p");
+  p.style = "font-family: 'JetBrains Mono' !important";
+
+  const lines = textResult.split("\n");
+  for (const line of lines) {
+    const lineElement = document.createTextNode(line);
+    p.appendChild(lineElement);
+
+    if (line !== lines[lines.length - 1]) {
+      p.appendChild(document.createElement("br"));
+    }
+  }
+
+  // p.textContent = textResult.split("\n").join("\n\n");
+  render.innerHTML = "";
+  render.appendChild(p);
+  // render.textContent = "<p style=\"font-family: 'JetBrains Mono' !important\">" + textResult.split("\n").join("<br/>") + "</p>";
 };
 
 function switchPls() {
@@ -44,7 +60,7 @@ function switchPls() {
 }
 
 function prettier() {
-  const div = document.getElementById("nodown-input")
+  const div = document.getElementById("nodown-input");
   const data = div.value;
   const syntaxTree = parser(data);
   const textResult = renderToText(syntaxTree);

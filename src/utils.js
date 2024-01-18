@@ -12,17 +12,17 @@ export function transformEscapedChar(match, g1) {
 export function removeBackslash(text, variable) {
   const lowerCaseText = text.toLowerCase();
 
-  if (
-    varList.some((m) =>
-      lowerCaseText.includes("<" + m.name.toLowerCase() + ">")
-    )
-  ) {
-    for (let i = 0; i < varList.length; i++) {
-      const var_ = varList[i];
-      const varRegExp = new RegExp("<" + var_.name + ">", "gi");
-      text = text.replace(varRegExp, var_.content);
-    }
-  }
+  // if (
+  //   varList.some((m) =>
+  //     lowerCaseText.includes("<" + m.name.toLowerCase() + ">")
+  //   )
+  // ) {
+  //   for (let i = 0; i < varList.length; i++) {
+  //     const var_ = varList[i];
+  //     const varRegExp = new RegExp("<" + var_.name + ">", "gi");
+  //     text = text.replace(varRegExp, var_.content);
+  //   }
+  // }
 
   const backSlashFixerRegExp = new RegExp(
     escapedIdentifier[0] +
