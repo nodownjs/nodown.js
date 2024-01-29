@@ -26,15 +26,14 @@ function createLinkElement(id) {
 const updateDoc = () => {
   const data = document.getElementById("nodown-input").value;
 
-  
   var startTime = performance.now();
   const syntaxTree = parser(data);
   var endTime = performance.now();
-  
+
   const htmlResult = renderToHTML(syntaxTree);
 
   console.log(`Took ${endTime - startTime} milliseconds`);
-  
+
   const render = document.getElementById("nodown-render");
   render.innerHTML = htmlResult;
 };

@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "description": "",
   "main": "dist/main.js",
+  "types": "nodown.d.ts",
   "type": "module",
   "files": [
     "styles",
-    "dist"
+    "dist",
+    "nodown.d.ts"
   ],
   "scripts": {
     "build-css": "mkdir -p styles && sass src/styles/index.scss styles/index.css && sass src/styles/themes/dark.scss styles/theme-dark.css && sass src/styles/themes/light.scss styles/theme-light.css",
-    "start": "nodemon -x \"npm run build-css && npm run build-js\"",
     "build-js": "node esbuild.mjs",
+    "start": "nodemon -x \"npm run build-css && npm run build-js\"",
     "build": "npm run build-css && npm run build-js && mkdir -p pack && npm pack --pack-destination='./pack'"
   },
   "author": "Pierre-LHOSTE",

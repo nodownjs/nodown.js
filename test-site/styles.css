@@ -38,7 +38,8 @@ main > * {
     flex-direction: column;
   }
 }
-#switch, #buttons {
+#switch,
+#buttons {
   position: absolute;
   top: 16px;
   right: 32px;
