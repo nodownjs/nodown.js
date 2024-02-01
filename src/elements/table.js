@@ -1,4 +1,4 @@
-import { globalTableRegExp, tableRegExp } from "../config.js";
+import { globalTableRegExp } from "../config.js";
 import { convertToObject } from "./inline.js";
 
 export default function createTable(

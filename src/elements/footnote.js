@@ -16,7 +16,7 @@ export default function createFootnote(line) {
     footnote.children = convertToObject(content);
     return footnote;
   }
-  const arrow = "↩"
+  const arrow = "↩";
   for (let i = 0; i < f.count; i++) {
     if (f.count === 1) {
       back = `[${arrow}](#fnref-${id})`;
