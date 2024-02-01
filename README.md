@@ -4,6 +4,33 @@
 
 ![npm package version](https://badgen.net/npm/v/nodown) ![npm bundle size](https://img.shields.io/bundlephobia/min/nodown) ![npm dependencies count](https://badgen.net/bundlephobia/dependency-count/nodown) ![npm types](https://badgen.net/npm/types/nodown) ![github commits count](https://badgen.net/github/commits/nodownjs/nodown.js) ![github last commit](https://badgen.net/github/last-commit/nodownjs/nodown.js)
 
+## Usage
+
+```js
+import { parser, renderToHTML } from "nodown";
+
+// Parse the text into a tree
+const tree = parser(text);
+// Render the tree to HTML
+const doc = renderToHTML(tree);
+
+// Display the HTML in your document
+document.getElementById("nodown-output").innerHTML = doc;
+```
+
+You can incorporate predefined styles located in the following directory structure:
+
+```arduino
+node_modules/
+  nodown/
+    styles/
+      index.css        // Base styles
+      theme.dark.css   // Styles for dark theme
+      theme.light.css  // Styles for light theme
+```
+
+For the theme styles to take effect, make sure to link the appropriate stylesheet based on the [data-theme="..."] attribute of your body element. You can include all styles, but only one will be applied depending on the specified theme.
+
 ## Introduction
 
 The Nodown project emerged from a desire to improve Markdown, by incorporating additional features and resolving certain perceptible limitations. One of the main motivations is to bring together the various iterations of Markdown, created to overcome its initial shortcomings, such as the native absence of features like tables.

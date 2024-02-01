@@ -9,7 +9,7 @@ code {
 
   * {
     letter-spacing: 0;
-    font-size:  inherit;
+    font-size: inherit;
   }
 }
 
@@ -18,7 +18,7 @@ pre {
   padding: 1em;
 
   code {
-    background-color: transparent;
+    background-color: transparent !important;
     padding: 0;
     user-select: auto;
   }
