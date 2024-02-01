@@ -2,7 +2,7 @@
 
 # Nodown
 
-![npm package version](https://badgen.net/npm/v/nodown) ![npm bundle size](https://img.shields.io/bundlephobia/min/nodown) ![npm dependencies count](https://badgen.net/bundlephobia/dependency-count/nodown) ![npm types](https://badgen.net/npm/types/nodown) ![github commits count](https://badgen.net/github/commits/nodownjs/nodown.js) ![github commits count](https://badgen.net/github/last-commit/nodownjs/nodown.js)
+![npm package version](https://badgen.net/npm/v/nodown) ![npm bundle size](https://img.shields.io/bundlephobia/min/nodown) ![npm dependencies count](https://badgen.net/bundlephobia/dependency-count/nodown) ![npm types](https://badgen.net/npm/types/nodown) ![github commits count](https://badgen.net/github/commits/nodownjs/nodown.js) ![github last commit](https://badgen.net/github/last-commit/nodownjs/nodown.js)
 
 ## Introduction
 
