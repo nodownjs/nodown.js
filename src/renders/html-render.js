@@ -115,7 +115,7 @@ export default function renderToHTML(obj) {
     const pre = document.createElement("pre");
     pre.className = obj.language;
     const code = document.createElement("code");
-    code.textContent = obj.children
+    code.innerHTML = obj.children
       .map((child) => renderToHTML(child))
       .join("\n");
     pre.appendChild(code);
