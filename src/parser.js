@@ -1,46 +1,46 @@
 import {
   backSlashFinderRegExp,
-  varRegExp,
-  linkRegExp,
-  titleRegExp,
   blockCodeRegExp,
-  globalTableRegExp,
-  tableRegExp,
-  tableHeaderRegExp,
   citationRegExp,
+  divRegExp,
+  dividerRegExp,
+  footnoteRefRegExp,
+  footnoteRegExp,
+  globalTableRegExp,
+  linkRegExp,
   listRegExp,
   sectionRegExp,
-  divRegExp,
   subDivRegExp,
-  dividerRegExp,
+  tableHeaderRegExp,
   tableOfContents,
+  tableRegExp,
   titleIdRegExp,
-  footnoteRegExp,
-  footnoteRefRegExp,
+  titleRegExp,
+  varRegExp,
 } from "./config.js";
 import createBlockCode from "./elements/blockcode.js";
-import createTitle from "./elements/title.js";
+import createCitation, {
+  createCitationContent,
+  createCitationType,
+} from "./elements/citation.js";
+import createDiv from "./elements/div.js";
+import createDivider from "./elements/divider.js";
+import createFootnote from "./elements/footnote.js";
+import { convertToObject } from "./elements/inline.js";
+import createList, {
+  createListConfig,
+  createListElement,
+} from "./elements/list.js";
+import createSection from "./elements/section.js";
+import createSubDiv from "./elements/subDiv.js";
 import createTable, {
   createTableAlign,
   createTableHeader,
   createTableRow,
   updateTableHeaderAlign,
 } from "./elements/table.js";
-import createCitation, {
-  createCitationContent,
-  createCitationType,
-} from "./elements/citation.js";
-import createList, {
-  createListConfig,
-  createListElement,
-} from "./elements/list.js";
-import createSection from "./elements/section.js";
-import createDiv from "./elements/div.js";
-import createSubDiv from "./elements/subDiv.js";
-import { convertToObject } from "./elements/inline.js";
+import createTitle from "./elements/title.js";
 import { removeBackslashInCode, transformEscapedChar } from "./utils.js";
-import createDivider from "./elements/divider.js";
-import createFootnote from "./elements/footnote.js";
 
 export let footnoteList = [];
 export const setFootnoteList = (list) => {
@@ -350,8 +350,8 @@ export default function parser(textDocument) {
 
   function makeEmptyLine() {
     const br = {
-      type: "empty-line"
-    }
+      type: "empty-line",
+    };
     const lastDiv = getLastDiv();
     lastDiv.children.push(br);
   }
@@ -391,8 +391,8 @@ export default function parser(textDocument) {
       makeTableOfContents(line);
     } else if (divRegExp.test(line)) {
       makeDiv(line);
-    // } else if (/^$/g.test(line)) {
-    //   makeEmptyLine();
+      // } else if (/^$/g.test(line)) {
+      //   makeEmptyLine();
     } else if (dividerRegExp.test(line)) {
       makeDivider(line);
       makeSection();
@@ -417,17 +417,16 @@ export default function parser(textDocument) {
     makeList(title, titles[i + 1], true);
   }
 
-
   if (footnotes.length > 0) {
-  //   let uniqueFootnotesSet = new Set();
-  //   let uniqueFootnotes = footnotes.filter(obj => {
-  //     if (!uniqueFootnotesSet.has(obj.id)) {
-  //       uniqueFootnotesSet.add(obj.id);
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-    
+    //   let uniqueFootnotesSet = new Set();
+    //   let uniqueFootnotes = footnotes.filter(obj => {
+    //     if (!uniqueFootnotesSet.has(obj.id)) {
+    //       uniqueFootnotesSet.add(obj.id);
+    //       return true;
+    //     }
+    //     return false;
+    //   });
+
     makeSection("footnote");
     const lastDiv = getLastDiv();
     lastDiv.children.push(...footnotes.sort((a, b) => a.index - b.index));

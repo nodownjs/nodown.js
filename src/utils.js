@@ -1,5 +1,4 @@
 import { escapedCharConfig, escapedIdentifier } from "./config.js";
-import { varList } from "./parser.js";
 
 export function transformEscapedChar(match, g1) {
   return (

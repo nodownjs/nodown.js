@@ -104,7 +104,6 @@ const codeNoCapturingRegExp = codeRegExp.source.replace(
 
 export const footnoteRefRegExp = /\[\^([\w-]+)\]/g;
 
-
 export const linkRegExp = new RegExp(
   "(?<![\\\\!])\\[((?:[^\\[]|(?:" +
     imageNoCapturingRegExp +
