@@ -34,7 +34,7 @@ const updateDoc = () => {
 
   console.log(`Took ${endTime - startTime} milliseconds`);
 
-  const render = document.getElementById("nodown-render");
+  const render = document.getElementById("nodown-output");
   render.innerHTML = htmlResult;
 };
 
