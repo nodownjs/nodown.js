@@ -28,6 +28,7 @@ main > * {
 
 #nodown-render {
   flex: 1.25;
+  padding: 2em;
 }
 #nodown-input {
   border: none;

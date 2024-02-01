@@ -12,6 +12,7 @@ function updateTheme(theme) {
     document.getElementById("theme") || createLinkElement("theme");
   linkElement.href = `${packagePath}styles/theme-${theme}.css`;
   document.body.className = `theme-${theme}`;
+  document.body.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
 }
 
