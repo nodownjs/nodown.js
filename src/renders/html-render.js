@@ -2,7 +2,7 @@ export default function renderToHTML(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
-  
+
   let footnoteIds = [];
   const addFootnoteId = (id) => {
     footnoteIds.push(id);
@@ -12,6 +12,7 @@ export default function renderToHTML(obj) {
 
   if (obj.type === "root" && obj.children) {
     const div = document.createElement("div");
+    div.id = "nodown-render";
     div.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
     container.appendChild(div);
   } else if (obj.type === "section" && obj.children) {
