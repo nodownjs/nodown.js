@@ -189,30 +189,32 @@ export function convertToObject(text, exception) {
     obj.color = match.group[0];
     obj.children = convertToObject(match.group[0].trim());
   } else if (match.name === "footnote-ref") {
-    const refID = match.group[0];
     obj.type = "footnote-ref";
-    let existingFootnoteRef =
-      footnoteRefList.length > 0
-        ? footnoteRefList.find((f) => f.refID === refID)
-        : null;
-    if (!existingFootnoteRef) {
-      let newFootnoteRef = {
-        index: footnoteRefList.length + 1 || 1,
-        refID: refID,
-        count: 1,
-      };
-      setFootnoteRefList([...footnoteRefList, newFootnoteRef]);
-      existingFootnoteRef = newFootnoteRef;
-      obj.id = refID;
-    } else {
-      existingFootnoteRef.count = existingFootnoteRef.count + 1;
-      obj.id = refID + "-" + (existingFootnoteRef.count - 1);
-    }
-    obj.ref = refID;
-    obj.index = existingFootnoteRef.index;
+    const refID = match.group[0];
     const isLinked = footnoteList.find((f) => f.id === refID) ? true : false;
     if (!isLinked) {
       obj.raw = match.raw;
+      obj.inactive = true;
+    } else {
+      let existingFootnoteRef =
+        footnoteRefList.length > 0
+          ? footnoteRefList.find((f) => f.refID === refID)
+          : null;
+      if (!existingFootnoteRef) {
+        let newFootnoteRef = {
+          index: footnoteRefList.length + 1 || 1,
+          refID: refID,
+          count: 1,
+        };
+        setFootnoteRefList([...footnoteRefList, newFootnoteRef]);
+        existingFootnoteRef = newFootnoteRef;
+        obj.id = refID;
+      } else {
+        existingFootnoteRef.count = existingFootnoteRef.count + 1;
+        obj.id = refID + "-" + (existingFootnoteRef.count - 1);
+      }
+      obj.ref = refID;
+      obj.index = existingFootnoteRef.index;
     }
   } else if (match.name === "unicode") {
     obj.type = "unicode";
