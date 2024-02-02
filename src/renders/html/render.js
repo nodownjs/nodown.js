@@ -33,15 +33,15 @@ import createUnicode from "./elements/unicode.js";
 import createUnorderedList from "./elements/unordered-list.js";
 import createVar from "./elements/var.js";
 
+let footnoteIds = [];
+const addFootnoteId = (id) => {
+  footnoteIds.push(id);
+};
+
 export default function renderToHTML(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
-
-  let footnoteIds = [];
-  const addFootnoteId = (id) => {
-    footnoteIds.push(id);
-  };
 
   const container = document.createElement("div");
 

@@ -1,6 +1,6 @@
 export default function createFootnoteRef(obj) {
   let element;
-  if (!obj.raw) {
+  if (!obj.inactive) {
     const sup = document.createElement("sup");
     const a = document.createElement("a");
     a.classList.add("footnote-ref");
@@ -10,7 +10,6 @@ export default function createFootnoteRef(obj) {
     sup.appendChild(a);
     element = sup;
   } else {
-    // container.textContent = obj.raw;
     element = document.createTextNode(obj.raw);
   }
   return element;
