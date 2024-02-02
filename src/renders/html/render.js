@@ -8,6 +8,7 @@ import createDate from "./elements/date.js";
 import createDiv from "./elements/div.js";
 import createDivider from "./elements/divider.js";
 import createFootnoteRef from "./elements/footnote-ref.js";
+import createFootnote from "./elements/footnote.js";
 import createFrenchQuotationMark from "./elements/french-quotation-mark.js";
 import createImage from "./elements/image.js";
 import createItalic from "./elements/italic.js";
@@ -34,7 +35,7 @@ import createUnorderedList from "./elements/unordered-list.js";
 import createVar from "./elements/var.js";
 
 let footnoteIds = [];
-const addFootnoteId = (id) => {
+export const addFootnoteId = (id) => {
   footnoteIds.push(id);
 };
 
@@ -151,15 +152,7 @@ export default function renderToHTML(obj) {
     container.appendChild(section);
   } else if (obj.type === "footnote" && obj.id) {
     if (obj.inactive || footnoteIds.includes(obj.id)) return;
-    const footnote = document.createElement("li");
-    footnote.classList.add("footnote");
-    footnote.id = "fn-" + obj.id;
-    addFootnoteId(obj.id);
-    const p = document.createElement("p");
-    p.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
-    footnote.innerHTML = obj.children
-      .map((child) => renderToHTML(child))
-      .join("");
+    const footnote = createFootnote(obj);
     container.appendChild(footnote);
   } else if (obj.type === "link" && obj.children) {
     const a = createLink(obj);
