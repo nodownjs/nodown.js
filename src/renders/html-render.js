@@ -1,12 +1,12 @@
+let footnoteIds = [];
+const addFootnoteId = (id) => {
+  footnoteIds.push(id);
+};
+
 export default function renderToHTML(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
-
-  let footnoteIds = [];
-  const addFootnoteId = (id) => {
-    footnoteIds.push(id);
-  };
 
   const container = document.createElement("div");
 
@@ -280,7 +280,7 @@ export default function renderToHTML(obj) {
     }
     container.appendChild(img);
   } else if (obj.type === "footnote-ref") {
-    if (!obj.raw) {
+    if (!obj.inactive) {
       const a = document.createElement("a");
       a.classList.add("footnote-ref");
       const sup = document.createElement("sup");
