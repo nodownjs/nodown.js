@@ -31,7 +31,13 @@ const updateDoc = () => {
   const syntaxTree = parser(data);
   var endTime = performance.now();
 
-  const htmlResult = renderToHTML(syntaxTree);
+  const htmlResult = renderToHTML(syntaxTree, {
+    link: (obj) => {
+      const strong = document.createElement("strong");
+      strong.innerHTML = `${obj.children} - ${obj.url}`;
+      return strong;
+    },
+  });
 
   console.log(`Took ${endTime - startTime} milliseconds`);
 
