@@ -32,12 +32,20 @@ const updateDoc = () => {
   var endTime = performance.now();
 
   const htmlResult = renderToHTML(syntaxTree, {
-    link: (obj) => {
-      const strong = document.createElement("strong");
-      strong.innerHTML = `${obj.children} - ${obj.href}`;
-      return strong;
+    title: {
+      raw: true,
     },
-    title: "raw",
+    link: {
+      disabled: false,
+      childrenFormat: "string",
+      customRender: (obj) => {
+        console.log("obj.children ::::");
+        console.log(obj.children);
+        const strong = document.createElement("strong");
+        strong.innerHTML = `${obj.children} - ${obj.href}`;
+        return strong;
+      },
+    },
   });
 
   console.log(`Took ${endTime - startTime} milliseconds`);

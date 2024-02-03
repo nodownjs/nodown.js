@@ -49,28 +49,60 @@ export function childrenMap(children) {
   return children.map((child) => recursiveRender(child).outerHTML).join("");
 }
 
+function childrenMapHTML(children) {
+  return children.map((child) => recursiveRender(child));
+}
+
 export function recursiveRender(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
   const opt = options[obj.type];
 
-  if (opt === false) {
-    return "";
-  } else if (opt === "raw") {
-    return {
-      outerHTML: childrenMap(obj.children),
-    };
-  } else if (typeof opt === "function") {
-    const element = opt({
-      ...obj,
-      children: obj.children ? childrenMap(obj.children) : undefined,
-    });
-    return element;
-  } else {
-    const element = createElementFromObj(obj);
-    return element;
+  if (opt) {
+    if (opt.disabled) {
+      return "";
+    }
+    if (opt.raw) {
+      return {
+        outerHTML: childrenMap(obj.children),
+      };
+    }
+    if (opt.customRender && typeof opt.customRender === "function") {
+      const hasChildren = obj.children !== undefined;
+
+      let mappedChildren;
+      if (hasChildren) {
+        if (
+          opt.childrenFormat === undefined ||
+          opt.childrenFormat === "string"
+        ) {
+          mappedChildren = childrenMap(obj.children);
+        } else if (opt.childrenFormat === "elements") {
+          mappedChildren = childrenMapHTML(obj.children);
+        } else if (opt.childrenFormat === "object") {
+          mappedChildren = obj.children;
+        } else {
+          mappedChildren = undefined;
+        }
+      } else {
+        mappedChildren = undefined;
+      }
+
+      const element = opt.customRender({
+        ...obj,
+        children: mappedChildren,
+      });
+      if (element instanceof HTMLElement) {
+        return element;
+      } else {
+        return "";
+      }
+    }
   }
+
+  const element = createElementFromObj(obj);
+  return element;
 }
 
 export default function renderToHTML(tree, optionsArg) {
