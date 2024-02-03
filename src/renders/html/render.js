@@ -62,7 +62,10 @@ export function recursiveRender(obj) {
       outerHTML: childrenMap(obj.children),
     };
   } else if (typeof opt === "function") {
-    const element = opt({ ...obj, children: childrenMap(obj.children) });
+    const element = opt({
+      ...obj,
+      children: obj.children ? childrenMap(obj.children) : undefined,
+    });
     return element;
   } else {
     const element = createElementFromObj(obj);
