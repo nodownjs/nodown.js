@@ -16,6 +16,7 @@ import createLink from "./elements/link.js";
 import createListElement from "./elements/list-element.js";
 import createOrderedList from "./elements/ordered-list.js";
 import createParagraph from "./elements/paragraph.js";
+import createRoot from "./elements/root.js";
 import createSectionFootnote from "./elements/section-footnote.js";
 import createSection from "./elements/section.js";
 import createStrikethrough from "./elements/strikethrough.js";
@@ -39,127 +40,125 @@ export const addFootnoteId = (id) => {
   footnoteIds.push(id);
 };
 
-export default function renderToHTML(obj) {
+export const options = {};
+const setOptions = (optionsArg) => {
+  Object.assign(options, optionsArg);
+};
+
+export function childrenMap(children) {
+  return children.map((child) => recursiveRender(child).outerHTML).join("");
+}
+
+export function recursiveRender(obj) {
   if (!obj || typeof obj !== "object") {
     return obj ? obj.toString() : "";
   }
+  const opt = options[obj.type];
 
-  const container = document.createElement("div");
-
-  if (obj.type === "root" && obj.children) {
-    const div = document.createElement("div");
-    div.id = "nodown-render";
-    div.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
-    container.appendChild(div);
-  } else if (obj.type === "section" && obj.children) {
-    const section = createSection(obj);
-    container.appendChild(section);
-  } else if (obj.type === "div" && obj.children) {
-    const div = createDiv(obj);
-    container.appendChild(div);
-  } else if (obj.type === "sub-div" && obj.children) {
-    const subDiv = createSubDiv(obj);
-    container.appendChild(subDiv);
-  } else if (obj.type === "table" && obj.rows) {
-    const table = createTable(obj);
-    container.appendChild(table);
-  } else if (obj.type === "table-header" && obj.children) {
-    const th = createTableHeader(obj);
-    container.appendChild(th);
-  } else if (obj.type === "table-row" && obj.children) {
-    const tr = createTableRow(obj);
-    container.appendChild(tr);
-  } else if (obj.type === "table-data" && obj.children) {
-    const td = createTableData(obj);
-    container.appendChild(td);
-  } else if (obj.type === "citation" && obj.children) {
-    const blockquote = createCitation(obj);
-    container.appendChild(blockquote);
-  } else if (obj.type === "alert" && obj.children) {
-    const alert = createAlert(obj);
-    container.appendChild(alert);
-  } else if (obj.type === "unordered-list" && obj.children) {
-    const ul = createUnorderedList(obj);
-    container.appendChild(ul);
-  } else if (obj.type === "ordered-list" && obj.children) {
-    const ol = createOrderedList(obj);
-    container.appendChild(ol);
-  } else if (obj.type === "table-of-contents") {
-    const div = createTableOfContents(obj);
-    container.appendChild(div);
-  } else if (obj.type === "block-code" && obj.children) {
-    const pre = createBlockCode(obj);
-    container.appendChild(pre);
-  } else if (obj.type === "list-element" && obj.children) {
-    const li = createListElement(obj);
-    container.appendChild(li);
-  } else if (obj.type === "task-list-element" && obj.children) {
-    const li = createTaskListElement(obj);
-    container.appendChild(li);
-  } else if (obj.type === "title" && obj.children) {
-    const heading = createTitle(obj);
-    container.appendChild(heading);
-  } else if (obj.type === "code" && obj.children) {
-    const code = createCode(obj);
-    container.appendChild(code);
-  } else if (obj.type === "date") {
-    const time = createDate(obj);
-    container.appendChild(time);
-  } else if (obj.type === "strikethrough" && obj.children) {
-    const del = createStrikethrough(obj);
-    container.appendChild(del);
-  } else if (obj.type === "italic" && obj.children) {
-    const em = createItalic(obj);
-    container.appendChild(em);
-  } else if (obj.type === "bold" && obj.children) {
-    const strong = createBold(obj);
-    container.appendChild(strong);
-  } else if (obj.type === "subscript" && obj.children) {
-    const sub = createSubscript(obj);
-    container.appendChild(sub);
-  } else if (obj.type === "superscript" && obj.children) {
-    const sup = createSuperscript(obj);
-    container.appendChild(sup);
-  } else if (obj.type === "french-quotation-mark" && obj.children) {
-    const text = createFrenchQuotationMark(obj);
-    container.appendChild(text);
-  } else if (obj.type === "underline" && obj.children) {
-    const u = createUnderline(obj);
-    container.appendChild(u);
-  } else if (obj.type === "divider") {
-    const divider = createDivider();
-    container.appendChild(divider);
-  } else if (obj.type === "color" && obj.children) {
-    const color = createColor(obj);
-    container.appendChild(color);
-  } else if (obj.type === "unicode" && obj.children) {
-    const char = createUnicode(obj);
-    container.appendChild(char);
-  } else if (obj.type === "paragraph" && obj.children) {
-    const p = createParagraph(obj);
-    container.appendChild(p);
-  } else if (obj.type === "var" && obj.children) {
-    const p = createVar(obj);
-    container.appendChild(p);
-  } else if (obj.type === "image" && obj.source) {
-    const img = createImage(obj);
-    container.appendChild(img);
-  } else if (obj.type === "footnote-ref") {
-    const element = createFootnoteRef(obj);
-    container.appendChild(element);
-  } else if (obj.type === "section-footnote") {
-    const section = createSectionFootnote(obj);
-    container.appendChild(section);
-  } else if (obj.type === "footnote" && obj.id) {
-    if (obj.inactive || footnoteIds.includes(obj.id)) return;
-    const footnote = createFootnote(obj);
-    container.appendChild(footnote);
-  } else if (obj.type === "link" && obj.children) {
-    const a = createLink(obj);
-    container.appendChild(a);
-  } else if (obj.type === "text" && obj.children) {
-    container.textContent = obj.children;
+  if (opt === false) {
+    return "";
+  } else if (opt === "raw") {
+    return {
+      outerHTML: childrenMap(obj.children),
+    };
+  } else if (typeof opt === "function") {
+    const element = opt({ ...obj, children: childrenMap(obj.children) });
+    return element;
+  } else {
+    const element = createElementFromObj(obj);
+    return element;
   }
+}
 
-  return container.innerHTML;
+export default function renderToHTML(tree, optionsArg) {
+  setOptions(optionsArg);
+  const doc = recursiveRender(tree);
+  return doc.outerHTML;
+}
+
+function createElementFromObj(obj) {
+  switch (obj.type) {
+    case "root":
+      return createRoot(obj);
+    case "section":
+      return createSection(obj);
+    case "div":
+      return createDiv(obj);
+    case "sub-div":
+      return createSubDiv(obj);
+    case "table":
+      return createTable(obj);
+    case "table-header":
+      return createTableHeader(obj);
+    case "table-row":
+      return createTableRow(obj);
+    case "table-data":
+      return createTableData(obj);
+    case "italic":
+      return createItalic(obj);
+    case "bold":
+      return createBold(obj);
+    case "strikethrough":
+      return createStrikethrough(obj);
+    case "underline":
+      return createUnderline(obj);
+    case "superscript":
+      return createSuperscript(obj);
+    case "subscript":
+      return createSubscript(obj);
+    case "french-quotation-mark":
+      return createFrenchQuotationMark(obj);
+    case "color":
+      return createColor(obj);
+    case "unicode":
+      return createUnicode(obj);
+    case "code":
+      return createCode(obj);
+    case "block-code":
+      return createBlockCode(obj);
+    case "var":
+      return createVar(obj);
+    case "image":
+      return createImage(obj);
+    case "link":
+      return createLink(obj);
+    case "footnote-ref":
+      return createFootnoteRef(obj);
+    case "footnote":
+      return createFootnote(obj);
+    case "section-footnote":
+      return createSectionFootnote(obj);
+    case "alert":
+      return createAlert(obj);
+    case "table-of-contents":
+      return createTableOfContents(obj);
+    case "divider":
+      return createDivider();
+    case "unordered-list":
+      return createUnorderedList(obj);
+    case "ordered-list":
+      return createOrderedList(obj);
+    case "list-element":
+      return createListElement(obj);
+    case "task-list-element":
+      return createTaskListElement(obj);
+    case "title":
+      return createTitle(obj);
+    case "citation":
+      return createCitation(obj);
+    case "date":
+      return createDate(obj);
+    case "paragraph":
+      return createParagraph(obj);
+    case "text":
+      const text = {
+        outerHTML: obj.children,
+      };
+      return text;
+
+    default:
+      return {
+        outerHTML: "",
+      };
+  }
 }

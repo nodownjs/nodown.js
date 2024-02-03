@@ -1,7 +1,7 @@
-import renderToHTML from "../render";
+import { childrenMap } from "../render";
 
 export default function createSuperscript(obj) {
   const sup = document.createElement("sup");
-  sup.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  sup.innerHTML = childrenMap(obj.children);
   return sup;
 }

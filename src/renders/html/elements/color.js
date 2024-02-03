@@ -1,4 +1,4 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createColor(obj) {
   const color = document.createElement("span");
@@ -13,7 +13,6 @@ export default function createColor(obj) {
   color.style.width = size;
   color.classList.add("preview");
   code.appendChild(color);
-  code.innerHTML =
-    code.innerHTML + obj.children.map((child) => renderToHTML(child)).join("");
+  code.innerHTML = code.innerHTML + childrenMap(obj.children);
   return code;
 }

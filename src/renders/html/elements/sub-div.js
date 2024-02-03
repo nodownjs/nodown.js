@@ -1,4 +1,4 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createSubDiv(obj) {
   const subDiv = document.createElement("div");
@@ -17,6 +17,7 @@ export default function createSubDiv(obj) {
   }
   if (obj.align) subDiv.style.textAlign = obj.align;
   subDiv.style.overflowY = "hidden";
-  subDiv.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  subDiv.innerHTML = childrenMap(obj.children);
+
   return subDiv;
 }

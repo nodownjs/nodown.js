@@ -1,8 +1,8 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createSection(obj) {
   const section = document.createElement("section");
-  section.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  section.innerHTML = childrenMap(obj.children);
 
   return section;
 }

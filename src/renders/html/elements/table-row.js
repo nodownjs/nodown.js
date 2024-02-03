@@ -1,7 +1,7 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createTableRow(obj) {
   const tr = document.createElement("tr");
-  tr.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  tr.innerHTML = childrenMap(obj.children);
   return tr;
 }

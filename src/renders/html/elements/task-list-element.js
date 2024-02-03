@@ -1,4 +1,4 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createTaskListElement(obj) {
   const li = document.createElement("li");
@@ -8,8 +8,7 @@ export default function createTaskListElement(obj) {
   // check.style.margin = "0 .2em .25em -1.4em";
   // check.style.verticalAlign = "middle";
   li.appendChild(check);
-  li.innerHTML =
-    li.innerHTML + obj.children.map((child) => renderToHTML(child)).join("");
+  li.innerHTML = li.innerHTML + childrenMap(obj.children);
   // li.style.listStyle = "none";
   return li;
 }

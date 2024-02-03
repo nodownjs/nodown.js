@@ -1,9 +1,12 @@
-import renderToHTML from "../render.js";
+import { recursiveRender } from "../render.js";
 
 export default function createDiv(obj) {
   const div = document.createElement("div");
   div.innerHTML = obj.children
-    .map((child) => renderToHTML({ ...child, total: obj.children.length }))
+    .map(
+      (child) =>
+        recursiveRender({ ...child, total: obj.children.length }).outerHTML
+    )
     .join("");
   const { display, align } = obj;
   if (display === "inline") {
