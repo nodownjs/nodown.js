@@ -34,9 +34,10 @@ const updateDoc = () => {
   const htmlResult = renderToHTML(syntaxTree, {
     link: (obj) => {
       const strong = document.createElement("strong");
-      strong.innerHTML = `${obj.children} - ${obj.url}`;
+      strong.innerHTML = `${obj.children} - ${obj.href}`;
       return strong;
     },
+    title: "raw",
   });
 
   console.log(`Took ${endTime - startTime} milliseconds`);
