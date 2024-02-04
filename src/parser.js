@@ -57,7 +57,13 @@ export const setVarList = (list) => {
   varList = list;
 };
 
-export default function parser(textDocument) {
+export let options = [];
+export const setOptions = (opt) => {
+  options = opt;
+};
+
+export default function parser(textDocument, opt) {
+  setOptions(opt);
   setFootnoteRefList([]);
   setFootnoteList([]);
   setVarList([]);
@@ -371,6 +377,9 @@ export default function parser(textDocument) {
         [...afterLine.matchAll(globalTableRegExp)].length &&
       tableHeaderRegExp.test(afterLine);
 
+    const sectionDisabled = options.section.disabled;
+    const hideDisabledElement = options.hideDisabledElement;
+
     if (blockCodeRegExp.test(line)) {
       makeBlockCode(line);
     } else if (isBlockCode) {
@@ -384,7 +393,7 @@ export default function parser(textDocument) {
     } else if (footnoteRegExp.test(line)) {
       makeFootnote(line);
     } else if (sectionRegExp.test(line)) {
-      makeSection(line);
+      if (!sectionDisabled) makeSection();
     } else if (subDivRegExp.test(line)) {
       makeSubDiv(line);
     } else if (tableOfContents.test(line)) {
