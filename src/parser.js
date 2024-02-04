@@ -384,7 +384,7 @@ export default function parser(textDocument) {
     } else if (footnoteRegExp.test(line)) {
       makeFootnote(line);
     } else if (sectionRegExp.test(line)) {
-      makeSection(line);
+      makeSection();
     } else if (subDivRegExp.test(line)) {
       makeSubDiv(line);
     } else if (tableOfContents.test(line)) {
