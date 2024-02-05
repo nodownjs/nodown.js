@@ -38,9 +38,11 @@ const updateDoc = () => {
       disabled: false,
     },
     hideDisabledElements: true,
-    root: {},
   });
   var endTime = performance.now();
+
+  console.table(syntaxTree.children);
+  console.log(syntaxTree);
 
   const htmlResult = renderToHTML(syntaxTree, {
     title: {
@@ -57,7 +59,7 @@ const updateDoc = () => {
     },
     root: {
       disabled: false,
-      customId: "root-custom-id",
+      customId: "nodown-render",
     },
   });
 

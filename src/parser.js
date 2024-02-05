@@ -214,6 +214,9 @@ export default function parser(textDocument, opt) {
   }
 
   function makeDiv(line) {
+    const horizontalAlignmentDisabled =
+      options?.horizontalAlignment?.disabled ?? false;
+    if (horizontalAlignmentDisabled) return;
     const div = createDiv(line);
     const disabledSection = options?.section?.disabled ?? false;
     if (disabledSection) {
