@@ -51,6 +51,9 @@ const updateDoc = () => {
         return strong;
       },
     },
+    root: {
+      customId: "root-custom-id",
+    },
   });
 
   console.log(`Took ${endTime - startTime} milliseconds`);
