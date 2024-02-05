@@ -60,7 +60,7 @@ export function recursiveRender(obj) {
   const opt = options[obj.type];
 
   if (opt) {
-    if (opt.disabled) {
+    if (opt.disabled && obj.type !== "root") {
       return "";
     }
     if (opt.raw) {
@@ -108,6 +108,11 @@ export function recursiveRender(obj) {
 export default function renderToHTML(tree, optionsArg) {
   setOptions(optionsArg);
   const doc = recursiveRender(tree);
+  const disabledRoot = options.root?.disabled ?? false;
+  // console.log(doc);
+  if (disabledRoot) {
+    return doc.innerHTML;
+  }
   return doc.outerHTML;
 }
 

@@ -34,7 +34,11 @@ const updateDoc = () => {
       newSectionByHeader: true,
       newSectionHeaderLevel: 2,
     },
-    hideDisabledElements: false,
+    horizontalAlignment: {
+      disabled: false,
+    },
+    hideDisabledElements: true,
+    root: {},
   });
   var endTime = performance.now();
 
@@ -52,6 +56,7 @@ const updateDoc = () => {
       },
     },
     root: {
+      disabled: false,
       customId: "root-custom-id",
     },
   });

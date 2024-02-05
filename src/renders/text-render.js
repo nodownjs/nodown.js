@@ -163,7 +163,6 @@ export default function renderToText(obj) {
         alignArr = [...obj.rawSeparator.matchAll(globalTableRegExp)]
           .filter((_, i) => i !== 0)
           .map((d) => d[1].replace(/ +/g, " ").trim());
-        console.log("🚀 ~ alignArr:", alignArr);
 
         const alignLength = alignArr.map(
           (d) => d.replace(/ +/g, " ").trim().length
