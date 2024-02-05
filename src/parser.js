@@ -57,7 +57,7 @@ export const setVarList = (list) => {
   varList = list;
 };
 
-export let options = [];
+export let options = {};
 export const setOptions = (opt) => {
   options = opt;
 };
@@ -69,6 +69,9 @@ export default function parser(textDocument, opt) {
   setVarList([]);
 
   function getLastDiv() {
+    if (options.section.disabled) {
+      return syntaxTree;
+    }
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     const lastDiv = lastSection.children[lastSection.children.length - 1];
     const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
@@ -100,22 +103,24 @@ export default function parser(textDocument, opt) {
 
   const syntaxTree = {
     type: "root",
-    children: [
-      {
-        type: "section",
-        children: [
+    children: options.section.disabled
+      ? []
+      : [
           {
-            type: "div",
+            type: "section",
             children: [
               {
                 type: "div",
-                children: [],
+                children: [
+                  {
+                    type: "div",
+                    children: [],
+                  },
+                ],
               },
             ],
           },
         ],
-      },
-    ],
   };
 
   const createParagraph = (line) => {
@@ -190,6 +195,7 @@ export default function parser(textDocument, opt) {
   }
 
   function makeSection(custom) {
+    if (options.section.disabled) return;
     const section = createSection(custom);
     syntaxTree.children.push(section);
   }
@@ -255,7 +261,10 @@ export default function parser(textDocument, opt) {
 
       titlesCount++;
     }
-    if (title.level == 2) makeSection();
+    const newSectionByHeader = options?.section?.newSectionByHeader ?? true;
+    const newSectionHeaderLevel = options?.section?.newSectionHeaderLevel ?? 2;
+    if (title.level == newSectionHeaderLevel && newSectionByHeader)
+      makeSection();
     const lastDiv = getLastDiv();
     lastDiv.children.push(title);
   }
@@ -377,8 +386,8 @@ export default function parser(textDocument, opt) {
         [...afterLine.matchAll(globalTableRegExp)].length &&
       tableHeaderRegExp.test(afterLine);
 
-    const sectionDisabled = options.section.disabled;
-    const hideDisabledElement = options.hideDisabledElement;
+    const sectionDisabled = options?.section?.disabled ?? false;
+    const hideDisabledElements = options?.hideDisabledElements ?? true;
 
     if (blockCodeRegExp.test(line)) {
       makeBlockCode(line);
@@ -392,8 +401,13 @@ export default function parser(textDocument, opt) {
       makeList(line, afterLine);
     } else if (footnoteRegExp.test(line)) {
       makeFootnote(line);
-    } else if (sectionRegExp.test(line)) {
-      if (!sectionDisabled) makeSection();
+    } else if (
+      sectionRegExp.test(line) &&
+      !(sectionDisabled && !hideDisabledElements)
+    ) {
+      console.log("PASSÉ");
+      console.log(hideDisabledElements);
+      makeSection();
     } else if (subDivRegExp.test(line)) {
       makeSubDiv(line);
     } else if (tableOfContents.test(line)) {

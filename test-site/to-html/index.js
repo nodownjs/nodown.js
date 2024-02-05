@@ -28,19 +28,24 @@ const updateDoc = () => {
   const data = document.getElementById("nodown-input").value;
 
   var startTime = performance.now();
-  const syntaxTree = parser(data);
+  const syntaxTree = parser(data, {
+    section: {
+      disabled: false,
+      newSectionByHeader: true,
+      newSectionHeaderLevel: 2,
+    },
+    hideDisabledElements: false,
+  });
   var endTime = performance.now();
 
   const htmlResult = renderToHTML(syntaxTree, {
     title: {
-      raw: true,
+      raw: false,
     },
     link: {
       disabled: false,
       childrenFormat: "string",
       customRender: (obj) => {
-        console.log("obj.children ::::");
-        console.log(obj.children);
         const strong = document.createElement("strong");
         strong.innerHTML = `${obj.children} - ${obj.href}`;
         return strong;
