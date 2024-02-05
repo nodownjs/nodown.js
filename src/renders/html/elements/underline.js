@@ -1,7 +1,7 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createUnderline(obj) {
   const u = document.createElement("u");
-  u.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  u.innerHTML = childrenMap(obj.children);
   return u;
 }

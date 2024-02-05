@@ -1,4 +1,4 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createDate(obj) {
   const time = document.createElement("span");
@@ -11,6 +11,6 @@ export default function createDate(obj) {
     hour: "numeric",
     minute: "numeric",
   });
-  time.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  time.innerHTML = childrenMap(obj.children);
   return time;
 }

@@ -1,7 +1,7 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createUnorderedList(obj) {
   const ul = document.createElement("ul");
-  ul.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  ul.innerHTML = childrenMap(obj.children);
   return ul;
 }

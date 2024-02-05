@@ -1,7 +1,7 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createItalic(obj) {
   const em = document.createElement("em");
-  em.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  em.innerHTML = childrenMap(obj.children);
   return em;
 }

@@ -1,7 +1,7 @@
-import renderToHTML from "../render";
+import { childrenMap, recursiveRender } from "../render";
 
 export default function createSubscript(obj) {
   const sub = document.createElement("sub");
-  sub.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  sub.innerHTML = childrenMap(obj.children, recursiveRender);
   return sub;
 }

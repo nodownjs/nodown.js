@@ -1,4 +1,4 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createUnicode(obj) {
   const char = document.createElement("span");
@@ -7,7 +7,7 @@ export default function createUnicode(obj) {
   code.classList.add("unicode");
   char.textContent = obj.char;
   char.classList.add("preview");
-  content.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  content.innerHTML = childrenMap(obj.children);
   code.appendChild(char);
   code.appendChild(content);
   return code;

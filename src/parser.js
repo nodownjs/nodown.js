@@ -57,16 +57,38 @@ export const setVarList = (list) => {
   varList = list;
 };
 
-export default function parser(textDocument) {
+export let options = {};
+export const setOptions = (opt) => {
+  options = opt;
+};
+
+export default function parser(textDocument, opt) {
+  setOptions(opt);
   setFootnoteRefList([]);
   setFootnoteList([]);
   setVarList([]);
 
   function getLastDiv() {
-    const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
-    const lastDiv = lastSection.children[lastSection.children.length - 1];
-    const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
-    return lastSubDiv;
+    const disabledSection = options?.section?.disabled ?? false;
+    const disabledDiv = options?.horizontalAlignment?.disabled ?? false;
+    if (disabledSection) {
+      if (disabledDiv) {
+        return syntaxTree;
+      } else {
+        const lastDiv = syntaxTree.children[syntaxTree.children.length - 1];
+        const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
+        return lastSubDiv;
+      }
+    }
+    if (disabledDiv) {
+      const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+      return lastSection;
+    } else {
+      const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+      const lastDiv = lastSection.children[lastSection.children.length - 1];
+      const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
+      return lastSubDiv;
+    }
   }
 
   textDocument = textDocument.replace(
@@ -92,24 +114,55 @@ export default function parser(textDocument) {
 
   const linesList = textDocument.split("\n");
 
+  const noSectionChildren = [
+    {
+      type: "div",
+      children: [
+        {
+          type: "div",
+          children: [],
+        },
+      ],
+    },
+  ];
+  const noDivChildren = [
+    {
+      type: "section",
+      children: [],
+    },
+  ];
+
+  const noSectionNoDivChildren = [];
+
+  const sectionAndDivChildren = [
+    {
+      type: "section",
+      children: [
+        {
+          type: "div",
+          children: [
+            {
+              type: "div",
+              children: [],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  const disabledSection = options?.section?.disabled ?? false;
+  const disabledDiv = options?.horizontalAlignment?.disabled ?? false;
+
   const syntaxTree = {
     type: "root",
-    children: [
-      {
-        type: "section",
-        children: [
-          {
-            type: "div",
-            children: [
-              {
-                type: "div",
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    children: disabledSection
+      ? disabledDiv
+        ? [...noSectionNoDivChildren]
+        : [...noSectionChildren]
+      : disabledDiv
+      ? [...noDivChildren]
+      : [...sectionAndDivChildren],
   };
 
   const createParagraph = (line) => {
@@ -161,7 +214,15 @@ export default function parser(textDocument) {
   }
 
   function makeDiv(line) {
+    const horizontalAlignmentDisabled =
+      options?.horizontalAlignment?.disabled ?? false;
+    if (horizontalAlignmentDisabled) return;
     const div = createDiv(line);
+    const disabledSection = options?.section?.disabled ?? false;
+    if (disabledSection) {
+      syntaxTree.children.push(div);
+      return;
+    }
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
     if (lastDiv && lastDiv.children.length === 0) {
@@ -173,6 +234,12 @@ export default function parser(textDocument) {
 
   function makeSubDiv(line) {
     const subDiv = createSubDiv(line);
+    const disabledSection = options?.section?.disabled ?? false;
+    if (disabledSection) {
+      const lastDiv = syntaxTree.children[syntaxTree.children.length - 1];
+      lastDiv.children.push(subDiv);
+      return;
+    }
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
     let lastDiv = lastSection.children[lastSection.children.length - 1];
     let lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
@@ -184,6 +251,7 @@ export default function parser(textDocument) {
   }
 
   function makeSection(custom) {
+    if (options.section.disabled) return;
     const section = createSection(custom);
     syntaxTree.children.push(section);
   }
@@ -249,7 +317,10 @@ export default function parser(textDocument) {
 
       titlesCount++;
     }
-    if (title.level == 2) makeSection();
+    const newSectionByHeader = options?.section?.newSectionByHeader ?? true;
+    const newSectionHeaderLevel = options?.section?.newSectionHeaderLevel ?? 2;
+    if (title.level == newSectionHeaderLevel && newSectionByHeader)
+      makeSection();
     const lastDiv = getLastDiv();
     lastDiv.children.push(title);
   }
@@ -371,6 +442,11 @@ export default function parser(textDocument) {
         [...afterLine.matchAll(globalTableRegExp)].length &&
       tableHeaderRegExp.test(afterLine);
 
+    const sectionDisabled = options?.section?.disabled ?? false;
+    const horizontalAlignmentDisabled =
+      options?.horizontalAlignment?.disabled ?? false;
+    const hideDisabledElements = options?.hideDisabledElements ?? true;
+
     if (blockCodeRegExp.test(line)) {
       makeBlockCode(line);
     } else if (isBlockCode) {
@@ -383,13 +459,22 @@ export default function parser(textDocument) {
       makeList(line, afterLine);
     } else if (footnoteRegExp.test(line)) {
       makeFootnote(line);
-    } else if (sectionRegExp.test(line)) {
+    } else if (
+      sectionRegExp.test(line) &&
+      !(sectionDisabled && !hideDisabledElements)
+    ) {
       makeSection();
-    } else if (subDivRegExp.test(line)) {
+    } else if (
+      subDivRegExp.test(line) &&
+      !(horizontalAlignmentDisabled && !hideDisabledElements)
+    ) {
       makeSubDiv(line);
     } else if (tableOfContents.test(line)) {
       makeTableOfContents(line);
-    } else if (divRegExp.test(line)) {
+    } else if (
+      divRegExp.test(line) &&
+      !(horizontalAlignmentDisabled && !hideDisabledElements)
+    ) {
       makeDiv(line);
       // } else if (/^$/g.test(line)) {
       //   makeEmptyLine();
@@ -447,7 +532,7 @@ export default function parser(textDocument) {
     );
   }
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");
-  console.table(syntaxTree.children);
-  console.log(syntaxTree);
+  // console.table(syntaxTree.children);
+  // console.log(syntaxTree);
   return syntaxTree;
 }

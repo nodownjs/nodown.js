@@ -1,7 +1,7 @@
-import renderToHTML from "../render.js";
+import { childrenMap } from "../render.js";
 
 export default function createCode(obj) {
   const code = document.createElement("code");
-  code.innerHTML = obj.children.map((child) => renderToHTML(child)).join("");
+  code.innerHTML = childrenMap(obj.children);
   return code;
 }
