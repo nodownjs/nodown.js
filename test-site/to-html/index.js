@@ -41,8 +41,8 @@ const updateDoc = () => {
   });
   var endTime = performance.now();
 
-  console.table(syntaxTree.children);
-  console.log(syntaxTree);
+  // console.table(syntaxTree.children);
+  // console.log(syntaxTree);
 
   const htmlResult = renderToHTML(syntaxTree, {
     title: {
