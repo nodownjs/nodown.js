@@ -251,7 +251,8 @@ export default function parser(textDocument, opt) {
   }
 
   function makeSection(custom) {
-    if (options.section.disabled) return;
+    const disabledSection = options?.section?.disabled ?? false;
+    if (disabledSection) return;
     const section = createSection(custom);
     syntaxTree.children.push(section);
   }

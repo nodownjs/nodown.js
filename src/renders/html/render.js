@@ -108,7 +108,7 @@ export function recursiveRender(obj) {
 export default function renderToHTML(tree, optionsArg) {
   setOptions(optionsArg);
   const doc = recursiveRender(tree);
-  const disabledRoot = options.root?.disabled ?? false;
+  const disabledRoot = options?.root?.disabled ?? false;
   // console.log(doc);
   if (disabledRoot) {
     return doc.innerHTML;
