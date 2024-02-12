@@ -56,14 +56,34 @@ export let varList = [];
 export const setVarList = (list) => {
   varList = list;
 };
+function mergeObjects(obj1, obj2) {
+  for (let key in obj2) {
+    if (obj2.hasOwnProperty(key)) {
+      if (typeof obj2[key] === "object" && !Array.isArray(obj2[key])) {
+        obj1[key] = mergeObjects(obj1[key] || {}, obj2[key]);
+      } else {
+        if (obj2[key] !== undefined && obj2[key] !== null) {
+          obj1[key] = obj2[key];
+        }
+      }
+    }
+  }
+  return obj1;
+}
 
 export let options = {};
 export const setOptions = (opt) => {
-  options = opt;
+  options = mergeObjects(options, opt);
 };
 
-export default function parser(textDocument, opt) {
-  setOptions(opt);
+const defaultOptions = {
+  "french-quotation-mark": {
+    disabled: true,
+  },
+};
+
+export default function parser(textDocument, opt = defaultOptions) {
+  setOptions(mergeObjects(defaultOptions, opt));
   setFootnoteRefList([]);
   setFootnoteList([]);
   setVarList([]);

@@ -29,38 +29,44 @@ const updateDoc = () => {
 
   var startTime = performance.now();
   const syntaxTree = parser(data, {
-    section: {
-      disabled: false,
-      newSectionByHeader: true,
-      newSectionHeaderLevel: 2,
-    },
-    horizontalAlignment: {
-      disabled: false,
-    },
-    hideDisabledElements: true,
+    // "french-quotation-mark": {
+    //   disabled: false,
+    // },
+    // italic: {
+    //   disabled: true,
+    // },
+    // section: {
+    //   disabled: false,
+    //   newSectionByHeader: true,
+    //   newSectionHeaderLevel: 2,
+    // },
+    // horizontalAlignment: {
+    //   disabled: false,
+    // },
+    // hideDisabledElements: true,
   });
   var endTime = performance.now();
 
   // console.table(syntaxTree.children);
-  // console.log(syntaxTree);
+  console.log(syntaxTree);
 
   const htmlResult = renderToHTML(syntaxTree, {
-    title: {
-      raw: false,
-    },
-    link: {
-      disabled: false,
-      childrenFormat: "string",
-      customRender: (obj) => {
-        const strong = document.createElement("strong");
-        strong.innerHTML = `${obj.children} - ${obj.href}`;
-        return strong;
-      },
-    },
-    root: {
-      disabled: false,
-      customId: "nodown-render",
-    },
+    // title: {
+    //   raw: false,
+    // },
+    // link: {
+    //   disabled: false,
+    //   childrenFormat: "string",
+    //   customRender: (obj) => {
+    //     const strong = document.createElement("strong");
+    //     strong.innerHTML = `${obj.children} - ${obj.href}`;
+    //     return strong;
+    //   },
+    // },
+    // root: {
+    //   disabled: false,
+    //   customId: "nodown-render",
+    // },
   });
 
   console.log(`Took ${endTime - startTime} milliseconds`);

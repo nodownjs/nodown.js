@@ -21,6 +21,7 @@ import {
 import {
   footnoteList,
   footnoteRefList,
+  options,
   setFootnoteRefList,
   varList,
 } from "../parser.js";
@@ -119,6 +120,13 @@ const inlineRegExpList = [
 // }
 
 export function convertToObject(text, exception) {
+  // if (!options?.frenchQuotationMark?.enabled) {
+  //   inlineRegExpList.splice(
+  //     inlineRegExpList.findIndex((m) => m.name === "french-quotation-mark"),
+  //     1
+  //   );
+  // }
+
   const isVar = inlineRegExpList.find((m) => m.name === "var");
 
   if (!isVar) {
@@ -133,8 +141,11 @@ export function convertToObject(text, exception) {
       });
     });
   }
+  console.log(options);
 
-  let allMatches = inlineRegExpList.map((config) => ({ ...config }));
+  let allMatches = inlineRegExpList
+    .filter((m) => (options?.[m.name]?.disabled ?? false) !== true)
+    .map((config) => ({ ...config }));
 
   allMatches = allMatches
     .map((config) => {
