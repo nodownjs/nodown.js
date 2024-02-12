@@ -524,22 +524,11 @@ export default function parser(textDocument, opt = defaultOptions) {
   }
 
   if (footnotes.length > 0) {
-    //   let uniqueFootnotesSet = new Set();
-    //   let uniqueFootnotes = footnotes.filter(obj => {
-    //     if (!uniqueFootnotesSet.has(obj.id)) {
-    //       uniqueFootnotesSet.add(obj.id);
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-
     makeSection("footnote");
     const lastDiv = getLastDiv();
     lastDiv.children.push(...footnotes.sort((a, b) => a.index - b.index));
   }
   if (varList.length > 0) {
-    // makeSection("footnote");
-    // const lastDiv = getLastDiv();
     makeSection("var");
     const lastDiv = getLastDiv();
     lastDiv.children.push(
@@ -553,6 +542,7 @@ export default function parser(textDocument, opt = defaultOptions) {
     );
   }
   syntaxTree.children = syntaxTree.children.filter((el) => el.children !== "");
+  syntaxTree.tableOfContents = toc.children[0];
   // console.table(syntaxTree.children);
   // console.log(syntaxTree);
   return syntaxTree;

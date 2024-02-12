@@ -141,7 +141,6 @@ export function convertToObject(text, exception) {
       });
     });
   }
-  console.log(options);
 
   let allMatches = inlineRegExpList
     .filter((m) => (options?.[m.name]?.disabled ?? false) !== true)
