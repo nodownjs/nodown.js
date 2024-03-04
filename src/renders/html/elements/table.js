@@ -1,14 +1,11 @@
 import { childrenMap } from "../render.js";
 
 export default function createTable(obj) {
-  const table = document.createElement("table");
-  const thead = document.createElement("thead");
-  const tbody = document.createElement("tbody");
-  const tr = document.createElement("tr");
-  tr.innerHTML = childrenMap(obj.headers);
-  tbody.innerHTML = childrenMap(obj.rows);
-  thead.appendChild(tr);
-  table.appendChild(thead);
-  table.appendChild(tbody);
+  const headers = childrenMap(obj.headers);
+  const rows = childrenMap(obj.rows);
+  const tr = `<tr>${headers}</tr>`;
+  const tbody = `<tbody>${rows}</tbody>`;
+  const thead = `<thead>${tr}</thead>`;
+  const table = `<table>${thead}${tbody}</table>`;
   return table;
 }

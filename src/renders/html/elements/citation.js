@@ -1,7 +1,7 @@
 import { childrenMap } from "../render";
 
 export default function createCitation(obj) {
-  const blockquote = document.createElement("blockquote");
-  blockquote.innerHTML = childrenMap(obj.children);
+  const content = childrenMap(obj.children);
+  const blockquote = `<blockquote>${content}</blockquote>`;
   return blockquote;
 }

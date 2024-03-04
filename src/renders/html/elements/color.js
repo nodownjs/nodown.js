@@ -1,18 +1,19 @@
-import { childrenMap } from "../render.js";
+import { childrenMap } from "../render";
 
 export default function createColor(obj) {
-  const color = document.createElement("span");
-  const code = document.createElement("code");
-  code.classList.add("color");
-  color.setAttribute("style", "background-color: " + obj.color + " !important");
-  color.style.display = "inline-block";
-  color.style.marginRight = "0.375em";
-  color.style.transform = "translateY(.1em)";
+  const codeClasses = `class="color"`;
+  const colorClasses = `class="preview"`;
   const size = "1em";
-  color.style.height = size;
-  color.style.width = size;
-  color.classList.add("preview");
-  code.appendChild(color);
-  code.innerHTML = code.innerHTML + childrenMap(obj.children);
+  const styles = `style="
+  background-color: ${obj.color} !important; 
+  display: inline-block; 
+  margin-right: 0.375em; 
+  transform: translateY(.1em); 
+  height: ${size}; 
+  width: ${size};
+  "`;
+  const color = `<span ${styles} ${colorClasses}></span>`;
+  const content = childrenMap(obj.children);
+  const code = `<code ${codeClasses}>${color}${content}</code>`;
   return code;
 }

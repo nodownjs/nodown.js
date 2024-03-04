@@ -1,33 +1,36 @@
 export default function createImage(obj) {
-  const img = document.createElement("img");
-  img.src = obj.source;
+  const src = obj.source;
   const { title, width, height, render, alt } = obj;
+  let altText,
+    titleText,
+    widthSize,
+    heightSize,
+    renderText = "";
   if (title) {
-    img.title = title;
-    img.alt = "title : " + title;
+    titleText = `title="${title}"`;
+    altText = `alt="title : ${title}"`;
   }
-  if (alt) img.alt = alt;
+  if (alt) altText = `alt="${alt}"`;
+  let styles = ``;
   if (width) {
     if (width.endsWith("%")) {
-      img.style.width = width;
-      img.style.minWidth = width;
+      styles = styles + `width: ${width}; min-width: ${width};`;
     } else {
-      img.style.width = width + "px";
-      img.style.minWidth = width + "px";
+      styles = styles + `width: ${width}px; min-width: ${width}px;`;
     }
   }
   if (height) {
     if (height.endsWith("%")) {
-      img.style.height = height;
-      img.style.minHeight = height;
+      styles = styles + `height: ${height}; min-height: ${height};`;
     } else {
-      img.style.height = height + "px";
-      img.style.minHeight = height;
+      styles = styles + `height: ${height}px; min-height: ${height};`;
     }
   }
   if (render) {
-    img.style.imageRendering = render;
-    if (render === "smooth") img.style.imageRendering = "auto";
+    styles = styles + `image-rendering: ${render};`;
+    if (render === "smooth") styles = styles + `image-rendering: auto;`;
   }
+
+  const img = `<img src="${src}" ${titleText} ${altText} style="${styles}" >`;
   return img;
 }

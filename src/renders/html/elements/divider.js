@@ -1,4 +1,4 @@
 export default function createDivider() {
-  const divider = document.createElement("hr");
+  const divider = `<hr />`;
   return divider;
 }

@@ -1,12 +1,11 @@
 import { recursiveRender } from "../render.js";
 
 export default function createBlockCode(obj) {
-  const pre = document.createElement("pre");
-  pre.className = obj.language;
-  const code = document.createElement("code");
-  code.innerHTML = obj.children
-    .map((child) => recursiveRender(child).outerHTML)
+  const classes = `class="${obj.language}"`;
+  const content = obj.children
+    .map((child) => recursiveRender(child))
     .join("\n");
-  pre.appendChild(code);
+  const code = `<code>${content}</code>`;
+  const pre = `<pre ${classes}>${code}</pre>`;
   return pre;
 }

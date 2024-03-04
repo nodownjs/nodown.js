@@ -1,14 +1,11 @@
 import { childrenMap } from "../render.js";
 
 export default function createUnicode(obj) {
-  const char = document.createElement("span");
-  const content = document.createElement("span");
-  const code = document.createElement("code");
-  code.classList.add("unicode");
-  char.textContent = obj.char;
-  char.classList.add("preview");
-  content.innerHTML = childrenMap(obj.children);
-  code.appendChild(char);
-  code.appendChild(content);
+  const content = childrenMap(obj.children);
+  const contentSpan = `<span>${content}</span>`;
+  const codeClass = `class="unicode"`;
+  const charClass = `class="preview"`;
+  const char = `<span ${charClass}>${obj.char}</span>`;
+  const code = `<code ${codeClass}>${char}${contentSpan}</code>`;
   return code;
 }
