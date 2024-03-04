@@ -193,7 +193,12 @@ function createElementFromObj(obj) {
     case "paragraph":
       return createParagraph(obj);
     case "text":
-      const text = obj.children;
+      const text = obj.children
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
       return text;
 
     default:
