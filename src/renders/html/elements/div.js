@@ -4,14 +4,19 @@ export default function createDiv(obj) {
   const content = obj.children
     .map((child) => recursiveRender({ ...child, total: obj.children.length }))
     .join("");
-  let styles = ``;
+  let styles = [];
   const { display, align } = obj;
   if (display === "inline") {
-    styles = styles + "display: flex;";
-    if (align) styles = styles + "justifyContent: align;";
+    styles.push("display: flex;");
+    if (align) styles.push("justifyContent: align;");
   } else {
-    if (align) styles = styles + "textAlign: align;";
+    if (align) styles.push("textAlign: align;");
   }
-  const div = `<div style="${styles}">${content}</div>`;
+  if (styles.length < 1) {
+    styles = "";
+  } else {
+    styles = ` style="${styles.join(" ")}"`;
+  }
+  const div = `<div${styles}>${content}</div>`;
   return div;
 }

@@ -8,30 +8,33 @@ export default function createImage(obj) {
     altText = ` alt="Title : ${title}"`;
   }
   if (alt) altText = ` alt="${alt}"`;
-  let styles = ``;
+  let styles = [];
   if (width) {
     if (width.endsWith("%")) {
-      styles = styles + `width: ${width}; min-width: ${width};`;
+      styles.push(...[`width: ${width};`, `min-width: ${width};`]);
     } else {
-      styles = styles + `width: ${width}px; min-width: ${width}px;`;
+      styles.push(...[`width: ${width}px;`, `min-width: ${width}px;`]);
     }
   }
   if (height) {
     if (height.endsWith("%")) {
-      styles = styles + `height: ${height}; min-height: ${height};`;
+      styles.push(...[`height: ${height};`, `min-height: ${height};`]);
     } else {
-      styles = styles + `height: ${height}px; min-height: ${height}px;`;
+      styles.push(...[`height: ${height}px;`, `min-height: ${height}px;`]);
     }
   }
   if (render) {
     if (render === "smooth") {
-      styles = styles + `image-rendering: auto;`;
+      styles.push(`image-rendering: auto;`);
     } else {
-      styles = styles + `image-rendering: ${render};`;
+      styles.push(`image-rendering: ${render};`);
     }
   }
-  if (styles.length > 0) styles = ` style="${styles}"`;
-  console.log(altText, titleText, styles);
+  if (styles.length < 1) {
+    styles = "";
+  } else {
+    styles = ` style="${styles.join(" ")}"`;
+  }
   const img = `<img src="${src}"${titleText}${altText}${styles} />`;
   return img;
 }
