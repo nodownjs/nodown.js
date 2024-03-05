@@ -16,7 +16,7 @@ function generateTest(elementTest, index) {
   );
 }
 
-describe("Citation", () => {
+describe("Div", () => {
   it("Default div", () => {
     const divTest = `${textContent}`;
     const divResult = `<div><div><p>${textContent}</p></div></div>`;

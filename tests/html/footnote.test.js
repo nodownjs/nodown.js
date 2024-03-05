@@ -10,7 +10,7 @@ const footnoteId = `footnote-1`;
 const footnoteText = `Some footnote text`;
 const text = `Some simple text`;
 
-describe("Block-footnote", () => {
+describe("Footnote", () => {
   it("Basic footnote", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
     const footnoteResult = `<li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}" > ↩</a></li>`;

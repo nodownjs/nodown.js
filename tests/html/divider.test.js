@@ -6,7 +6,7 @@ function generateTest(elementTest) {
   return renderToHTML(parser(elementTest, parserOptions)[0]);
 }
 
-describe("Citation", () => {
+describe("Divider", () => {
   it("Basic divider", () => {
     const dividerTest = `---`;
     const dividerResult = `<hr />`;
