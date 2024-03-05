@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parser, renderToHTML } from "../../src/index";
-import parserOptions from "./parserOptions.json";
+import parserOptions from "../parserOptions.json";
 
 const imgSrc = `https://example.com/image.png`;
 const imgTitle = `Exemple title`;
@@ -87,7 +87,7 @@ describe("Image", () => {
 
   it(`With all`, () => {
     const imgTest = `![${imgAlt};${img100Width};${img255Height};pixelated](${imgSrc};${imgTitle})`;
-    const imgResult = `<img src="${imgSrc}" title="${imgTitle}" alt="${imgAlt}" style="width: ${img100Width}; min-width: ${img100Width};height: ${img255Height}px; min-height: ${img255Height}px;image-rendering: pixelated;" />`;
+    const imgResult = `<img src="${imgSrc}" title="${imgTitle}" alt="${imgAlt}" style="width: ${img100Width}; min-width: ${img100Width}; height: ${img255Height}px; min-height: ${img255Height}px; image-rendering: pixelated;" />`;
     const img = generateTest(imgTest);
     expect(img).toBe(imgResult);
   });

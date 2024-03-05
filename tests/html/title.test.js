@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parser, renderToHTML } from "../../src/index";
-import parserOptions from "./parserOptions.json";
+import parserOptions from "../parserOptions.json";
 
 describe("Title", () => {
   const titleText = `Cool title`;
