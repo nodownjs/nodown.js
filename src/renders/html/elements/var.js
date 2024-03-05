@@ -1,7 +1,7 @@
 import { childrenMap } from "../render.js";
 
 export default function createVar(obj) {
-  const p = document.createElement("span");
-  p.innerHTML = childrenMap(obj.children);
+  const content = childrenMap(obj.children);
+  const p = `<span>${content}</span>`;
   return p;
 }

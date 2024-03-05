@@ -1,7 +1,7 @@
 import { childrenMap } from "../render.js";
 
 export default function createListElement(obj) {
-  const li = document.createElement("li");
-  li.innerHTML = childrenMap(obj.children);
+  const content = childrenMap(obj.children);
+  const li = `<li>${content}</li>`;
   return li;
 }

@@ -1,11 +1,7 @@
-import { childrenMap } from "../render.js";
+import { childrenMap } from "../render";
 
 export default function createCode(obj) {
-  const code = document.createElement("code");
-  if (obj.formatted) {
-    code.innerHTML = childrenMap(obj.children);
-    return code;
-  }
-  code.textContent = childrenMap(obj.children);
+  let content = childrenMap(obj.children);
+  const code = `<code>${content}</code>`;
   return code;
 }

@@ -46,7 +46,7 @@ const setOptions = (optionsArg) => {
 };
 
 export function childrenMap(children) {
-  return children.map((child) => recursiveRender(child).outerHTML).join("");
+  return children.map((child) => recursiveRender(child)).join("");
 }
 
 function childrenMapHTML(children) {
@@ -102,6 +102,7 @@ export function recursiveRender(obj) {
   }
 
   const element = createElementFromObj(obj);
+  console.log("🚀 ~ element:", element);
   return element;
 }
 
@@ -111,9 +112,10 @@ export default function renderToHTML(tree, optionsArg) {
   const disabledRoot = options?.root?.disabled ?? false;
   // console.log(doc);
   if (disabledRoot) {
-    return doc.innerHTML;
+    return doc;
   }
-  return doc.outerHTML;
+  console.log(doc);
+  return doc;
 }
 
 function createElementFromObj(obj) {
@@ -191,14 +193,15 @@ function createElementFromObj(obj) {
     case "paragraph":
       return createParagraph(obj);
     case "text":
-      const text = {
-        outerHTML: obj.children,
-      };
+      const text = obj.children
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
       return text;
 
     default:
-      return {
-        outerHTML: "",
-      };
+      return "";
   }
 }

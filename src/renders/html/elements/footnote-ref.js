@@ -1,16 +1,14 @@
 export default function createFootnoteRef(obj) {
-  let element;
+  let element = ``;
   if (!obj.inactive) {
-    const sup = document.createElement("sup");
-    const a = document.createElement("a");
-    a.classList.add("footnote-ref");
-    a.href = "#fn-" + obj.ref;
-    a.innerHTML = obj.index;
-    a.id = "fnref-" + obj.id;
-    sup.appendChild(a);
+    const aClass = `class="footnote-ref"`;
+    const href = `href="#fn-${obj.ref}"`;
+    const id = `id="fnref-${obj.id}"`;
+    const a = `<a ${id} ${href} ${aClass}>${obj.index}</a>`;
+    const sup = `<sup>${a}</sup>`;
     element = sup;
   } else {
-    element = document.createTextNode(obj.raw);
+    element = obj.raw;
   }
   return element;
 }

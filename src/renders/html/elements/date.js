@@ -1,9 +1,7 @@
-import { childrenMap } from "../render.js";
+import { childrenMap } from "../render";
 
 export default function createDate(obj) {
-  const time = document.createElement("span");
-  time.classList.add("date");
-  time.title = new Date(obj.timestamp).toLocaleString(undefined, {
+  const title = new Date(obj.timestamp).toLocaleString(undefined, {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -11,6 +9,8 @@ export default function createDate(obj) {
     hour: "numeric",
     minute: "numeric",
   });
-  time.innerHTML = childrenMap(obj.children);
+  const content = childrenMap(obj.children);
+  const timeClass = `class="date"`;
+  const time = `<span title=${title} ${timeClass}>${content}</span>`;
   return time;
 }

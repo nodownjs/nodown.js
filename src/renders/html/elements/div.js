@@ -1,19 +1,17 @@
-import { recursiveRender } from "../render.js";
+import { recursiveRender } from "../render";
 
 export default function createDiv(obj) {
-  const div = document.createElement("div");
-  div.innerHTML = obj.children
-    .map(
-      (child) =>
-        recursiveRender({ ...child, total: obj.children.length }).outerHTML
-    )
+  const content = obj.children
+    .map((child) => recursiveRender({ ...child, total: obj.children.length }))
     .join("");
+  let styles = ``;
   const { display, align } = obj;
   if (display === "inline") {
-    div.style.display = "flex";
-    if (align) div.style.justifyContent = align;
+    styles = styles + "display: flex;";
+    if (align) styles = styles + "justifyContent: align;";
   } else {
-    if (align) div.style.textAlign = align;
+    if (align) styles = styles + "textAlign: align;";
   }
+  const div = `<div style="${styles}">${content}</div>`;
   return div;
 }

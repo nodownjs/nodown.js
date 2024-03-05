@@ -1,14 +1,11 @@
 import { childrenMap } from "../render.js";
 
 export default function createLink(obj) {
-  const a = document.createElement("a");
-  a.href = obj.href;
-  if (obj.title) {
-    a.title = obj.title;
-  }
-  let text = childrenMap(obj.children);
-  if (obj.href.startsWith("#fnref-")) text = " " + text;
-  if (text.trim() === "") text = obj.href;
-  a.innerHTML = text;
+  let content = childrenMap(obj.children);
+  if (obj.href.startsWith("#fnref-")) content = " " + content;
+  if (content.trim() === "") content = obj.href;
+  const href = `href="${obj.href}"`;
+  const title = obj.title ? `title="${obj.title}"` : "";
+  const a = `<a ${href} ${title}>${content}</a>`;
   return a;
 }
