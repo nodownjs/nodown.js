@@ -545,5 +545,7 @@ export default function parser(textDocument, opt = defaultOptions) {
   syntaxTree.tableOfContents = toc.children[0];
   // console.table(syntaxTree.children);
   // console.log(syntaxTree);
+  const disabledRoot = options?.root?.disabled ?? false;
+  if (disabledRoot) return syntaxTree.children;
   return syntaxTree;
 }
