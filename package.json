@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/nodownjs/nodown.js#readme",
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --coverage",
     "build-css": "mkdir -p styles && sass src/styles/index.scss styles/index.css && sass src/styles/themes/dark.scss styles/theme-dark.css && sass src/styles/themes/light.scss styles/theme-light.css",
     "build-js": "node esbuild.mjs",
     "start": "nodemon -x \"npm run build-css && npm run build-js\"",
@@ -25,6 +25,7 @@
   "author": "Pierre-LHOSTE",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "@vitest/coverage-v8": "^1.3.1",
     "esbuild": "^0.19.10",
     "nodemon": "^3.0.2",
     "sass": "^1.69.5",
