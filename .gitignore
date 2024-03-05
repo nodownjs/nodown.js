@@ -27,5 +27,4 @@ styles/
 *.css.map
 *.tgz
 pack/
-pack/
 coverage/
