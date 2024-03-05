@@ -5,7 +5,7 @@ export default function createImage(obj) {
   let titleText = "";
   if (title) {
     titleText = ` title="${title}"`;
-    altText = ` alt="title : ${title}"`;
+    altText = ` alt="Title : ${title}"`;
   }
   if (alt) altText = ` alt="${alt}"`;
   let styles = ``;
@@ -20,12 +20,15 @@ export default function createImage(obj) {
     if (height.endsWith("%")) {
       styles = styles + `height: ${height}; min-height: ${height};`;
     } else {
-      styles = styles + `height: ${height}px; min-height: ${height};`;
+      styles = styles + `height: ${height}px; min-height: ${height}px;`;
     }
   }
   if (render) {
-    styles = styles + `image-rendering: ${render};`;
-    if (render === "smooth") styles = styles + `image-rendering: auto;`;
+    if (render === "smooth") {
+      styles = styles + `image-rendering: auto;`;
+    } else {
+      styles = styles + `image-rendering: ${render};`;
+    }
   }
   if (styles.length > 0) styles = ` style="${styles}"`;
   console.log(altText, titleText, styles);
