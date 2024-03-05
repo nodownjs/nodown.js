@@ -1,16 +1,13 @@
 export default function createImage(obj) {
   const src = obj.source;
   const { title, width, height, render, alt } = obj;
-  let altText,
-    titleText,
-    widthSize,
-    heightSize,
-    renderText = "";
+  let altText = "";
+  let titleText = "";
   if (title) {
-    titleText = `title="${title}"`;
-    altText = `alt="title : ${title}"`;
+    titleText = ` title="${title}"`;
+    altText = ` alt="title : ${title}"`;
   }
-  if (alt) altText = `alt="${alt}"`;
+  if (alt) altText = ` alt="${alt}"`;
   let styles = ``;
   if (width) {
     if (width.endsWith("%")) {
@@ -30,7 +27,8 @@ export default function createImage(obj) {
     styles = styles + `image-rendering: ${render};`;
     if (render === "smooth") styles = styles + `image-rendering: auto;`;
   }
-
-  const img = `<img src="${src}" ${titleText} ${altText} style="${styles}" >`;
+  if (styles.length > 0) styles = ` style="${styles}"`;
+  console.log(altText, titleText, styles);
+  const img = `<img src="${src}"${titleText}${altText}${styles} />`;
   return img;
 }
