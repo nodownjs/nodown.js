@@ -27,7 +27,7 @@ describe("Image", () => {
 
   it("With title", () => {
     const imgTest = `![](${imgSrc};${imgTitle})`;
-    const imgResult = `<img src="${imgSrc}" title="${imgTitle}" alt="title : ${imgTitle}" />`;
+    const imgResult = `<img src="${imgSrc}" title="${imgTitle}" alt="Title : ${imgTitle}" />`;
     const img = renderToHTML(parser(imgTest, parserOptions)[0].children[1]);
     expect(img).toBe(imgResult);
   });
