@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parser, renderToHTML } from "../../dist/main";
+import { parser, renderToHTML } from "../../src/index";
 import parserOptions from "./parserOptions.json";
 
 describe("Title", () => {
