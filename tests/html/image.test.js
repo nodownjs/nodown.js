@@ -2,19 +2,19 @@ import { describe, expect, it } from "vitest";
 import { parser, renderToHTML } from "../../src/index";
 import parserOptions from "./parserOptions.json";
 
+const imgSrc = `https://example.com/image.png`;
+const imgTitle = `Exemple title`;
+const imgAlt = `Exemple alt`;
+const img100Width = `100%`;
+const img255Width = `255`;
+const img100Height = `100%`;
+const img255Height = `255`;
+
+function generateTest(elementTest) {
+  return renderToHTML(parser(elementTest, parserOptions)[0].children[1]);
+}
+
 describe("Image", () => {
-  const imgSrc = `https://example.com/image.png`;
-  const imgTitle = `Exemple title`;
-  const imgAlt = `Exemple alt`;
-  const img100Width = `100%`;
-  const img255Width = `255`;
-  const img100Height = `100%`;
-  const img255Height = `255`;
-
-  function generateTest(elementTest) {
-    return renderToHTML(parser(elementTest, parserOptions)[0].children[1]);
-  }
-
   it("Basic image", () => {
     const imgTest = `![](${imgSrc})`;
     const imgResult = `<img src="${imgSrc}" />`;
