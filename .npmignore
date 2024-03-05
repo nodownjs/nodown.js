@@ -5,3 +5,5 @@ test-site/
 .git/
 .gitignore
 esbuild.mjs
+coverage/
+tests/
