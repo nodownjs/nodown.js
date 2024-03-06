@@ -394,8 +394,10 @@ export default function parser(textDocument, opt = defaultOptions) {
   function makeCitation(line, afterLine) {
     if (citationContent.length <= 0 && !citationType.title) {
       citationType = createCitationType(line);
-      if (citationType.type === "citation") {
-        citationContent.push(...citationType.children);
+      if (citationType.children) {
+        citationContent.push(
+          createCitationContent("> " + citationType.children)
+        );
         delete citationType.children;
       }
     } else {

@@ -11,14 +11,14 @@ const citationText = `Citation about something`;
 describe("Citation", () => {
   it("Basic citation", () => {
     const citationTest = `> ${citationText}`;
-    const citationResult = `<blockquote>${citationText}</blockquote>`;
+    const citationResult = `<blockquote><p>${citationText}</p></blockquote>`;
     const citation = generateTest(citationTest);
     expect(citation).toBe(citationResult);
   });
 
   it("Multi lines", () => {
     const citationTest = `> ${citationText}\n> ${citationText}`;
-    const citationResult = `<blockquote><p>${citationText}\n${citationText}</p></blockquote>`;
+    const citationResult = `<blockquote><p>${citationText}</p><p>${citationText}</p></blockquote>`;
     const citation = generateTest(citationTest);
     expect(citation).toBe(citationResult);
   });

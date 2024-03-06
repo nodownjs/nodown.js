@@ -47,11 +47,13 @@ export function createCitationType(line) {
       break;
   }
 
-  if (citationType.type !== "citation") {
-    citationType.title = convertToObject(content);
+  if (/^# (.*)/.test(content)) {
+    const title = content.match(/^# (.*)/)[1];
+    citationType.title = convertToObject(title);
   } else {
-    citationType.children = convertToObject(content);
+    citationType.children = content;
   }
+
   return citationType;
 }
 
