@@ -7,6 +7,7 @@ import createColor from "./elements/color.js";
 import createDate from "./elements/date.js";
 import createDiv from "./elements/div.js";
 import createDivider from "./elements/divider.js";
+import createFootnoteList from "./elements/footnote-list.js";
 import createFootnoteRef from "./elements/footnote-ref.js";
 import createFootnote from "./elements/footnote.js";
 import createFrenchQuotationMark from "./elements/french-quotation-mark.js";
@@ -169,6 +170,8 @@ function createElementFromObj(obj) {
       return createFootnote(obj);
     case "section-footnote":
       return createSectionFootnote(obj);
+    case "footnote-list":
+      return createFootnoteList(obj);
     case "alert":
       return createAlert(obj);
     case "table-of-contents":

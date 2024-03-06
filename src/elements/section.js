@@ -1,18 +1,23 @@
+import { options } from "../parser";
+
 export default function createSection(custom) {
   const type = custom ? "section-" + custom : "section";
+  const disabledDiv = options?.horizontalAlignment?.disabled ?? false;
   const section = {
     type: type,
-    children: [
-      {
-        type: "div",
-        children: [
+    children: disabledDiv
+      ? []
+      : [
           {
             type: "div",
-            children: [],
+            children: [
+              {
+                type: "div",
+                children: [],
+              },
+            ],
           },
         ],
-      },
-    ],
   };
   return section;
 }

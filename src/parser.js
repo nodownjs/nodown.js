@@ -99,15 +99,16 @@ export default function parser(textDocument, opt = defaultOptions) {
         const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
         return lastSubDiv;
       }
-    }
-    if (disabledDiv) {
-      const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
-      return lastSection;
     } else {
-      const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
-      const lastDiv = lastSection.children[lastSection.children.length - 1];
-      const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
-      return lastSubDiv;
+      if (disabledDiv) {
+        const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+        return lastSection;
+      } else {
+        const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
+        const lastDiv = lastSection.children[lastSection.children.length - 1];
+        const lastSubDiv = lastDiv.children[lastDiv.children.length - 1];
+        return lastSubDiv;
+      }
     }
   }
 
@@ -528,7 +529,10 @@ export default function parser(textDocument, opt = defaultOptions) {
   if (footnotes.length > 0) {
     makeSection("footnote");
     const lastDiv = getLastDiv();
-    lastDiv.children.push(...footnotes.sort((a, b) => a.index - b.index));
+    lastDiv.children.push({
+      type: "footnote-list",
+      children: [...footnotes.sort((a, b) => a.index - b.index)],
+    });
   }
   if (varList.length > 0) {
     makeSection("var");
