@@ -102,7 +102,6 @@ export function recursiveRender(obj) {
   }
 
   const element = createElementFromObj(obj);
-  console.log("🚀 ~ element:", element);
   return element;
 }
 

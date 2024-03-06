@@ -8,9 +8,9 @@ export default function createDiv(obj) {
   const { display, align } = obj;
   if (display === "inline") {
     styles.push("display: flex;");
-    if (align) styles.push("justifyContent: align;");
+    if (align) styles.push(`justify-content: ${align};`);
   } else {
-    if (align) styles.push("textAlign: align;");
+    if (align) styles.push(`text-align: ${align};`);
   }
   if (styles.length < 1) {
     styles = "";
