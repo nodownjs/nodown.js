@@ -38,4 +38,59 @@ describe("Div", () => {
     const div = generateTest(divTest, 1);
     expect(div).toBe(divResult);
   });
+
+  it("Right aligned", () => {
+    const divTest = `------:\n${textContent}`;
+    const divResult = `<div style="text-align: right;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Left aligned", () => {
+    const divTest = `:------\n${textContent}`;
+    const divResult = `<div style="text-align: left;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Center aligned", () => {
+    const divTest = `---:---\n${textContent}`;
+    const divResult = `<div style="text-align: center;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex left aligned", () => {
+    const divTest = `:======\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: left;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex right aligned", () => {
+    const divTest = `======:\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: right;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex center aligned", () => {
+    const divTest = `===:===\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: center;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex space-between aligned", () => {
+    const divTest = `:======:\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: space-between;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex space-around aligned", () => {
+    const divTest = `:===:===:\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: space-around;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
+  it("Flex space-evenly aligned", () => {
+    const divTest = `::===:===::\n${textContent}`;
+    const divResult = `<div style="display: flex; justify-content: space-evenly;"><div style="${allStyle}"><p>${textContent}</p></div></div>`;
+    const div = generateTest(divTest, 1);
+    expect(div).toBe(divResult);
+  });
 });
