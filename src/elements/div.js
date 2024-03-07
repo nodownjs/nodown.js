@@ -37,7 +37,6 @@ export default function createDiv(line) {
       div.display = "inline";
       div.align = "right";
       break;
-      break;
     case "===:===":
       div.display = "inline";
       div.align = "center";
