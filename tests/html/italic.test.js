@@ -26,8 +26,8 @@ describe("italic", () => {
   });
 
   it("bold in italic", () => {
-    const italicTest = `*${italicText} **${italicText}***`;
-    const italicResult = `<p><em>${italicText} <strong>${italicText}</strong></em></p>`;
+    const italicTest = `*${italicText} **${boldText}***`;
+    const italicResult = `<p><em>${italicText} <strong>${boldText}</strong></em></p>`;
     const italic = generateTest(italicTest);
     expect(italic).toBe(italicResult);
   });
