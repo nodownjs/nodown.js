@@ -11,6 +11,6 @@ export default function createDate(obj) {
   });
   const content = childrenMap(obj.children);
   const timeClass = `class="date"`;
-  const time = `<span title=${title} ${timeClass}>${content}</span>`;
+  const time = `<span title="${title}" ${timeClass}>${content}</span>`;
   return time;
 }
