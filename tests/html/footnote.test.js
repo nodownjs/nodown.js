@@ -17,4 +17,18 @@ describe("Footnote", () => {
     const footnote = generateTest(footnoteTest);
     expect(footnote).toBe(footnoteResult);
   });
+  it("Inactive footnote", () => {
+    const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}-inactive]: ${footnoteText}`;
+    const footnoteResult = `<li class="footnote" id="fn-${footnoteId}-inactive">${footnoteText}</li>`;
+    const footnote = generateTest(footnoteTest);
+    expect(footnote).toBe(footnoteResult);
+  });
+  it("Multiple footnotes", () => {
+    const footnoteTest = `${text}[^${footnoteId}]\n${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
+    const footnoteResult = `<li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}" > ↩<sup>1</sup></a><a href="#fnref-${footnoteId}-1" > ↩<sup>2</sup></a></li>`;
+    const footnote = renderToHTML(
+      parser(footnoteTest, parserOptions)[2].children[0]
+    );
+    expect(footnote).toBe(footnoteResult);
+  });
 });
