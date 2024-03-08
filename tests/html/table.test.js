@@ -33,6 +33,16 @@ describe("Table", () => {
     expect(table).toBe(tableResult);
   });
 
+  it("Only header", () => {
+    const tableHeader = "|" + ` ${tableHeaderText} |`.repeat(dataNumber);
+    const tableSeparator = "|" + ` -: |`.repeat(dataNumber);
+    const tableResult =
+      "<table><thead><tr>" +
+      `<th align="right">${tableHeaderText}</th>`.repeat(dataNumber) +
+      "</tr></thead><tbody></tbody></table>";
+    const table = generateTest(tableHeader + "\n" + tableSeparator);
+    expect(table).toBe(tableResult);
+  });
   it("With right align", () => {
     const tableHeader = "|" + ` ${tableHeaderText} |`.repeat(dataNumber);
     const tableSeparator = "|" + ` -: |`.repeat(dataNumber);

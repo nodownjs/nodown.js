@@ -458,7 +458,7 @@ export default function parser(textDocument, opt = defaultOptions) {
 
   for (let i = 0; i < linesList.length; i++) {
     const line = linesList[i];
-    const afterLine = linesList[i + 1];
+    const afterLine = linesList[i + 1] || "";
 
     const tableTest =
       afterLine &&
