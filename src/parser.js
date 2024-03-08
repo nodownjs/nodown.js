@@ -1,6 +1,7 @@
 import {
   backSlashFinderRegExp,
   blockCodeRegExp,
+  blockCodeStartRegExp,
   citationRegExp,
   divRegExp,
   dividerRegExp,
@@ -356,7 +357,7 @@ export default function parser(textDocument, opt = defaultOptions) {
       tableAlign = createTableAlign(line);
       tableHeader = updateTableHeaderAlign(tableHeader, tableAlign);
       tableStatus++;
-      if (!afterLine.match(tableRegExp)) {
+      if (afterLine === undefined || !afterLine.match(tableRegExp)) {
         const table = createTable(tableAlign, tableHeader, tableRows);
         const lastDiv = getLastDiv();
         lastDiv.children.push(table);
@@ -416,7 +417,14 @@ export default function parser(textDocument, opt = defaultOptions) {
   }
 
   function makeBlockCode(line, push = false) {
-    if (push) {
+    if (line === null) {
+      createParagraph("```" + blockCodeLanguage);
+      blockCodeContent.forEach((content) => {
+        createParagraph(content);
+      });
+      return;
+    }
+    if (push && !blockCodeStartRegExp.test(line)) {
       blockCodeContent.push(removeBackslashInCode(line));
     } else {
       if (isBlockCode) {
@@ -430,6 +438,7 @@ export default function parser(textDocument, opt = defaultOptions) {
         lastDiv.children.push(blockCode);
         blockCodeContent = [];
         blockCodeLanguage = "";
+        if (blockCodeStartRegExp.test(line)) makeBlockCode(line);
       } else {
         const match = line.match(blockCodeRegExp);
         if (match[1]) blockCodeLanguage = match[1];
@@ -458,7 +467,7 @@ export default function parser(textDocument, opt = defaultOptions) {
 
   for (let i = 0; i < linesList.length; i++) {
     const line = linesList[i];
-    const afterLine = linesList[i + 1] || "";
+    const afterLine = linesList[i + 1];
 
     const tableTest =
       afterLine &&
@@ -471,7 +480,10 @@ export default function parser(textDocument, opt = defaultOptions) {
       options?.horizontalAlignment?.disabled ?? false;
     const hideDisabledElements = options?.hideDisabledElements ?? true;
 
-    if (blockCodeRegExp.test(line)) {
+    if (
+      (blockCodeStartRegExp.test(line) && !isBlockCode) ||
+      (blockCodeRegExp.test(line) && !blockCodeStartRegExp.test(line))
+    ) {
       makeBlockCode(line);
     } else if (isBlockCode) {
       makeBlockCode(line, true);

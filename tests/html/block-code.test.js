@@ -23,4 +23,16 @@ describe("Block-code", () => {
     const code = generateTest(codeTest);
     expect(code).toBe(codeResult);
   });
+
+  it("Without end", () => {
+    const codeTest = `\`\`\`${codeLanguage}\n${codeText}`;
+    const codeResult = `<section><p>\`\`\`${codeLanguage}</p>${codeText
+      .split("\n")
+      .map((text) => `<p>${text}</p>`)
+      .join("")}</section>`;
+    const code = renderToHTML(
+      parser(codeTest, { ...parserOptions, section: { disabled: false } })[0]
+    );
+    expect(code).toBe(codeResult);
+  });
 });

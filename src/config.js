@@ -125,6 +125,7 @@ export const titleRegExp = /^(#{1,6})\s(.+)/;
 export const titleIdRegExp = /(.*)(?:{#(.+)})$/g;
 
 export const blockCodeRegExp = /^\s*`{3}(\w*)/;
+export const blockCodeStartRegExp = /^\s*`{3}(\w+)/;
 
 export const tableRegExp = /^\s*\|(?:(?:[^\|]*|\\|)\|)*/;
 export const globalTableRegExp = /((?:[^\|]|\\\|)*)(?<!\\)\|/g;
