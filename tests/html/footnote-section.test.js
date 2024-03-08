@@ -9,7 +9,7 @@ const text = `Some simple text`;
 describe("Footnote", () => {
   it("Basic footnote section", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<section id="footnotes"><div><div><ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}" > ↩</a></li></ol></div></div></section>`;
+    const footnoteResult = `<section id="footnotes"><div><div><ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}"> ↩</a></li></ol></div></div></section>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,
@@ -22,7 +22,7 @@ describe("Footnote", () => {
 
   it("Without div", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<section id="footnotes"><ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}" > ↩</a></li></ol></section>`;
+    const footnoteResult = `<section id="footnotes"><ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}"> ↩</a></li></ol></section>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,
@@ -34,7 +34,7 @@ describe("Footnote", () => {
 
   it("Without section and div", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}" > ↩</a></li></ol>`;
+    const footnoteResult = `<ol><li class="footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}"> ↩</a></li></ol>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,

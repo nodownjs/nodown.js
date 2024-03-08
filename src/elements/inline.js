@@ -193,7 +193,7 @@ export function convertToObject(text, exception) {
     obj.type = "link";
     obj.href = removeBackslash(removeBackslashInCode(match.group[1]));
     obj.title = match.group[2];
-    obj.children = convertToObject(match.group[0].trim());
+    obj.children = convertToObject(match.group[0]?.trim() || "");
   } else if (match.name === "color") {
     obj.type = "color";
     obj.color = match.group[0];
