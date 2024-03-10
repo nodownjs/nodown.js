@@ -223,7 +223,7 @@ export function convertToObject(text, exception) {
         existingFootnoteRef.count = existingFootnoteRef.count + 1;
         obj.id = refID + "-" + (existingFootnoteRef.count - 1);
       }
-      obj.ref = refID;
+      obj.refId = refID;
       obj.index = existingFootnoteRef.index;
     }
   } else if (match.name === "unicode") {

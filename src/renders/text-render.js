@@ -289,7 +289,7 @@ export default function renderToText(obj) {
         arr.push("`");
         break;
       case "footnote-ref":
-        arr.push(`[^${obj.ref}]`);
+        arr.push(`[^${obj.refId}]`);
         break;
       case "image":
         let { title, width, height, alt, source, render } = obj;
