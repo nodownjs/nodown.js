@@ -1,0 +1,16 @@
+{
+  "name": "@nodown/nodown",
+  "exports": "./dist/main.js",
+  "version": "0.2.2",
+  "publish": {
+    "include": [
+      "dist/",
+      "styles/",
+      "nodown.d.ts",
+      "package.json",
+      "README.md",
+      "LICENSE.md",
+      "CHANGELOG.md"
+    ]
+  }
+}
