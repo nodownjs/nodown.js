@@ -8,6 +8,7 @@
       "styles/",
       "nodown.d.ts",
       "package.json",
+      "jsr.json",
       "README.md",
       "LICENSE.md",
       "CHANGELOG.md"
