@@ -12,14 +12,14 @@ const codeLanguage = `javascript`;
 describe("Block-code", () => {
   it("Without language", () => {
     const codeTest = `\`\`\`\n${codeText}\n\`\`\``;
-    const codeResult = `<pre class=""><code>${codeText}</code></pre>`;
+    const codeResult = `<pre class="nodown-block-code"><code>${codeText}</code></pre>`;
     const code = generateTest(codeTest);
     expect(code).toBe(codeResult);
   });
 
   it("With language", () => {
     const codeTest = `\`\`\`${codeLanguage}\n${codeText}\n\`\`\``;
-    const codeResult = `<pre class="${codeLanguage}"><code>${codeText}</code></pre>`;
+    const codeResult = `<pre class="nodown-block-code ${codeLanguage}"><code>${codeText}</code></pre>`;
     const code = generateTest(codeTest);
     expect(code).toBe(codeResult);
   });

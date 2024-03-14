@@ -18,7 +18,7 @@ function charCode(rawChar) {
 describe("char", () => {
   it("Basic char 1", () => {
     const charTest = `\`${char1}\``;
-    const charResult = `<code class="unicode"><span class="preview">${charCode(
+    const charResult = `<code class="nodown-unicode"><span class="nodown-preview">${charCode(
       char1
     )}</span><span>${char1}</span></code>`;
     const char = generateTest(charTest);
@@ -27,7 +27,7 @@ describe("char", () => {
 
   it("Basic char 2", () => {
     const charTest = `\`${char2}\``;
-    const charResult = `<code class="unicode"><span class="preview">${charCode(
+    const charResult = `<code class="nodown-unicode"><span class="nodown-preview">${charCode(
       char2
     )}</span><span>${char2}</span></code>`;
     const char = generateTest(charTest);

@@ -1,7 +1,7 @@
 $padding: -0.25em;
 
-a.footnote-ref,
-li.footnote {
+a.nodown-footnote-ref,
+li.nodown-footnote {
   position: relative;
 
   &:target {
@@ -20,9 +20,9 @@ li.footnote {
   }
 }
 
-a.footnote-ref {
+a.nodown-footnote-ref {
   color: inherit;
-  
+
   &:target {
     &::before {
       left: $padding;

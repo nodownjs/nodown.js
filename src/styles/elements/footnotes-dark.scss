@@ -4,8 +4,8 @@ section#footnotes {
   }
 }
 
-a.footnote-ref,
-li.footnote {
+a.nodown-footnote-ref,
+li.nodown-footnote {
   &:target::before {
     border-color: #00a8fc;
   }

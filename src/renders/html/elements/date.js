@@ -10,7 +10,7 @@ export default function createDate(obj) {
     minute: "numeric",
   });
   const content = childrenMap(obj.children);
-  const timeClass = `class="date"`;
+  const timeClass = `class="nodown-date"`;
   const time = `<span title="${title}" ${timeClass}>${content}</span>`;
   return time;
 }

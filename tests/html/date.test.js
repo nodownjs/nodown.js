@@ -21,7 +21,7 @@ const dateL = new Date(dateRaw).toLocaleString(undefined, {
 describe("date", () => {
   it("Basic date", () => {
     const dateTest = `${dateCode}`;
-    const dateResult = `<span title="${dateL.toLocaleString()}" class="date">${dateL}</span>`;
+    const dateResult = `<span title="${dateL.toLocaleString()}" class="nodown-date">${dateL}</span>`;
     const date = generateTest(dateTest);
     expect(date).toBe(dateResult);
   });

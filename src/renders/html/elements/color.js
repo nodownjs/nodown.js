@@ -1,8 +1,8 @@
 import { childrenMap } from "../render";
 
 export default function createColor(obj) {
-  const codeClass = `class="color"`;
-  const colorClass = `class="preview"`;
+  const codeClass = `class="nodown-color"`;
+  const colorClass = `class="nodown-preview"`;
   const size = "1em";
   let styles = [];
   styles.push(`background-color: ${obj.color} !important;`);
