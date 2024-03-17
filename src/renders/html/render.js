@@ -114,7 +114,7 @@ export default function renderToHTML(tree, optionsArg) {
   if (disabledRoot) {
     return doc;
   }
-  console.log(doc);
+  // console.log(doc);
   return doc;
 }
 
