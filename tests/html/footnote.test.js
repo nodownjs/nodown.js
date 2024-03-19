@@ -13,7 +13,7 @@ const text = `Some simple text`;
 describe("Footnote", () => {
   it("Basic footnote", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}"> ↩</a></li>`;
+    const footnoteResult = `<li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li>`;
     const footnote = generateTest(footnoteTest);
     expect(footnote).toBe(footnoteResult);
   });
@@ -25,7 +25,7 @@ describe("Footnote", () => {
   });
   it("Multiple footnotes", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a href="#fnref-${footnoteId}"> ↩<sup>1</sup></a><a href="#fnref-${footnoteId}-1"> ↩<sup>2</sup></a></li>`;
+    const footnoteResult = `<li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩<sup class="nodown-superscript">1</sup></a><a class="nodown-link" href="#fnref-${footnoteId}-1"> ↩<sup class="nodown-superscript">2</sup></a></li>`;
     const footnote = renderToHTML(
       parser(footnoteTest, parserOptions)[2].children[0]
     );

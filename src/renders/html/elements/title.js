@@ -8,6 +8,6 @@ export default function createTitle(obj) {
     id = ` id="${obj.id}"`;
     content = content.replace(/\s+$/, "");
   }
-  const heading = `<${h}${id}>${content}</${h}>`;
+  const heading = `<${h} class="nodown-title"${id}>${content}</${h}>`;
   return heading;
 }

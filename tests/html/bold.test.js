@@ -13,35 +13,35 @@ const italicText = `Some italic text`;
 describe("Bold", () => {
   it("Basic bold", () => {
     const boldTest = `**${boldText}**`;
-    const boldResult = `<p><strong>${boldText}</strong></p>`;
+    const boldResult = `<p class="nodown-paragraph"><strong class="nodown-strong">${boldText}</strong></p>`;
     const bold = generateTest(boldTest);
     expect(bold).toBe(boldResult);
   });
 
   it("underline in bold", () => {
     const boldTest = `**${boldText} ==${underlineText}==**`;
-    const boldResult = `<p><strong>${boldText} <u>${underlineText}</u></strong></p>`;
+    const boldResult = `<p class="nodown-paragraph"><strong class="nodown-strong">${boldText} <u class="nodown-underline">${underlineText}</u></strong></p>`;
     const bold = generateTest(boldTest);
     expect(bold).toBe(boldResult);
   });
 
   it("italic in bold", () => {
     const boldTest = `**${boldText} *${italicText}***`;
-    const boldResult = `<p><strong>${boldText} <em>${italicText}</em></strong></p>`;
+    const boldResult = `<p class="nodown-paragraph"><strong class="nodown-strong">${boldText} <em class="nodown-emphasis">${italicText}</em></strong></p>`;
     const bold = generateTest(boldTest);
     expect(bold).toBe(boldResult);
   });
 
   it("italic and bold", () => {
     const boldTest = `***${boldText}***`;
-    const boldResult = `<p><strong><em>${boldText}</em></strong></p>`;
+    const boldResult = `<p class="nodown-paragraph"><strong class="nodown-strong"><em class="nodown-emphasis">${boldText}</em></strong></p>`;
     const bold = generateTest(boldTest);
     expect(bold).toBe(boldResult);
   });
 
   it("Not bold because of space", () => {
     const boldTest = `**${boldText} **`;
-    const boldResult = `<p>${boldTest}</p>`;
+    const boldResult = `<p class="nodown-paragraph">${boldTest}</p>`;
     const bold = generateTest(boldTest);
     expect(bold).toBe(boldResult);
   });

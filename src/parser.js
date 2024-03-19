@@ -141,7 +141,7 @@ export default function parser(textDocument, opt = defaultOptions) {
       type: "div",
       children: [
         {
-          type: "div",
+          type: "sub-div",
           children: [],
         },
       ],
@@ -164,7 +164,7 @@ export default function parser(textDocument, opt = defaultOptions) {
           type: "div",
           children: [
             {
-              type: "div",
+              type: "sub-div",
               children: [],
             },
           ],

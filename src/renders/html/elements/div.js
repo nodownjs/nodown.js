@@ -17,6 +17,6 @@ export default function createDiv(obj) {
   } else {
     styles = ` style="${styles.join(" ")}"`;
   }
-  const div = `<div${styles}>${content}</div>`;
+  const div = `<div class="nodown-div"${styles}>${content}</div>`;
   return div;
 }

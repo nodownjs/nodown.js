@@ -18,7 +18,7 @@ const text = `Du texte simple mais français`;
 describe("French quotation mark", () => {
   it("Basic french quotation mark", () => {
     const frTest = `"${text}"`;
-    const frResult = `<p>« ${text} »</p>`;
+    const frResult = `<p class="nodown-paragraph">« ${text} »</p>`;
     const fr = generateTest(frTest);
     expect(fr).toBe(frResult);
   });

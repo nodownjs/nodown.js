@@ -11,14 +11,14 @@ function generateTest(elementTest) {
 describe("Paragraph", () => {
   it("Basic paragraph", () => {
     const paragraphTest = `${paragraphText}`;
-    const paragraphResult = `<p>${paragraphText}</p>`;
+    const paragraphResult = `<p class="nodown-paragraph">${paragraphText}</p>`;
     const paragraph = generateTest(paragraphTest);
     expect(paragraph).toBe(paragraphResult);
   });
 
   it("With HTML", () => {
     const paragraphTest = `<strong>${paragraphText}</strong>`;
-    const paragraphResult = `<p>&lt;strong&gt;${paragraphText}&lt;/strong&gt;</p>`;
+    const paragraphResult = `<p class="nodown-paragraph">&lt;strong&gt;${paragraphText}&lt;/strong&gt;</p>`;
     const paragraph = generateTest(paragraphTest);
     expect(paragraph).toBe(paragraphResult);
   });

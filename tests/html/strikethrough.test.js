@@ -13,28 +13,28 @@ const italicText = `Some italic text`;
 describe("strikethrough", () => {
   it("Basic strikethrough", () => {
     const strikethroughTest = `~~${strikethroughText}~~`;
-    const strikethroughResult = `<p><del>${strikethroughText}</del></p>`;
+    const strikethroughResult = `<p class="nodown-paragraph"><del class="nodown-strikethrough">${strikethroughText}</del></p>`;
     const strikethrough = generateTest(strikethroughTest);
     expect(strikethrough).toBe(strikethroughResult);
   });
 
   it("underline in strikethrough", () => {
     const strikethroughTest = `~~${strikethroughText} ==${underlineText}==~~`;
-    const strikethroughResult = `<p><del>${strikethroughText} <u>${underlineText}</u></del></p>`;
+    const strikethroughResult = `<p class="nodown-paragraph"><del class="nodown-strikethrough">${strikethroughText} <u class="nodown-underline">${underlineText}</u></del></p>`;
     const strikethrough = generateTest(strikethroughTest);
     expect(strikethrough).toBe(strikethroughResult);
   });
 
   it("italic in strikethrough", () => {
     const strikethroughTest = `~~${strikethroughText} *${italicText}*~~`;
-    const strikethroughResult = `<p><del>${strikethroughText} <em>${italicText}</em></del></p>`;
+    const strikethroughResult = `<p class="nodown-paragraph"><del class="nodown-strikethrough">${strikethroughText} <em class="nodown-emphasis">${italicText}</em></del></p>`;
     const strikethrough = generateTest(strikethroughTest);
     expect(strikethrough).toBe(strikethroughResult);
   });
 
   it("Not strikethrough because of space", () => {
     const strikethroughTest = `~~${strikethroughText} ~~`;
-    const strikethroughResult = `<p>${strikethroughTest}</p>`;
+    const strikethroughResult = `<p class="nodown-paragraph">${strikethroughTest}</p>`;
     const strikethrough = generateTest(strikethroughTest);
     expect(strikethrough).toBe(strikethroughResult);
   });

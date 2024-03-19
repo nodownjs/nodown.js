@@ -35,6 +35,6 @@ export default function createImage(obj) {
   } else {
     styles = ` style="${styles.join(" ")}"`;
   }
-  const img = `<img src="${src}"${titleText}${altText}${styles} />`;
+  const img = `<img class="nodown-image" src="${src}"${titleText}${altText}${styles} />`;
   return img;
 }

@@ -12,7 +12,7 @@ export default function createSection(custom) {
             type: "div",
             children: [
               {
-                type: "div",
+                type: "sub-div",
                 children: [],
               },
             ],

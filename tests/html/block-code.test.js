@@ -26,9 +26,9 @@ describe("Block-code", () => {
 
   it("Without end", () => {
     const codeTest = `\`\`\`${codeLanguage}\n${codeText}`;
-    const codeResult = `<section><p>\`\`\`${codeLanguage}</p>${codeText
+    const codeResult = `<section class="nodown-section"><p class="nodown-paragraph">\`\`\`${codeLanguage}</p>${codeText
       .split("\n")
-      .map((text) => `<p>${text}</p>`)
+      .map((text) => `<p class="nodown-paragraph">${text}</p>`)
       .join("")}</section>`;
     const code = renderToHTML(
       parser(codeTest, { ...parserOptions, section: { disabled: false } })[0]

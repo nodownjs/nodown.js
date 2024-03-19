@@ -19,6 +19,6 @@ export default function createSubDiv(obj) {
   if (obj.align) styles.push(`text-align: ${obj.align};`);
   styles.push(`flex: ${flex};`);
   styles = ` style="${styles.join(" ")}"`;
-  const subDiv = `<div${styles}>${content}</div>`;
+  const subDiv = `<div class="nodown-sub-div"${styles}>${content}</div>`;
   return subDiv;
 }

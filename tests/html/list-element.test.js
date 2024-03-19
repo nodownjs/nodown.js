@@ -11,21 +11,21 @@ const liText = `Some list item text`;
 describe("List-element", () => {
   it("Basic list element", () => {
     const liTest = `- ${liText}`;
-    const liResult = `<li>${liText}</li>`;
+    const liResult = `<li class="nodown-list-element">${liText}</li>`;
     const li = generateTest(liTest);
     expect(li).toBe(liResult);
   });
 
   it("With checkbox unchecked", () => {
     const liTest = `- [ ] ${liText}`;
-    const liResult = `<li><input type="checkbox" />${liText}</li>`;
+    const liResult = `<li class="nodown-task-list-element"><input type="checkbox" />${liText}</li>`;
     const li = generateTest(liTest);
     expect(li).toBe(liResult);
   });
 
   it("With checkbox checked", () => {
     const liTest = `- [x] ${liText}`;
-    const liResult = `<li><input type="checkbox" checked />${liText}</li>`;
+    const liResult = `<li class="nodown-task-list-element"><input type="checkbox" checked />${liText}</li>`;
     const li = generateTest(liTest);
     expect(li).toBe(liResult);
   });

@@ -7,7 +7,7 @@ const sectionText = `Some section text`;
 describe("Section", () => {
   it("Basic section", () => {
     const sectionTest = `${sectionText}`;
-    const sectionResult = `<section><p>${sectionText}</p></section>`;
+    const sectionResult = `<section class="nodown-section"><p class="nodown-paragraph">${sectionText}</p></section>`;
     const section = renderToHTML(
       parser(sectionTest, {
         ...parserOptions,
@@ -19,7 +19,7 @@ describe("Section", () => {
 
   it("With div and sub-div", () => {
     const sectionTest = `${sectionText}\n------\n===\n${sectionText}`;
-    const sectionResult = `<section><div><div><p>${sectionText}</p></div></div><div style="text-align: left;"><div style="overflow-y: hidden; text-align: left; flex: 1 0 0%;"><p>${sectionText}</p></div></div></section>`;
+    const sectionResult = `<section class="nodown-section"><div class="nodown-div"><div class="nodown-sub-div" style="overflow-y: hidden; flex: 1 0 0%;"><p class="nodown-paragraph">${sectionText}</p></div></div><div class="nodown-div" style="text-align: left;"><div class="nodown-sub-div" style="overflow-y: hidden; text-align: left; flex: 1 0 0%;"><p class="nodown-paragraph">${sectionText}</p></div></div></section>`;
     const section = renderToHTML(
       parser(sectionTest, {
         ...parserOptions,
@@ -32,7 +32,7 @@ describe("Section", () => {
 
   it("Without section", () => {
     const sectionTest = `${sectionText}`;
-    const sectionResult = `<p>${sectionText}</p>`;
+    const sectionResult = `<p class="nodown-paragraph">${sectionText}</p>`;
     const section = renderToHTML(
       parser(sectionTest, {
         ...parserOptions,

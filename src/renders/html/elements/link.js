@@ -6,6 +6,6 @@ export default function createLink(obj) {
   if (content.trim() === "") content = obj.href;
   const href = ` href="${obj.href}"`;
   const title = obj.title ? ` title="${obj.title}"` : "";
-  const a = `<a${href}${title}>${content}</a>`;
+  const a = `<a class="nodown-link"${href}${title}>${content}</a>`;
   return a;
 }

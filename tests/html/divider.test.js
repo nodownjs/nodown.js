@@ -9,7 +9,7 @@ function generateTest(elementTest) {
 describe("Divider", () => {
   it("Basic divider", () => {
     const dividerTest = `---`;
-    const dividerResult = `<hr />`;
+    const dividerResult = `<hr class="nodown-divider" />`;
     const divider = generateTest(dividerTest);
     expect(divider).toBe(dividerResult);
   });

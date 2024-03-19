@@ -18,12 +18,16 @@ describe("Table", () => {
       .repeat(dataNumber)
       .slice(0, -1);
     const tableResult =
-      "<table><thead><tr>" +
-      `<th align="left">${tableHeaderText}</th>`.repeat(dataNumber) +
+      '<table class="nodown-table"><thead><tr class="nodown-table-row">' +
+      `<th class="nodown-table-header" align="left">${tableHeaderText}</th>`.repeat(
+        dataNumber
+      ) +
       "</tr></thead><tbody>" +
       (
-        `<tr>` +
-        `<td align="left">${tableBodyText}</td>`.repeat(dataNumber) +
+        `<tr class="nodown-table-row">` +
+        `<td class="nodown-table-data" align="left">${tableBodyText}</td>`.repeat(
+          dataNumber
+        ) +
         `</tr>`
       ).repeat(dataNumber) +
       "</tbody></table>";
@@ -37,8 +41,10 @@ describe("Table", () => {
     const tableHeader = "|" + ` ${tableHeaderText} |`.repeat(dataNumber);
     const tableSeparator = "|" + ` -: |`.repeat(dataNumber);
     const tableResult =
-      "<table><thead><tr>" +
-      `<th align="right">${tableHeaderText}</th>`.repeat(dataNumber) +
+      '<table class="nodown-table"><thead><tr class="nodown-table-row">' +
+      `<th class="nodown-table-header" align="right">${tableHeaderText}</th>`.repeat(
+        dataNumber
+      ) +
       "</tr></thead><tbody></tbody></table>";
     const table = generateTest(tableHeader + "\n" + tableSeparator);
     expect(table).toBe(tableResult);
@@ -50,12 +56,16 @@ describe("Table", () => {
       .repeat(dataNumber)
       .slice(0, -1);
     const tableResult =
-      "<table><thead><tr>" +
-      `<th align="right">${tableHeaderText}</th>`.repeat(dataNumber) +
+      '<table class="nodown-table"><thead><tr class="nodown-table-row">' +
+      `<th class="nodown-table-header" align="right">${tableHeaderText}</th>`.repeat(
+        dataNumber
+      ) +
       "</tr></thead><tbody>" +
       (
-        `<tr>` +
-        `<td align="right">${tableBodyText}</td>`.repeat(dataNumber) +
+        `<tr class="nodown-table-row">` +
+        `<td class="nodown-table-data" align="right">${tableBodyText}</td>`.repeat(
+          dataNumber
+        ) +
         `</tr>`
       ).repeat(dataNumber) +
       "</tbody></table>";
@@ -71,14 +81,14 @@ describe("Table", () => {
       .repeat(dataNumber)
       .slice(0, -1);
     const tableResult =
-      "<table><thead><tr>" +
-      `<th align="left">${tableHeaderText}</th><th align="right">${tableHeaderText}</th>`.repeat(
+      '<table class="nodown-table"><thead><tr class="nodown-table-row">' +
+      `<th class="nodown-table-header" align="left">${tableHeaderText}</th><th class=\"nodown-table-header\" align="right">${tableHeaderText}</th>`.repeat(
         dataNumber / 2
       ) +
       "</tr></thead><tbody>" +
       (
-        `<tr>` +
-        `<td align="left">${tableBodyText}</td><td align="right">${tableBodyText}</td>`.repeat(
+        `<tr class="nodown-table-row">` +
+        `<td class="nodown-table-data" align="left">${tableBodyText}</td><td class="nodown-table-data" align="right">${tableBodyText}</td>`.repeat(
           dataNumber / 2
         ) +
         `</tr>`
