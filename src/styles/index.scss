@@ -19,4 +19,9 @@
   * {
     scrollbar-color: auto;
   }
+
+  *[class^="nodown-"] {
+    margin: 0;
+    padding: 0;
+  }
 }
