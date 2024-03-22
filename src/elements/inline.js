@@ -234,10 +234,10 @@ export function convertToObject(text, exception) {
     const char = String.fromCodePoint(charCode);
     obj.char = char;
     obj.children = convertToObject(match.group[0].trim());
-  } else if (match.name === "var") {
+  } else if (match.name === "var" && varList.length > 0) {
     obj.type = "var";
     const id = match.group[0];
-    const var_ = varList.find((v) => v.name === id);
+    const var_ = varList.find((v) => v.name === id) || { content: "" };
     obj.id = id;
     obj.children = [
       {
