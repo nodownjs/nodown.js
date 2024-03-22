@@ -8,11 +8,11 @@ section.nodown-section {
     }
   }
 
-  > div {
+  > div.nodown-div {
     gap: 1em;
     width: 100%;
 
-    > div {
+    > div.nodown-sub-div {
       > h1,
       > h2,
       > h3,
