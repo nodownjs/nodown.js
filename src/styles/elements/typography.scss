@@ -1,7 +1,7 @@
 @import "../variables.scss";
 
 * {
-  font-size: #{$base-size}px;
+  font-size: inherit;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Open Sans", sans-serif;
   font-weight: 300;
