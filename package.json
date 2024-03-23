@@ -1,6 +1,6 @@
 {
   "name": "nodown",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "",
   "main": "dist/main.js",
   "types": "nodown.d.ts",
