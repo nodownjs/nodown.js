@@ -1,4 +1,4 @@
-$base-size: 19;
+@import "../variables.scss";
 
 * {
   font-size: #{$base-size}px;
