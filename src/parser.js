@@ -118,13 +118,6 @@ export default function parser(textDocument, opt = defaultOptions) {
     transformEscapedChar
   );
 
-  setVarList(
-    Array.from(textDocument.matchAll(varRegExp)).map((match) => {
-      textDocument = textDocument.replace(match[0], "");
-      return { name: match[1], content: match[2] };
-    })
-  );
-
   setFootnoteList(
     Array.from(
       textDocument.matchAll(new RegExp(footnoteRegExp.source, "gm"))
@@ -416,8 +409,8 @@ export default function parser(textDocument, opt = defaultOptions) {
     }
   }
 
-  function makeBlockCode(line, push = false) {
-    if (line === null) {
+  function makeBlockCode(line, push = false, inactive = false) {
+    if (line === null && !inactive) {
       createParagraph("```" + blockCodeLanguage);
       blockCodeContent.forEach((content) => {
         createParagraph(content);
@@ -429,13 +422,15 @@ export default function parser(textDocument, opt = defaultOptions) {
     } else {
       if (isBlockCode) {
         isBlockCode = false;
-        const blockCode = createBlockCode(
-          line,
-          blockCodeContent,
-          blockCodeLanguage
-        );
-        const lastDiv = getLastDiv();
-        lastDiv.children.push(blockCode);
+        if (!inactive) {
+          const blockCode = createBlockCode(
+            line,
+            blockCodeContent,
+            blockCodeLanguage
+          );
+          const lastDiv = getLastDiv();
+          lastDiv.children.push(blockCode);
+        }
         blockCodeContent = [];
         blockCodeLanguage = "";
         if (blockCodeStartRegExp.test(line)) makeBlockCode(line);
@@ -464,6 +459,34 @@ export default function parser(textDocument, opt = defaultOptions) {
     const lastDiv = getLastDiv();
     lastDiv.children.push(toc);
   }
+
+  const varRegExp_ = new RegExp(varRegExp.source);
+
+  for (let i = 0; i < linesList.length; i++) {
+    const line = linesList[i];
+
+    if (
+      (blockCodeStartRegExp.test(line) && !isBlockCode) ||
+      (blockCodeRegExp.test(line) && !blockCodeStartRegExp.test(line))
+    ) {
+      makeBlockCode(line, false, true);
+    } else if (isBlockCode) {
+      makeBlockCode(line, true, true);
+    } else if (varRegExp_.test(line)) {
+      setVarList([
+        ...varList,
+        {
+          name: line.match(varRegExp_)[1],
+          content: line.match(varRegExp_)[2],
+          raw: line.match(varRegExp_)[0],
+        },
+      ]);
+    }
+  }
+
+  blockCodeContent = [];
+  blockCodeLanguage = "";
+  isBlockCode = false;
 
   for (let i = 0; i < linesList.length; i++) {
     const line = linesList[i];
@@ -522,7 +545,7 @@ export default function parser(textDocument, opt = defaultOptions) {
       (tableStatus === 0 ? tableTest : true)
     ) {
       makeTable(line, afterLine);
-    } else if (line !== "") {
+    } else if (line !== "" && !new RegExp(varRegExp.source).test(line)) {
       createParagraph(line);
     } else {
       tableStatus = 0;

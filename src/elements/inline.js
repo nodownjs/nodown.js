@@ -129,18 +129,16 @@ export function convertToObject(text, exception) {
 
   const isVar = inlineRegExpList.find((m) => m.name === "var");
 
-  if (!isVar) {
-    varList.forEach((var_) => {
-      const regexp = new RegExp(
-        "<(" + var_.name.replace(/-/g, "\\-") + ")>",
-        "gi"
-      );
-      inlineRegExpList.push({
-        name: "var",
-        regexp: regexp,
-      });
+  varList.forEach((var_) => {
+    const regexp = new RegExp(
+      "<(" + var_.name.replace(/-/g, "\\-") + ")>",
+      "gi"
+    );
+    inlineRegExpList.push({
+      name: "var",
+      regexp: regexp,
     });
-  }
+  });
 
   let allMatches = inlineRegExpList
     .filter((m) => (options?.[m.name]?.disabled ?? false) !== true)
@@ -234,10 +232,13 @@ export function convertToObject(text, exception) {
     const char = String.fromCodePoint(charCode);
     obj.char = char;
     obj.children = convertToObject(match.group[0].trim());
-  } else if (match.name === "var" && varList.length > 0) {
+  } else if (match.name === "var") {
     obj.type = "var";
+    obj.raw = match.raw;
     const id = match.group[0];
-    const var_ = varList.find((v) => v.name === id) || { content: "" };
+    let var_ = varList.find((v) => v.name === id) || {
+      content: obj.raw,
+    };
     obj.id = id;
     obj.children = [
       {
