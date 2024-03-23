@@ -2,11 +2,12 @@
   color: #000;
 }
 
+a[class^="nodown-"],
 a {
   color: #665bde;
 }
 
-h1,
-h2 {
+h1.nodown-title,
+h2.nodown-title {
   border-bottom-color: rgba(0, 0, 0, 0.075);
 }
