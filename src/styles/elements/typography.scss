@@ -32,6 +32,7 @@ h6 {
   font-size: #{$a}em;
   letter-spacing: #{calc(((-2 / 2.5) * $a) + 0.7)}px;
   line-height: calc((-0.01 * ($a * $base-size)) + 1.6);
+  word-break: break-word;
 
   * {
     letter-spacing: #{calc(((-2 / 2.5) * $a) + 0.7)}px;

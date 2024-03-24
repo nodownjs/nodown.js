@@ -1,10 +1,15 @@
 section.nodown-section {
   margin: 1.75em 0;
+
   &:first-child {
     margin-top: 0;
 
-    h1 {
-      margin-top: 0;
+    > .nodown-div:first-child {
+      > .nodown-sub-div:first-child {
+        .nodown-title {
+          margin-top: 0;
+        }
+      }
     }
   }
 
@@ -13,12 +18,7 @@ section.nodown-section {
     width: 100%;
 
     > div.nodown-sub-div {
-      > h1,
-      > h2,
-      > h3,
-      > h4,
-      > h5,
-      > h6 {
+      > .nodown-title {
         margin-top: 1.25em;
       }
 
