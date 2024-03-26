@@ -47,7 +47,7 @@ export function createCitationType(line) {
       break;
   }
 
-  if (/^# (.*)/.test(content)) {
+  if (/^# (.*)/.test(content) && citationType.type !== "citation") {
     const title = content.match(/^# (.*)/)[1];
     citationType.title = convertToObject(title);
   } else {
