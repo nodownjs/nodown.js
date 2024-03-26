@@ -18,7 +18,7 @@ const styles = `style="background-color: {{color}} !important; display: inline-b
 describe("color", () => {
   it("Basic HEX color", () => {
     const colorTest = `\`${colorHex}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorHex
     )} class="nodown-preview"></span>${colorHex}</code>`;
@@ -28,7 +28,7 @@ describe("color", () => {
 
   it("Short HEX", () => {
     const colorTest = `\`${colorShortHex}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorShortHex
     )} class="nodown-preview"></span>${colorShortHex}</code>`;
@@ -38,7 +38,7 @@ describe("color", () => {
 
   it("Basic RGB color", () => {
     const colorTest = `\`${colorRgb}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorRgb
     )} class="nodown-preview"></span>${colorRgb}</code>`;
@@ -48,7 +48,7 @@ describe("color", () => {
 
   it("Basic RGBa color", () => {
     const colorTest = `\`${colorRgba}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorRgba
     )} class="nodown-preview"></span>${colorRgba}</code>`;
@@ -58,7 +58,7 @@ describe("color", () => {
 
   it("Basic HSL color", () => {
     const colorTest = `\`${colorHsl}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorHsl
     )} class="nodown-preview"></span>${colorHsl}</code>`;
@@ -68,7 +68,7 @@ describe("color", () => {
 
   it("Basic HSLa color", () => {
     const colorTest = `\`${colorHsla}\``;
-    const colorResult = `<code class="nodown-color"><span ${styles.replace(
+    const colorResult = `<code class="nodown-code nodown-color"><span ${styles.replace(
       /{{color}}/,
       colorHsla
     )} class="nodown-preview"></span>${colorHsla}</code>`;

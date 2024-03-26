@@ -335,8 +335,12 @@ export default function parser(textDocument, opt = defaultOptions) {
     }
     const newSectionByHeader = options?.section?.newSectionByHeader ?? true;
     const newSectionHeaderLevel = options?.section?.newSectionHeaderLevel ?? 2;
-    if (title.level == newSectionHeaderLevel && newSectionByHeader)
+    if (title.level == newSectionHeaderLevel && newSectionByHeader) {
+      if (options?.section?.disabled) {
+        makeDiv();
+      }
       makeSection();
+    }
     const lastDiv = getLastDiv();
     lastDiv.children.push(title);
   }

@@ -1,30 +1,78 @@
 section.nodown-section {
-  margin: 1.75em 0;
+  margin: 1.25em 0;
 
   &:first-child {
     margin-top: 0;
+  }
+}
 
-    > .nodown-div:first-child {
-      > .nodown-sub-div:first-child {
-        .nodown-title {
-          margin-top: 0;
-        }
+div.nodown-div {
+  gap: 1em;
+  width: 100%;
+}
+
+// SECTION AND DIV
+> .nodown-section {
+  > .nodown-div {
+    > .nodown-sub-div {
+      > *:not(:last-child:not(.nodown-title)):not(.nodown-section):not(
+          .nodown-sub-div
+        ) {
+        margin-bottom: 0.75em;
       }
     }
   }
+  &:first-child
+    > .nodown-div:first-child
+    > .nodown-sub-div:first-child
+    > .nodown-title:first-child {
+    margin-top: 0;
+  }
+}
 
-  > div.nodown-div {
-    gap: 1em;
-    width: 100%;
-
-    > div.nodown-sub-div {
-      > .nodown-title {
-        margin-top: 1.25em;
-      }
-
-      > * {
-        margin-bottom: 1em;
+// DIV ONLY
+> .nodown-div {
+  > .nodown-sub-div {
+    > *:not(:last-child:not(.nodown-title)):not(.nodown-section):not(
+        .nodown-sub-div
+      ) {
+      margin-bottom: 0.75em;
+    }
+  }
+  &:first-child {
+    > .nodown-sub-div:first-child {
+      > .nodown-title:first-child {
+        margin-top: 0;
       }
     }
   }
+}
+
+// SECTION ONLY
+> .nodown-section {
+  > *:not(:last-child:not(.nodown-title)):not(.nodown-section):not(
+      .nodown-sub-div
+    ) {
+    margin-bottom: 0.75em;
+  }
+  &:first-child {
+    > .nodown-title:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+// NOTHING
+> [class^="nodown-"].nodown-title:first-child {
+  margin-top: 0;
+}
+
+> *:not(:last-child:not(.nodown-title)):not(.nodown-section):not(
+    .nodown-sub-div
+  ) {
+  margin-bottom: 0.75em;
+}
+
+[class^="nodown-"].nodown-title {
+  margin-top: 1em;
 }

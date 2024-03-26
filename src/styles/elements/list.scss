@@ -6,3 +6,11 @@ ol.nodown-ordered-list {
     margin: 0.75em;
   }
 }
+
+ul.nodown-unordered-list {
+  list-style-type: disc;
+}
+
+ol.nodown-ordered-list {
+  list-style-type: decimal;
+}

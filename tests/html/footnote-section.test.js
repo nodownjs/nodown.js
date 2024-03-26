@@ -9,7 +9,7 @@ const text = `Some simple text`;
 describe("Footnote", () => {
   it("Basic footnote section", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<section class="nodown-section-footnote" id="footnotes"><div class="nodown-div"><div class="nodown-sub-div" style="overflow-y: hidden; flex: 1 0 0%;"><ol class="nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol></div></div></section>`;
+    const footnoteResult = `<section class="nodown-section-footnote" id="footnotes"><div class="nodown-div"><div class="nodown-sub-div" style="overflow-y: hidden; flex: 1 0 0%;"><ol class="nodown-ordered-list nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol></div></div></section>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,
@@ -22,7 +22,7 @@ describe("Footnote", () => {
 
   it("Without div", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<section class="nodown-section-footnote" id="footnotes"><ol class="nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol></section>`;
+    const footnoteResult = `<section class="nodown-section-footnote" id="footnotes"><ol class="nodown-ordered-list nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol></section>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,
@@ -34,7 +34,7 @@ describe("Footnote", () => {
 
   it("Without section and div", () => {
     const footnoteTest = `${text}[^${footnoteId}]\n[^${footnoteId}]: ${footnoteText}`;
-    const footnoteResult = `<ol class="nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol>`;
+    const footnoteResult = `<ol class="nodown-ordered-list nodown-footnote-list"><li class="nodown-footnote" id="fn-${footnoteId}">${footnoteText}<a class="nodown-link" href="#fnref-${footnoteId}"> ↩</a></li></ol>`;
     const footnote = renderToHTML(
       parser(footnoteTest, {
         ...parserOptions,
