@@ -28,14 +28,14 @@ describe("Sub-div", () => {
   it("Align left", () => {
     const divTest = `------\n===:\n${textContent}`;
     const divResult = `<div class="nodown-sub-div" style="${allStyle[0]} text-align: right; ${allStyle[1]}"><p class="nodown-paragraph">${textContent}</p></div>`;
-    const div = generateTest(divTest, 1, 1);
+    const div = generateTest(divTest, 1, 0);
     expect(div).toBe(divResult);
   });
 
   it("Align center", () => {
     const divTest = `------\n:===:\n${textContent}`;
     const divResult = `<div class="nodown-sub-div" style="${allStyle[0]} text-align: center; ${allStyle[1]}"><p class="nodown-paragraph">${textContent}</p></div>`;
-    const div = generateTest(divTest, 1, 1);
+    const div = generateTest(divTest, 1, 0);
     expect(div).toBe(divResult);
   });
 
@@ -48,7 +48,7 @@ describe("Sub-div", () => {
 
   it("Double min width", () => {
     const divTest = `------\n===|\n${textContent}\n===|\n${textContent}`;
-    const divResult = `<div class="nodown-div" style="text-align: left;"><div class="nodown-sub-div" style="overflow-y: hidden; flex: 1 0 0%;"></div><div class="nodown-sub-div" style="${allStyle[0]} max-width: calc(33.33% - 0.67em); text-align: left; flex: 0 1 auto;"><p class="nodown-paragraph">${textContent}</p></div><div class="nodown-sub-div" style="${allStyle[0]} max-width: calc(33.33% - 0.67em); text-align: left; flex: 0 1 auto;"><p class="nodown-paragraph">${textContent}</p></div></div>`;
+    const divResult = `<div class="nodown-div" style="text-align: left;"><div class="nodown-sub-div" style="${allStyle[0]} max-width: calc(50% - 0.5em); text-align: left; flex: 0 1 auto;"><p class="nodown-paragraph">${textContent}</p></div><div class="nodown-sub-div" style="${allStyle[0]} max-width: calc(50% - 0.5em); text-align: left; flex: 0 1 auto;"><p class="nodown-paragraph">${textContent}</p></div></div>`;
     const div = renderToHTML(
       parser(divTest, {
         ...parserOptions,
