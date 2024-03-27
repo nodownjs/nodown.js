@@ -295,15 +295,25 @@ export function convertToObject(text, exception) {
   const textAfter = removeBackslash(
     text.substring(match.index + match.raw.length)
   );
+  const convertedTextAfter = convertToObject(textAfter);
 
-  const result = [
-    {
+  const result = [];
+  if (textBefore.length > 0) {
+    result.push({
       type: "text",
       children: textBefore,
-    },
-    obj,
-    ...convertToObject(textAfter),
-  ];
+    });
+  }
+  result.push(obj);
+  if (
+    !(
+      convertedTextAfter.length === 1 &&
+      convertedTextAfter[0].type === "text" &&
+      convertedTextAfter[0].children === ""
+    )
+  ) {
+    result.push(...convertedTextAfter);
+  }
 
   return result;
 }
