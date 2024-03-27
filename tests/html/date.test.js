@@ -3,7 +3,7 @@ import { parser, renderToHTML } from "../../src/index";
 import parserOptions from "../parserOptions.json";
 
 function generateTest(elementTest) {
-  return renderToHTML(parser(elementTest, parserOptions)[0].children[1]);
+  return renderToHTML(parser(elementTest, parserOptions)[0].children[0]);
 }
 
 const dateRaw = `2000-02-04 01:00`;

@@ -11,7 +11,7 @@ const img100Height = `100%`;
 const img255Height = `255`;
 
 function generateTest(elementTest) {
-  return renderToHTML(parser(elementTest, parserOptions)[0].children[1]);
+  return renderToHTML(parser(elementTest, parserOptions)[0].children[0]);
 }
 
 describe("Image", () => {

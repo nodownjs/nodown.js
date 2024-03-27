@@ -3,7 +3,7 @@ import { parser, renderToHTML } from "../../src/index";
 import parserOptions from "../parserOptions.json";
 
 function generateTest(elementTest) {
-  return renderToHTML(parser(elementTest, parserOptions)[0].children[1]);
+  return renderToHTML(parser(elementTest, parserOptions)[0].children[0]);
 }
 
 const suText = `Some su text`;
