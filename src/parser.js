@@ -252,7 +252,12 @@ export default function parser(textDocument, opt = defaultOptions) {
     const disabledSection = options?.section?.disabled ?? false;
     if (disabledSection) {
       const lastDiv = syntaxTree.children[syntaxTree.children.length - 1];
-      lastDiv.children.push(subDiv);
+      const lastLastDiv = lastDiv.children[lastDiv.children.length - 1];
+      if (lastLastDiv && lastLastDiv.children.length === 0) {
+        lastDiv.children[lastDiv.children.length - 1] = subDiv;
+      } else {
+        lastDiv.children.push(subDiv);
+      }
       return;
     }
     const lastSection = syntaxTree.children[syntaxTree.children.length - 1];
