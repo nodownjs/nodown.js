@@ -144,7 +144,11 @@ export default function createDate(matches) {
 
     let result = "";
 
-    const relativeLanguage = languages[language].sentence;
+    if (!/-/.test(language)) {
+      language = `${language}-${language.toUpperCase()}`;
+    }
+    const languagesObject = languages[language] || languages["en-US"];
+    const relativeLanguage = languagesObject.sentence;
 
     if (future) {
       result =
@@ -160,26 +164,26 @@ export default function createDate(matches) {
 
     if (duration <= 1) {
       const gender = ["hour", "minute", "second"].includes(selectedTime)
-        ? languages[language].gender.feminine
-        : languages[language].gender.masculine;
+        ? languagesObject.gender.feminine
+        : languagesObject.gender.masculine;
       if (obj.outFormat === "long-relative") {
         result = result.replace(/{gender}/, duration === 0 ? duration : gender);
         result = result.replace(
           /{time_type}/,
-          languages[language].type[selectedTime].singular
+          languagesObject.type[selectedTime].singular
         );
       } else if (obj.outFormat === "short-relative") {
-        result = gender + " " + languages[language].type[selectedTime].singular;
+        result = gender + " " + languagesObject.type[selectedTime].singular;
       }
     } else {
       if (obj.outFormat === "long-relative") {
         result = result.replace(/{count}/, duration);
         result = result.replace(
           /{time_type}/,
-          languages[language].type[selectedTime].plural
+          languagesObject.type[selectedTime].plural
         );
       } else if (obj.outFormat === "short-relative") {
-        result = duration + " " + languages[language].type[selectedTime].plural;
+        result = duration + " " + languagesObject.type[selectedTime].plural;
       }
     }
     text = result;

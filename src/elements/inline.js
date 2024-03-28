@@ -28,7 +28,7 @@ import {
 import { removeBackslash, removeBackslashInCode } from "../utils.js";
 import createDate from "./date.js";
 
-const inlineRegExpList = [
+let inlineRegExpList = [
   {
     name: "image",
     regexp: imageRegExp,
@@ -127,7 +127,7 @@ export function convertToObject(text, exception) {
   //   );
   // }
 
-  const isVar = inlineRegExpList.find((m) => m.name === "var");
+  inlineRegExpList = inlineRegExpList.filter((item) => item.name !== "var");
 
   varList.forEach((var_) => {
     const regexp = new RegExp(
